@@ -104,8 +104,24 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .row .card{flex:0 0 150px;scroll-snap-align:start}
 .row .thumb .mono{font-size:26px}
 .row .note,.row .shop{display:none}
-.outfits .set{grid-template-columns:1fr}
-.outfits .set h3{font-size:19px}
+.looks{display:grid;grid-template-columns:repeat(auto-fill,minmax(440px,1fr));gap:18px;padding-block:24px 64px;align-items:start}
+.look{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:grid;grid-template-columns:minmax(0,44%) minmax(0,1fr)}
+.look .cover{position:relative;aspect-ratio:3/4;background:var(--raise);min-height:100%}
+.look .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 25%}
+.look .body{padding:16px 14px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.look h3{font-family:var(--display);font-size:18px;line-height:1.15;margin:0;text-wrap:balance}
+.look .n{color:var(--pink);font-size:12px;font-weight:600;letter-spacing:.04em;margin-bottom:8px}
+.items{display:grid;gap:6px}
+.li{display:grid;grid-template-columns:46px minmax(0,1fr) auto;gap:10px;align-items:center;text-decoration:none;padding:6px 10px 6px 6px;border-radius:12px;background:var(--raise);min-height:58px}
+.li:hover{box-shadow:0 0 0 1.5px var(--pink)}
+.lt{width:46px;height:46px;border-radius:8px;background:var(--paper);overflow:hidden;display:block}
+.lt img{width:100%;height:100%;object-fit:contain;padding:2px;display:block}
+.lm{display:grid;min-width:0}
+.lm .brand{font-size:10px}
+.lm .name{font-size:13px;line-height:1.25}
+.lcode{font-size:10.5px;color:var(--blush);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.go{color:var(--muted);font-weight:600}
+.li:hover .go{color:var(--pink)}
 
 .empty{padding:48px 0 80px;text-align:center;color:var(--muted)}
 .empty b{display:block;font-family:var(--display);font-size:24px;color:var(--ink);margin-bottom:6px}
@@ -140,6 +156,13 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
   .set h3{font-size:18px}
   .row{gap:10px;margin-inline:-14px;padding-inline:14px;scroll-padding-inline:14px}
   .row .card{flex:0 0 122px}
+  .looks{grid-template-columns:1fr;gap:14px;padding-block:14px 48px}
+  .look{grid-template-columns:minmax(0,40%) minmax(0,1fr);border-radius:16px}
+  .look .body{padding:12px 10px}
+  .look h3{font-size:16px}
+  .li{grid-template-columns:40px minmax(0,1fr) auto;gap:8px;padding:5px 8px 5px 5px;min-height:52px}
+  .lt{width:40px;height:40px}
+  .lm .name{font-size:12.5px}
   footer .wrap{flex-direction:column;padding-block:20px 32px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -183,7 +206,7 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
     <div class="grid" id="grid"></div>
   </section>
   <section id="view-videos" class="rows" hidden></section>
-  <section id="view-outfits" class="rows outfits" hidden></section>
+  <section id="view-outfits" class="looks" hidden></section>
   <div class="empty" id="empty" hidden><b>Nothing matches that yet</b>Try another word, or clear the search.</div>
 </main>
 
@@ -481,11 +504,15 @@ const OUTFITS = [
   [4981913,"pink set + layering"],[4933420,"pink pump covers"],[4933406,"pink twist & flare set"],[4920789,"leg day fit"],
 ];
 
+/* Cover photo for each outfit (and the one video without a YouTube link) */
+const COVERS = {"4920789":"img-sociallink-1776749306524","4933406":"img-sociallink-1776809077129","4933420":"img-sociallink-1776809123424","4981913":"img-sociallink-1777059545786","4981973":"img-sociallink-1777059717299","5060256":"img-sociallink-1777509697184","5110168":"img-sociallink-1777770030643","5123212":"img-sociallink-1777855235123","5141903":"img-sociallink-1777951278888","5155141":"img-sociallink-1778021947784","5201645":"img-sociallink-1778262958639","5228277":"img-sociallink-1778446784337","5285738":"img-sociallink-1778722000088","5401843":"img-sociallink-1779331042894","5476731":"img-sociallink-1779754135037","5527915":"img-sociallink-1780003516830","5653186":"img-sociallink-1780629944499","5662853":"img-sociallink-1780685784545","5768776":"img-sociallink-1781230397260","5786032":"img-sociallink-1781314608135","5880396":"img-sociallink-1781748678535","5911433":"img-sociallink-1781893110618","6001470":"img-sociallink-1782324414552","6024585":"img-sociallink-1782414384360","6048030":"img-sociallink-1782513862576","6219034":"img-sociallink-1783388879590","6327823":"img-sociallink-1783881406890","6606226":"img-sociallink-1785024972435","6793039":"img-sociallink-1785791551045","6877369":"img-sociallink-1786133391994","7271179":"img-sociallink-1787882242039","7478921":"img-sociallink-1788819507552","7874219":"img-collectioncover-1790459689925","7929028":"img-collectioncover-1790700984892","8326088":"img-collectioncover-1792277604468"};
+
 const ROTATING = ["gym fits","supplements","tupperware","makeup","snacks","sneakers","decor"];
 /* ============ END DATA ============ */
 
-const LOCAL_IMG = {"53863600":"jpg","53863601":"jpg","55088535":"jpg","54006111":"jpg","54006116":"jpg","54006339":"jpg","54006626":"jpg","55972473":"jpg","55972536":"jpg","54604084":"jpg","54603962":"jpg","60380615":"jpg","60380493":"jpg","60428166":"jpg","60428239":"jpg","54604006":"jpg","54604249":"jpg","82817010":"jpg","54604355":"jpg","54604394":"jpg","54604464":"jpg","54606093":"jpg","54606194":"jpg","54606231":"jpg","54606331":"jpg","54606695":"jpg","54606979":"jpg","54607250":"jpg","54607533":"jpg","59068061":"jpg","99020218":"png","54648003":"jpg","73678666":"jpg","93693787":"jpg","54649344":"jpg","81446318":"png","59058198":"webp","54649052":"jpg","54650843":"jpg","54649445":"jpg","59828604":"jpg","59828937":"jpg","86285019":"jpg","65140269":"webp","54651183":"jpg","54651582":"png","54651811":"jpg","54651967":"jpg","59057464":"jpg","62326002":"jpg","54748445":"png","54748559":"png","54748665":"png","54749121":"jpg","54749275":"jpg","54749330":"jpg","54749576":"png","55525543":"png","55525954":"jpg","55894791":"jpg","55894651":"jpg","56705521":"jpg","66061015":"jpg","66061053":"jpg","56261365":"jpg","56261460":"jpg","56647565":"jpg","56647752":"jpg","56648011":"jpg","57208634":"jpg","57530398":"jpg","57530507":"jpg","58226453":"jpg","58226235":"jpg","58226747":"jpg","59619485":"jpg","59619384":"jpg","60584083":"jpg","60584170":"jpg","60584327":"jpg","60761088":"jpg","60761224":"jpg","60761255":"jpg","60761390":"jpg","60761563":"jpg","60761338":"jpg","60761191":"jpg","60768559":"jpg","60768978":"jpg","60768730":"jpg","60761772":"jpg","60767572":"jpg","60767666":"jpg","60768295":"jpg","60768406":"jpg","60768453":"jpg","60768502":"jpg","60768597":"jpg","60768669":"jpg","60768789":"jpg","60768832":"jpg","60768880":"jpg","60768930":"jpg","60769025":"jpg","60769072":"jpg","60769102":"jpg","60762151":"jpg","60763446":"webp","64460448":"jpg","61273585":"png","100619843":"jpg","63443548":"jpg","63443689":"jpg","61273515":"webp","63446594":"jpg","61273657":"jpg","61273540":"webp","61273586":"jpg","88033677":"webp","61273289":"webp","61273371":"jpg","88031250":"jpg","88031252":"webp","88031262":"webp","88031268":"png","88031273":"jpg","88031283":"webp","88031288":"webp","88031391":"jpg","88031311":"jpg","88032628":"webp","88032749":"webp","88033458":"webp","61273429":"webp","88031863":"webp","77565708":"jpg","88031652":"png","61195059":"jpg","62746910":"jpg","62877210":"jpg","64164786":"jpg","64165356":"png","64365627":"jpg","64365697":"jpg","64366201":"jpg","65457084":"jpg","66290364":"png","67244562":"jpg","67539789":"jpg","69328173":"jpg","77199119":"jpg","69655675":"jpg","69676103":"jpg","70976574":"jpg","70978289":"jpg","70977192":"jpg","70977421":"jpg","70977665":"jpg","70977828":"png","70978404":"jpg","70978622":"jpg","70978760":"jpg","70979383":"jpg","73187924":"jpg","73823944":"jpg","73824188":"jpg","74399582":"jpg","76581173":"jpg","76580797":"jpg","76580959":"jpg","77597875":"jpg","77598435":"jpg","77599166":"jpg","77601169":"jpg","77601407":"png","82297845":"jpg","83146535":"jpg","83146536":"jpg","83146524":"jpg","83146529":"jpg","83146534":"jpg","83146522":"jpg","83146484":"jpg","84861530":"jpg","84861792":"jpg","84894386":"jpg","84894490":"jpg","84894521":"jpg","84894641":"jpg","99380911":"jpg","99380922":"jpg","99380925":"jpg","99380930":"jpg","99380931":"jpg","99380937":"jpg","99380952":"jpg","99380957":"jpg","99380959":"jpg","99381000":"jpg","83159490":"jpg","83146922":"jpg","83156966":"jpg","83157201":"jpg","83158349":"jpg","88026799":"png","89838801":"jpg","89837430":"jpg","95295568":"jpg","95824378":"webp","95824584":"png","95824849":"png","95824972":"jpg","98754535":"jpg","99838579":"jpg","99838674":"jpg","99845080":"jpg","99845135":"jpg","99839337":"jpg","99840077":"jpg","99840371":"jpg","99841789":"jpg","99841498":"jpg","99839551":"jpg","99841903":"webp","99845004":"jpg","102626476":"png","102625891":"webp","102624038":"jpg","102624160":"jpg","102624605":"png","102624716":"png","102624723":"png"};
+const LOCAL_IMG = {"53863600":"jpg","53863601":"jpg","55088535":"jpg","54006111":"jpg","54006116":"jpg","54006339":"jpg","54006626":"jpg","55972473":"jpg","55972536":"jpg","54604084":"jpg","54603962":"jpg","60380615":"jpg","60380493":"jpg","60428166":"jpg","60428239":"jpg","54604006":"jpg","54604249":"jpg","82817010":"jpg","54604355":"jpg","54604394":"jpg","54604464":"jpg","54606093":"jpg","54606194":"jpg","54606231":"jpg","54606331":"jpg","54606695":"jpg","54606979":"jpg","54607250":"jpg","54607533":"jpg","59068061":"jpg","99020218":"png","54648003":"jpg","73678666":"jpg","93693787":"jpg","54649344":"jpg","81446318":"png","59058198":"webp","54649052":"jpg","54650843":"jpg","54649445":"jpg","59828604":"jpg","59828937":"jpg","86285019":"jpg","65140269":"webp","54651183":"jpg","54651582":"png","54651811":"jpg","54651967":"jpg","59057464":"jpg","62326002":"jpg","54748445":"png","54748559":"png","54748665":"png","54749121":"jpg","54749275":"jpg","54749330":"jpg","54749576":"png","55525543":"png","55525954":"jpg","55894791":"jpg","55894651":"jpg","56705521":"jpg","66061015":"jpg","66061053":"jpg","56261365":"jpg","56261460":"jpg","56647565":"jpg","56647752":"jpg","56648011":"jpg","57208634":"jpg","57530398":"jpg","57530507":"jpg","58226453":"jpg","58226235":"jpg","58226747":"jpg","59619485":"jpg","59619384":"jpg","60584083":"jpg","60584170":"jpg","60584327":"jpg","60761088":"jpg","60761224":"jpg","60761255":"jpg","60761390":"jpg","60761563":"jpg","60761338":"jpg","60761191":"jpg","60768559":"jpg","60768978":"jpg","60768730":"jpg","60761772":"jpg","60767572":"jpg","60767666":"jpg","60768295":"jpg","60768406":"jpg","60768453":"jpg","60768502":"jpg","60768597":"jpg","60768669":"jpg","60768789":"jpg","60768832":"jpg","60768880":"jpg","60768930":"jpg","60769025":"jpg","60769072":"jpg","60769102":"jpg","60762151":"jpg","60763446":"webp","64460448":"jpg","61273585":"png","100619843":"jpg","63443548":"jpg","63443689":"jpg","61273515":"webp","63446594":"jpg","61273657":"jpg","61273540":"webp","61273586":"jpg","88033677":"webp","61273289":"webp","61273371":"jpg","88031250":"jpg","88031252":"webp","88031262":"webp","88031268":"png","88031273":"jpg","88031283":"webp","88031288":"webp","88031391":"jpg","88031311":"jpg","88032628":"webp","88032749":"webp","88033458":"webp","61273429":"webp","88031863":"webp","77565708":"jpg","88031652":"png","61195059":"jpg","62746910":"jpg","62877210":"jpg","64164786":"jpg","64165356":"png","64365627":"jpg","64365697":"jpg","64366201":"jpg","65457084":"jpg","66290364":"png","67244562":"jpg","67539789":"jpg","69328173":"jpg","77199119":"jpg","69655675":"jpg","69676103":"jpg","70976574":"jpg","70978289":"jpg","70977192":"jpg","70977421":"jpg","70977665":"jpg","70977828":"png","70978404":"jpg","70978622":"jpg","70978760":"jpg","70979383":"jpg","73187924":"jpg","73823944":"jpg","73824188":"jpg","74399582":"jpg","76581173":"jpg","76580797":"jpg","76580959":"jpg","77597875":"jpg","77598435":"jpg","77599166":"jpg","77601169":"jpg","77601407":"png","82297845":"jpg","83146535":"jpg","83146536":"jpg","83146524":"jpg","83146529":"jpg","83146534":"jpg","83146522":"jpg","83146484":"jpg","84861530":"jpg","84861792":"jpg","84894386":"jpg","84894490":"jpg","84894521":"jpg","84894641":"jpg","99380911":"jpg","99380922":"jpg","99380925":"jpg","99380930":"jpg","99380931":"jpg","99380937":"jpg","99380952":"jpg","99380957":"jpg","99380959":"jpg","99381000":"jpg","83159490":"jpg","83146922":"jpg","83156966":"jpg","83157201":"jpg","83158349":"jpg","88026799":"png","89838801":"jpg","89837430":"jpg","95295568":"jpg","95824378":"webp","95824584":"png","95824849":"png","95824972":"jpg","98754535":"jpg","99838579":"jpg","99838674":"jpg","99845080":"jpg","99845135":"jpg","99839337":"jpg","99840077":"jpg","99840371":"jpg","99841789":"jpg","99841498":"jpg","99839551":"jpg","99841903":"webp","99845004":"jpg","102626476":"png","102625891":"webp","102624038":"jpg","102624160":"jpg","102624605":"png","102624716":"png","102624723":"png"}, LOCAL_LOOK = {"4920789":"jpg","4933406":"jpg","4933420":"jpg","4981913":"jpg","4981973":"jpg","5060256":"jpg","5110168":"jpg","5123212":"jpg","5141903":"jpg","5155141":"jpg","5201645":"jpg","5228277":"jpg","5285738":"jpg","5401843":"jpg","5476731":"jpg","5527915":"jpg","5653186":"jpg","5662853":"jpg","5768776":"jpg","5786032":"jpg","5880396":"jpg","5911433":"jpg","6001470":"jpg","6024585":"jpg","6048030":"jpg","6219034":"jpg","6327823":"jpg","6606226":"jpg","6793039":"jpg","6877369":"jpg","7271179":"jpg","7478921":"jpg","7874219":"jpg","7929028":"jpg","8326088":"jpg"};
 const $ = s => document.querySelector(s);
+const coverUrl = c => LOCAL_LOOK[c] ? "looks/"+c+"."+LOCAL_LOOK[c] : (COVERS[c] ? "https://static.shopmy.us/uploads/"+COVERS[c] : "");
 const HOSTS = {P:"https://static.shopmy.us/pins/", U:"https://static.shopmy.us/uploads/", V:"https://static.shopmy.us/uploads/", S:"https://static.shopmy.us/"};
 const imgUrl = s => /^https?:/.test(s) ? s : (HOSTS[s[0]] || "") + s.slice(2);
 const overrideOf = {}; for (const [c, ids] of Object.entries(CATEGORY_OVERRIDES)) ids.forEach(id => overrideOf[id] = c);
@@ -542,7 +569,7 @@ function renderSets(el, sets){
     const items = titleHit ? all : all.filter(p => matches(p, s.title));
     if(!items.length) return "";
     const media = s.video ? `<a class="vthumb" href="${esc(s.url)}" target="_blank" rel="noopener" aria-label="Watch ${esc(s.title)}">
-        ${s.yt?`<img src="https://i.ytimg.com/vi/${s.yt}/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()">`:""}
+        ${s.yt?`<img src="https://i.ytimg.com/vi/${s.yt}/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()">`:(coverUrl(s.col)?`<img src="${esc(coverUrl(s.col))}" alt="" loading="lazy" onerror="this.remove()">`:"")}
         <span class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span></a>` : "";
     return `<article class="set">${media}<div style="min-width:0"><h3>${esc(s.title)}</h3>
       <div class="when">${items.length} ${items.length===1?"product":"products"}${s.video?` · <a href="${esc(s.url)}" target="_blank" rel="noopener">Watch on YouTube ↗</a>`:""}</div>
@@ -552,11 +579,28 @@ function renderSets(el, sets){
   $("#empty").hidden = !!html;
 }
 
+function renderLooks(el){
+  const html = OUTFITS.map(([col,title]) => {
+    const all = byCol[col] || [];
+    const titleHit = state.q && title.toLowerCase().includes(state.q);
+    const items = titleHit ? all : all.filter(p => matches(p, title));
+    if(!items.length) return "";
+    const rows = items.map(p => `<a class="li" href="${esc(p.link)}" target="_blank" rel="noopener sponsored">
+      <span class="lt"><img src="${esc(p.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span>
+      <span class="lm">${p.brand?`<span class="brand">${esc(p.brand)}</span>`:""}<span class="name">${esc(p.name)}</span>${p.code?`<span class="lcode">code ${esc(p.code)}</span>`:""}</span>
+      <span class="go" aria-hidden="true">↗</span></a>`).join("");
+    return `<article class="look"><div class="cover">${coverUrl(col)?`<img src="${esc(coverUrl(col))}" alt="${esc(title)}" loading="lazy" onerror="this.remove()">`:""}</div>
+      <div class="body"><h3>${esc(title)}</h3><div class="n">shop the look · ${items.length} ${items.length===1?"piece":"pieces"}</div><div class="items">${rows}</div></div></article>`;
+  }).join("");
+  el.innerHTML = html;
+  $("#empty").hidden = !!html;
+}
+
 function render(){
   for (const v of ["shop","videos","outfits"]) { $("#view-"+v).hidden = state.view!==v; $("#tab-"+v).setAttribute("aria-selected", state.view===v); }
   if (state.view==="shop") renderShop();
   if (state.view==="videos") renderSets($("#view-videos"), VIDEOS.map(v => ({col:v.col, title:v.title, yt:v.yt, video:true, url: v.yt ? "https://www.youtube.com/watch?v="+v.yt : CHANNEL})));
-  if (state.view==="outfits") renderSets($("#view-outfits"), OUTFITS.map(([col,title]) => ({col, title})));
+  if (state.view==="outfits") renderLooks($("#view-outfits"));
 }
 
 $("#chips").addEventListener("click", e => { const b=e.target.closest(".chip"); if(!b) return; state.cat=b.dataset.cat; render(); });
