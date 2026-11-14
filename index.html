@@ -33,8 +33,8 @@ a{color:inherit}
 /* hero */
 .hero{background:radial-gradient(60% 80% at 15% 30%,color-mix(in srgb,var(--pink) 22%,transparent),transparent 70%)}
 .hero .wrap{display:grid;grid-template-columns:minmax(0,290px) minmax(0,1fr);gap:56px;align-items:center;padding-block:56px 44px}
-.photo{position:relative;aspect-ratio:4/5;max-width:100%;border-radius:999px 999px 20px 20px;background:var(--raise);overflow:hidden;display:grid;place-items:center;cursor:pointer;border:2px solid var(--pink);padding:0;color:var(--muted);font:inherit;box-shadow:0 0 0 8px var(--bg),0 0 0 9px color-mix(in srgb,var(--pink) 50%,transparent)}
-.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.photo{position:relative;aspect-ratio:4/5;max-width:100%;border-radius:999px 999px 20px 20px;background:var(--raise);overflow:hidden;display:block;border:2px solid var(--pink);box-shadow:0 0 0 8px var(--bg),0 0 0 9px color-mix(in srgb,var(--pink) 50%,transparent)}
+.photo img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block}
 .photo .ph{display:grid;gap:6px;text-align:center;font-size:14px;padding:24px}
 .photo .ph b{font-family:var(--gothic);font-size:84px;line-height:1;color:var(--pink);font-weight:700}
 h1{font-family:var(--display);font-weight:800;font-size:clamp(42px,7.2vw,84px);line-height:1.1;letter-spacing:-.03em;margin:0;display:grid;justify-items:start;gap:.04em}
@@ -149,10 +149,7 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
 <body>
 <header class="hero">
   <div class="wrap">
-    <button class="photo" id="photo" type="button" aria-label="Choose a photo to preview">
-      <div class="ph"><b>L</b>Your photo here<br><small>Tap to preview one</small></div>
-    </button>
-    <input type="file" id="photo-input" accept="image/*" hidden>
+    <div class="photo"><img src="leah.jpg" alt="Leah Cedeño" width="800" height="960"></div>
     <div>
       <h1><span class="name">Leah's</span><span class="word">favorite</span> <span class="rot" id="rot" aria-live="polite"><span>gym fits</span></span></h1>
       <p class="lede">Everything I actually use and wear, <b id="total-count">236 favorites</b> in all. Search it, browse by category, or shop straight from a video or an outfit.</p>
@@ -584,12 +581,6 @@ fromHash();
   },2200);
   addEventListener("resize",()=>{ box.style.width=""; });
 })();
-
-$("#photo").onclick = () => $("#photo-input").click();
-$("#photo-input").onchange = e => {
-  const f=e.target.files[0]; if(!f) return;
-  const r=new FileReader(); r.onload=()=>{ $("#photo").innerHTML=`<img src="${r.result}" alt="Leah">`; }; r.readAsDataURL(f);
-};
 
 render();
 </script>
