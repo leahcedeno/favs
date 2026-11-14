@@ -114,11 +114,33 @@ footer .wrap{padding-block:24px 40px;display:flex;flex-wrap:wrap;justify-content
 footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
 
 @media (max-width:760px){
-  .hero .wrap{grid-template-columns:1fr;gap:28px;padding-block:32px 28px}
-  .photo{max-width:210px}
-  .set{grid-template-columns:1fr}
-  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 12px}
+  .hero .wrap{grid-template-columns:minmax(0,118px) minmax(0,1fr);gap:18px;align-items:center;padding-block:22px 18px}
+  .photo{box-shadow:0 0 0 4px var(--bg),0 0 0 5px color-mix(in srgb,var(--pink) 50%,transparent)}
+  .photo .ph{font-size:11px;padding:8px}.photo .ph b{font-size:44px}
+  h1{font-size:clamp(30px,10.5vw,46px)}
+  .lede{grid-column:1/-1;font-size:15.5px;margin:14px 0 14px}
+  .hero .wrap>div{display:contents}
+  .hero h1{grid-column:2}
+  .socials{grid-column:1/-1;gap:8px}
+  .socials .btn{flex:1;justify-content:center;padding:11px 8px}
+  .bar .wrap{gap:8px;padding-block:8px}
+  .tabs{width:100%}.tab{flex:1;padding:10px 6px}
+  .search{min-width:0;flex-basis:100%}
+  .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-block:14px 4px;margin-inline:-16px;padding-inline:16px;scroll-snap-type:x proximity}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;padding:9px 14px;scroll-snap-align:start}
+  .count{margin:6px 0 12px;font-size:13px}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 12px;padding-bottom:48px}
+  .thumb{border-radius:14px}.thumb img{padding:6px}
   .thumb .mono{font-size:30px}
+  .badges{left:6px;top:6px;right:6px;gap:4px}.code,.fav{font-size:10px;padding:3px 6px}
+  .name{font-size:13.5px}.note{font-size:18px}.brand{font-size:11px}
+  .rows{gap:14px;padding-block:14px 48px}
+  .set{grid-template-columns:1fr;gap:14px;padding:14px;border-radius:16px}
+  .set h3{font-size:18px}
+  .row{gap:10px;margin-inline:-14px;padding-inline:14px;scroll-padding-inline:14px}
+  .row .card{flex:0 0 122px}
+  footer .wrap{flex-direction:column;padding-block:20px 32px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
