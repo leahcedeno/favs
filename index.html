@@ -147,8 +147,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .railwrap{position:relative;background:linear-gradient(var(--surface),transparent 85%);border-radius:18px 18px 0 0}
 .rail{display:flex;gap:16px;overflow-x:auto;padding:0 18px 12px;scroll-snap-type:x proximity;scroll-padding-inline:18px;scrollbar-color:var(--line) transparent}
 /* the rod: stays put while the hangers slide along it */
-.rack.rail .railwrap::before{content:"";position:absolute;left:0;right:0;top:15px;height:7px;border-radius:4px;background:linear-gradient(var(--blush),var(--pink) 60%,#B3246B);box-shadow:0 3px 8px rgba(0,0,0,.5);z-index:2;pointer-events:none}
-.rack.rail .railwrap::after{content:"";position:absolute;left:10px;right:10px;top:9px;height:19px;border-inline:5px solid var(--line);pointer-events:none;z-index:1}
+.rack.is-rail .railwrap::before{content:"";position:absolute;left:0;right:0;top:15px;height:7px;border-radius:4px;background:linear-gradient(var(--blush),var(--pink) 60%,#B3246B);box-shadow:0 3px 8px rgba(0,0,0,.5);z-index:2;pointer-events:none}
+.rack.is-rail .railwrap::after{content:"";position:absolute;left:10px;right:10px;top:9px;height:19px;border-inline:5px solid var(--line);pointer-events:none;z-index:1}
 .hang{flex:0 0 150px;display:flex;flex-direction:column;text-decoration:none;color:inherit;padding-top:6px;transform-origin:50% 18px;scroll-snap-align:start;min-width:0}
 .hgr{width:88px;height:40px;margin:0 auto -9px;color:var(--muted);position:relative;z-index:3}
 .piece{display:block;position:relative;aspect-ratio:3/4;border-radius:10px 10px 14px 14px;overflow:hidden;background:var(--paper);box-shadow:0 10px 18px rgba(0,0,0,.45)}
@@ -162,12 +162,12 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .hang:hover .hgr{color:var(--pink)}
 .hang:hover .piece,.sit:hover .piece{box-shadow:0 0 0 2px var(--pink),0 10px 18px rgba(0,0,0,.45)}
 /* shelves: things sit on a plank */
-.rack.shelf .rail{padding-top:16px;gap:14px}
+.rack.is-shelf .rail{padding-top:16px;gap:14px}
 .sit{flex:0 0 136px;display:flex;flex-direction:column;text-decoration:none;color:inherit;scroll-snap-align:start;min-width:0}
 .sit .piece{aspect-ratio:1;border-radius:12px 12px 0 0;box-shadow:none}
 .sit .piece img{object-fit:contain;padding:8px;object-position:50% 100%}
 .sit .tag{padding-top:16px}
-.rack.shelf .railwrap::before{content:"";position:absolute;left:0;right:0;top:calc(16px + 136px);height:8px;border-radius:2px;background:linear-gradient(var(--blush),var(--pink) 70%,#B3246B);box-shadow:0 6px 10px rgba(0,0,0,.5);z-index:2;pointer-events:none}
+.rack.is-shelf .railwrap::before{content:"";position:absolute;left:0;right:0;top:calc(16px + 136px);height:8px;border-radius:2px;background:linear-gradient(var(--blush),var(--pink) 70%,#B3246B);box-shadow:0 6px 10px rgba(0,0,0,.5);z-index:2;pointer-events:none}
 
 .empty{padding:48px 0 80px;text-align:center;color:var(--muted)}
 .empty b{display:block;font-family:var(--display);font-size:24px;color:var(--ink);margin-bottom:6px}
@@ -223,7 +223,7 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
   .hang{flex-basis:128px}
   .hgr{width:76px;height:35px}
   .sit{flex-basis:116px}
-  .rack.shelf .railwrap::before{top:calc(16px + 116px)}
+  .rack.is-shelf .railwrap::before{top:calc(16px + 116px)}
   footer .wrap{flex-direction:column;padding-block:20px 32px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -715,9 +715,9 @@ function renderCloset(el){
   if (state.brand!=="all" && !brands.includes(state.brand)) state.brand="all";
   const shown = mine.filter(({p}) => matches(p) && (state.brand==="all" || (p.brand||"").toLowerCase()===state.brand));
   const racks = RACKS.map(r => {
-    const items = shown.filter(x => x.rack===r.id).map(x => x.p).sort((a,b) => b.top-a.top);
+    const items = shown.filter(x => x.rack===r.id).map(x => x.p).sort((a,b) => (/thong/i.test(a.name)-/thong/i.test(b.name)) || (b.top-a.top));
     if(!items.length) return "";
-    return `<section class="rack ${r.kind}"><header><h3>${esc(r.label)}</h3><span class="n">${items.length}</span>
+    return `<section class="rack is-${r.kind}"><header><h3>${esc(r.label)}</h3><span class="n">${items.length}</span>
       <span class="nav"><button type="button" data-dir="-1" aria-label="scroll ${esc(r.label)} back">←</button><button type="button" data-dir="1" aria-label="scroll ${esc(r.label)} forward">→</button></span></header>
       <div class="railwrap"><div class="rail">${items.map(p => closetItem(p, r.kind)).join("")}</div></div></section>`;
   }).join("");
