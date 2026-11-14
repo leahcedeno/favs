@@ -599,7 +599,7 @@ function renderLooks(el){
     const items = titleHit ? all : all.filter(p => matches(p, title));
     if(!items.length) return "";
     const spots = HOTSPOTS[col] || {};
-    const order = Object.keys(spots).map(Number).filter(id => items.some(p => p.id===id));
+    const order = Object.keys(spots).map(Number).filter(id => items.some(p => p.id===id)).sort((a,b) => spots[a][1]-spots[b][1]);
     const num = id => order.indexOf(id)+1;
     items.sort((a,b) => (num(a.id)||99)-(num(b.id)||99));
     const dots = order.map(id => { const p=items.find(x=>x.id===id); return `<a class="dot" href="${esc(p.link)}" target="_blank" rel="noopener sponsored" data-pid="${id}" data-x="${spots[id][0]}" data-y="${spots[id][1]}" aria-label="shop ${esc(p.name)}" hidden>${num(id)}</a>`; }).join("");
