@@ -573,13 +573,14 @@ fromHash();
   const box=$("#rot"); let i=0;
   if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   setInterval(()=>{
+    if(document.hidden) return;
     i=(i+1)%ROTATING.length;
     const cur=box.querySelector("span:not(.out)"), next=document.createElement("span");
     box.style.width=box.offsetWidth+"px";
     next.className="in"; next.textContent=ROTATING[i]; box.appendChild(next);
     const w=next.offsetWidth;
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{ box.style.width=w+"px"; next.className=""; cur.className="out"; }));
-    setTimeout(()=>cur.remove(),600);
+    setTimeout(()=>{ box.style.width=w+"px"; next.className=""; cur.className="out"; },30);
+    setTimeout(()=>cur.remove(),650);
   },2200);
   addEventListener("resize",()=>{ box.style.width=""; });
 })();
