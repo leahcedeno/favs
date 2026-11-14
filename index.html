@@ -199,6 +199,22 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .rack.is-shelf.zone-pantry .railwrap::before{height:10px;background:repeating-linear-gradient(90deg,var(--blush) 0 46px,var(--pink) 46px 48px)}
 .zone-pantry .sit .tag{padding-top:20px}
 
+/* single pages: one video, the gallery wall */
+body.subpage .hero{display:none}
+.page{padding-block:22px 64px}
+.back{display:inline-block;color:var(--muted);text-decoration:none;font-weight:600;font-size:14px;margin-bottom:18px}
+.back:hover{color:var(--pink)}
+.vhead{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:28px;align-items:center;margin-bottom:22px}
+.vhead h2{font-family:var(--display);font-size:clamp(24px,3.4vw,40px);line-height:1.08;margin:0 0 18px;text-wrap:balance}
+.kicker{font-family:var(--script);font-size:26px;line-height:1;color:var(--pink);margin:0 0 8px}
+.btn.copy{cursor:pointer;font-family:inherit}
+.set h3 a{color:inherit;text-decoration:none}.set h3 a:hover{color:var(--pink)}
+.codebar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;background:var(--pink);color:var(--pink-ink);border-radius:16px;padding:14px 18px;margin:18px 0;font-size:18px;font-weight:500}
+.codebar b{font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.codebar .btn{background:var(--pink-ink);color:var(--ink);border-color:var(--pink-ink)}
+.wallphoto{display:block;width:100%;border-radius:20px;border:1px solid var(--line);margin-bottom:28px}
+.thumb.gw img{object-fit:cover;padding:0}
+
 .empty{padding:48px 0 80px;text-align:center;color:var(--muted)}
 .empty b{display:block;font-family:var(--display);font-size:24px;color:var(--ink);margin-bottom:6px}
 footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px}
@@ -240,6 +256,9 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
   .lt{width:40px;height:40px}
   .lm .name{font-size:12.5px}
   .tab{font-size:12.5px;padding:10px 1px}
+  .vhead{grid-template-columns:1fr;gap:16px}
+  .kicker{font-size:22px}
+  .codebar{font-size:16px;padding:12px 14px}
   .zone header{flex-wrap:wrap;row-gap:0}
   .zone header .sub{flex-basis:100%;margin-left:0;font-size:18px}
   .zone .railwrap{margin-inline:0}
@@ -308,6 +327,8 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
   <section id="view-closet" class="closet" hidden></section>
   <section id="view-kitchen" class="closet kitchen" hidden></section>
   <section id="view-videos" class="rows" hidden></section>
+  <section id="view-video" class="page" hidden></section>
+  <section id="view-gallery" class="page" hidden></section>
   <section id="view-outfits" class="looks" hidden></section>
   <div class="empty" id="empty" hidden><b>Nothing matches that yet</b>Try another word, or clear the search.</div>
 </main>
@@ -337,7 +358,7 @@ const RAW = [
 [60428239,"Pink coffee cup","","P:zoom-60428239-1779684253154-5171bziShBL._AC_UF894%2C1000_QL80_.jpg","4981736"],
 [54604006,"Overnight Oats Containers With Lids","","P:zoom-54604006-1777059099388-61xJc3r2M4L._AC_SY300_SX300_QL70_ML2_.jpg","4981736 6559199"],
 [54604249,"6 Pack Snack Containers, 4 Compartment Bento Box","","P:zoom-33738826-1764559831472-71elc5AQHjL._AC_UF894%2C1000_QL80_.jpg","4981736"],
-[82817010,"My new food scale","different from the one in the video, but way easier to clean lol","P:zoom-70979514-1783881359876-7196JaBTGmL._AC_SY300_SX300_QL70_ML2_.jpg","4981795 6327823 6559199 8679582 8893759"],
+[82817010,"My new food scale","different from the one in the video, but way easier to clean lol","P:zoom-70979514-1783881359876-7196JaBTGmL._AC_SY300_SX300_QL70_ML2_.jpg","4981795 6327823 6559199 8679582 8893759 9106698"],
 [54604355,"RUFUS AI | Vegetable Chopper","","P:zoom-3768591-1708662624550-81m5GFr6aeL._AC_UF894%2C1000_QL80_.jpg","4981795"],
 [54604394,"SOUPER CUBES | 1 Cup Silicone Freezer Molds with Lids","","P:zoom-28971491-1761603437098-71nILZfze1L._AC_SX679_.jpg","4981795"],
 [54604464,"FOODSAVER | Compact Vacuum Sealer Machine","","P:zoom-54604464-1777059212160-31HhCEjsGML._AC_.jpg","4981795"],
@@ -515,12 +536,12 @@ const RAW = [
 [99380930,"ONER ACTIVE | SoftMotion Jacket, Rose Pink","","S:pins/zoom-98755230-1793240566166-NOOS_SOFTMOTION_JACKET_NB_ROSEPINK_261002_PDP_1440x1800_01.jpg","7342013 8599665"],
 [99380931,"ONER ACTIVE | SoftMotion Mid Rise Micro Shorts 4\", Rose Pink","","S:pins/zoom-98755325-1793240587421-SOFTMOTION_WORLD_SOFTMOTION_MID_RISE_MICRO_SHORTS_ROSEPINK_260608_PDP_1440x1800_V2_02_88380216-fdfb-4839-918d-849802f319fe.jpg","7342013 8599665"],
 [99380937,"ONER ACTIVE | Cotton Vintage Lounge Off-the-Shoulder Sweatshirt, Washed Black","","S:pins/zoom-98755635-1793240654515-NOOS_RAW_LOUNGE_OFF_SHOULDER_SLOUCHY_SWEATSHIRT_ONER_EMBROIDERY_WASHEDBLACK_251203_PDP_1440x1800_01_b7a69c35-a312-41bc-bf3b-0a406eda12ef.jpg","7342013 8599665 8679582"],
-[99380952,"ONER ACTIVE | FormeSoft Off-the-Shoulder Long Sleeve Top, Black","","S:pins/zoom-95825694-1792445196659-OFF_GRID_FORMESOFT_FITTED_OFF-SHOULDER_LONG_SLEEVE_TOP_BLACK_260424_PDP_1440x1800_01.jpg","7342013 8368716 8599665 8679582"],
+[99380952,"ONER ACTIVE | FormeSoft Off-the-Shoulder Long Sleeve Top, Black","","S:pins/zoom-95825694-1792445196659-OFF_GRID_FORMESOFT_FITTED_OFF-SHOULDER_LONG_SLEEVE_TOP_BLACK_260424_PDP_1440x1800_01.jpg","7342013 8368716 8599665 8679582 9106698"],
 [99380957,"ONER ACTIVE | SoftMotion High Neck Sports Bra, Black","","S:pins/zoom-96368031-1792597794061-NOOS_SOFTMOTION_HIGH_NECK_SPORTS_BRA_NB_BLACK_260721_PDP_1440x1800_01.jpg","7342013 8599665"],
-[99380959,"ONER ACTIVE | Cotton Vintage Lounge Wide Leg Sweatpants, Washed Black","","S:pins/zoom-95825529-1792445163353-NOOS_RAW_LOUNGE_WIDE_LEG_JOGGERS_ONER_EMBROIDERY_WASHEDBLACK_251203_PDP_1440x1800_01_cd0647b4-300b-4e02-832d-c1325edd4d94.jpg","7342013 8368716 8599665 8679582"],
+[99380959,"ONER ACTIVE | Cotton Vintage Lounge Wide Leg Sweatpants, Washed Black","","S:pins/zoom-95825529-1792445163353-NOOS_RAW_LOUNGE_WIDE_LEG_JOGGERS_ONER_EMBROIDERY_WASHEDBLACK_251203_PDP_1440x1800_01_cd0647b4-300b-4e02-832d-c1325edd4d94.jpg","7342013 8368716 8599665 8679582 9106698"],
 [99381000,"ONER ACTIVE | Seamless Fitted Top, Black","","S:pins/zoom-90353382-1790701077185-COURT_ONER_SEAMLESS_FITTED_SHORT_SLEEVE_TOP_BLACK_260427_PDP_1440x1800_01_81317777-da70-4a64-9af4-80dcb2e94d00.jpg","7342013 7929028"],
 [105239598,"ONER ACTIVE | SoftMotion High Neck Sports Bra, Rose Pink","","P:zoom-105239598-1794636038750-NOOS_SOFTMOTION_HIGH_NECK_SPORTS_BRA_NB_ROSEPINK_261002_PDP_1440x1800_01.jpg","7342013 8599665"],
-[105239580,"ONER ACTIVE | EasyLift Ultra Minimal Bralette, Power Pink","","P:zoom-105239580-1794636029000-NOOS_EASYLIFT_ULTRA_MINIMAL_BRALETTE_POWDERPINK_260915_PDP_1440x1800_01.jpg","7342013 8599665"],
+[105239580,"ONER ACTIVE | EasyLift Ultra Minimal Bralette, Power Pink","","P:zoom-105239580-1794636029000-NOOS_EASYLIFT_ULTRA_MINIMAL_BRALETTE_POWDERPINK_260915_PDP_1440x1800_01.jpg","7342013 8599665 9106698"],
 [83159490,"VITALY | Fractal Earrings","","P:zoom-83159490-1788223189790-Fractal-Vitaly-SS-1_3dd7625d-d7c3-46e4-8242-65c4a1868554.jpg","7342035"],
 [83146922,"Slim Leather Moto Jacket","","P:zoom-79366780-1786815186772-Descriptionimages_11_Custom_3ee3ab12-4676-43da-b40b-3a871b942966.jpg","7342050"],
 [83156966,"Sheer Lace Pullover Top","","P:zoom-83156966-1788222524428-Descriptionimages_03_Custom_bc8792d8-7b4e-4cad-8647-5bcaefc5c3ec.jpg","7342050"],
@@ -543,8 +564,8 @@ const RAW = [
 [99840077,"OAT HAUS | Cookie Dough Granola Butter","","P:zoom-99840077-1793567988270-GUEST_87de1152-63ab-4711-9342-3beba9b2a31d","8679582"],
 [99840371,"Thai Lemongrass Bone Broth","","P:zoom-99840371-1793568042824-bb-Thailemongrass-3.jpg","8679582"],
 [99841789,"JOSIE MARAN | Whipped Argan Oil Body Butter","","U:pretty-prod-1785247182165","8679582"],
-[99841498,"DAVID | Protein Bars","","P:zoom-99841498-1793568245332-SHOT_02_DAVID_GOLD_TARGET_FLAVORS_GROUP_1214_FS_Hero.jpg","8679582"],
-[99839551,"MISFITS | Protein Bars","","P:zoom-99839551-1793567872888-GUEST_46a1eddb-c584-498c-aed6-55ea6da9705f","8679582"],
+[99841498,"DAVID | Protein Bars","","P:zoom-99841498-1793568245332-SHOT_02_DAVID_GOLD_TARGET_FLAVORS_GROUP_1214_FS_Hero.jpg","8679582 9106698"],
+[99839551,"MISFITS | Protein Bars","","P:zoom-99839551-1793567872888-GUEST_46a1eddb-c584-498c-aed6-55ea6da9705f","8679582 9106698"],
 [99841903,"Beltbox 2.0","","P:zoom-99841903-1793568313186-beltbox-mainimage__52489.1727810381.jpg","8679582"],
 [99845004,"TATCHA | The Dewy Skin Cream","","U:pretty-prod-1789473794794","8679582"],
 [102626476,"ORA | Protein Powder","one of my fav protein powders!","P:zoom-102626476-1794166036161-Ora_eComm-Front-LargeTin-SoLeanSoClean-Vanilla.png","8893759"],
@@ -585,15 +606,18 @@ const CATEGORY_OVERRIDES = {
 };
 
 const VIDEOS = [
-  {col:8893759, yt:"ZiCbZa4KPrc", title:"i tried to meal prep my cravings | testing viral recipes so you don't have to"},
-  {col:8679582, yt:"bHH4LI6lF6I", title:"REALISTIC SUNDAY RESET: getting my life together, gym, grocery haul, cleaning"},
-  {col:8368716, yt:"PGrP54aE5Vg", title:"back on track"},
-  {col:7889527, yt:"VP8l4pJrtjw", title:"how i stay on track while traveling (without being perfect) + getting out of my comfort zone"},
-  {col:7743887, yt:"nMcF8w9JUKI", title:"productive day in my life | mic'd up back + arms workout"},
-  {col:6559199, yt:"m-UGlYoElb4", title:"meal prep with me ep. 1 | high protein low cal recipes for fat loss and muscle gain"},
-  {col:6327823, yt:"",            title:"a realistic day of getting back on track"},
-  {col:5060256, yt:"JpNX_ZNqp54", title:"FULL WEEK OF WORKOUTS: all outfits"},
+  {col:9106698, slug:"how-i-lost-140lbs",     yt:"301b4iJ_T0g", title:"how i lost 140lbs and built muscle", extras:["gallery-wall"]},
+  {col:8893759, slug:"meal-prep-my-cravings", yt:"ZiCbZa4KPrc", title:"i tried to meal prep my cravings | testing viral recipes so you don't have to"},
+  {col:8679582, slug:"sunday-reset",          yt:"bHH4LI6lF6I", title:"REALISTIC SUNDAY RESET: getting my life together, gym, grocery haul, cleaning"},
+  {col:8368716, slug:"back-on-track",         yt:"PGrP54aE5Vg", title:"back on track"},
+  {col:7889527, slug:"staying-on-track-traveling", yt:"VP8l4pJrtjw", title:"how i stay on track while traveling (without being perfect) + getting out of my comfort zone"},
+  {col:7743887, slug:"productive-day",        yt:"nMcF8w9JUKI", title:"productive day in my life | mic'd up back + arms workout"},
+  {col:6559199, slug:"meal-prep-ep-1",        yt:"m-UGlYoElb4", title:"meal prep with me ep. 1 | high protein low cal recipes for fat loss and muscle gain"},
+  {col:6327823, slug:"getting-back-on-track", yt:"",            title:"a realistic day of getting back on track"},
+  {col:5060256, slug:"week-of-workouts",      yt:"JpNX_ZNqp54", title:"FULL WEEK OF WORKOUTS: all outfits"},
 ];
+/* The gallery wall: one card that opens its own page of prints */
+const GALLERY = {slug:"gallery-wall", title:"my gallery wall", code:"LEAH15", off:"15% off", photo:"gallery-wall.jpg", square:"gallery-wall-square.jpg"};
 const CHANNEL = "https://youtube.com/channel/UCeyDa72TsUQN6bMaOsk4Yjw";
 
 const OUTFITS = [
@@ -657,7 +681,7 @@ const CLOSET_FAVS = [
 ];
 
 /* When each product was last tagged in an outfit or video (or, if never tagged, added to ShopMy). Bigger = more recent. */
-const RECENCY = {"53863600":576,"53863601":573,"54006111":629,"54006116":602,"54006339":573,"54006626":573,"54603962":766,"54604006":658,"54604084":746,"54604249":568,"54604355":568,"54604394":568,"54604464":568,"54606093":568,"54606194":568,"54606231":568,"54606331":724,"54606695":568,"54606979":568,"54607250":629,"54607533":693,"54648003":568,"54649052":568,"54649344":568,"54649445":568,"54650843":759,"54651183":568,"54651582":568,"54651811":568,"54651967":759,"54748445":569,"54748559":569,"54748665":569,"54749121":569,"54749275":569,"54749330":569,"54749576":569,"55088535":759,"55525543":576,"55525954":647,"55894651":584,"55894791":584,"55972473":575,"55972536":575,"56261365":693,"56261460":609,"56647565":717,"56647752":579,"56648011":579,"56705521":579,"57208634":582,"57530398":584,"57530507":724,"58226235":647,"58226453":587,"58226747":587,"59057464":592,"59058198":592,"59068061":647,"59619384":594,"59619485":594,"59828604":595,"59828937":595,"60380493":759,"60380615":658,"60428166":598,"60428239":598,"60584083":599,"60584170":599,"60584327":599,"60761088":600,"60761191":600,"60761224":600,"60761255":600,"60761338":600,"60761390":600,"60761563":600,"60761772":600,"60762151":600,"60763446":600,"60767572":600,"60767666":600,"60768295":600,"60768406":600,"60768453":600,"60768502":600,"60768559":600,"60768597":600,"60768669":600,"60768730":600,"60768789":600,"60768832":600,"60768880":600,"60768930":600,"60768978":600,"60769025":600,"60769072":600,"60769102":600,"61195059":629,"61273289":746,"61273371":746,"61273429":602,"61273515":602,"61273540":602,"61273585":602,"61273586":602,"61273657":602,"62326002":759,"62746910":609,"62877210":610,"63443548":613,"63443689":613,"63446594":613,"64164786":616,"64165356":647,"64365627":617,"64365697":660,"64366201":617,"64460448":618,"65140269":746,"65457084":622,"66061015":647,"66061053":625,"66290364":626,"67244562":630,"67539789":631,"69328173":647,"69655675":641,"69676103":641,"70976574":746,"70977192":647,"70977421":759,"70977665":647,"70977828":647,"70978289":647,"70978404":658,"70978622":658,"70978760":647,"70979383":647,"73187924":656,"73678666":746,"73823944":658,"73824188":658,"74399582":660,"76580797":669,"76580959":693,"76581173":669,"77199119":671,"77565708":673,"77597875":673,"77598435":673,"77599166":673,"77601169":744,"77601407":759,"81446318":690,"82297845":693,"82817010":766,"83146484":724,"83146522":757,"83146524":746,"83146529":759,"83146534":724,"83146535":759,"83146536":724,"83146922":697,"83156966":697,"83157201":697,"83158349":697,"83159490":697,"84861530":704,"84861792":704,"84894386":724,"84894490":755,"84894521":704,"84894641":755,"86285019":746,"88026799":717,"88031250":746,"88031252":746,"88031262":746,"88031268":746,"88031273":717,"88031283":746,"88031288":717,"88031311":717,"88031391":746,"88031652":717,"88031863":717,"88032628":724,"88032749":724,"88033458":724,"88033677":724,"89837430":724,"89838801":724,"93693787":739,"95295568":744,"95824378":746,"95824584":746,"95824849":746,"95824972":746,"98754535":755,"99020218":756,"99380911":771,"99380922":771,"99380925":757,"99380930":757,"99380931":757,"99380937":759,"99380952":759,"99380957":757,"99380959":759,"99381000":726,"99838579":759,"99838674":759,"99839337":759,"99839551":759,"99840077":759,"99840371":759,"99841498":759,"99841789":759,"99841903":759,"99845004":759,"99845080":759,"99845135":759,"100619843":761,"102624038":766,"102624160":766,"102624605":766,"102624716":766,"102624723":766,"102625891":766,"102626476":766,"105239580":771,"105239598":771};
+const RECENCY = {"53863600":576,"53863601":573,"54006111":629,"54006116":602,"54006339":573,"54006626":573,"54603962":766,"54604006":658,"54604084":746,"54604249":568,"54604355":568,"54604394":568,"54604464":568,"54606093":568,"54606194":568,"54606231":568,"54606331":724,"54606695":568,"54606979":568,"54607250":629,"54607533":693,"54648003":568,"54649052":568,"54649344":568,"54649445":568,"54650843":759,"54651183":568,"54651582":568,"54651811":568,"54651967":759,"54748445":569,"54748559":569,"54748665":569,"54749121":569,"54749275":569,"54749330":569,"54749576":569,"55088535":759,"55525543":576,"55525954":647,"55894651":584,"55894791":584,"55972473":575,"55972536":575,"56261365":693,"56261460":609,"56647565":717,"56647752":579,"56648011":579,"56705521":579,"57208634":582,"57530398":584,"57530507":724,"58226235":647,"58226453":587,"58226747":587,"59057464":592,"59058198":592,"59068061":647,"59619384":594,"59619485":594,"59828604":595,"59828937":595,"60380493":759,"60380615":658,"60428166":598,"60428239":598,"60584083":599,"60584170":599,"60584327":599,"60761088":600,"60761191":600,"60761224":600,"60761255":600,"60761338":600,"60761390":600,"60761563":600,"60761772":600,"60762151":600,"60763446":600,"60767572":600,"60767666":600,"60768295":600,"60768406":600,"60768453":600,"60768502":600,"60768559":600,"60768597":600,"60768669":600,"60768730":600,"60768789":600,"60768832":600,"60768880":600,"60768930":600,"60768978":600,"60769025":600,"60769072":600,"60769102":600,"61195059":629,"61273289":746,"61273371":746,"61273429":602,"61273515":602,"61273540":602,"61273585":602,"61273586":602,"61273657":602,"62326002":759,"62746910":609,"62877210":610,"63443548":613,"63443689":613,"63446594":613,"64164786":616,"64165356":647,"64365627":617,"64365697":660,"64366201":617,"64460448":618,"65140269":746,"65457084":622,"66061015":647,"66061053":625,"66290364":626,"67244562":630,"67539789":631,"69328173":647,"69655675":641,"69676103":641,"70976574":746,"70977192":647,"70977421":759,"70977665":647,"70977828":647,"70978289":647,"70978404":658,"70978622":658,"70978760":647,"70979383":647,"73187924":656,"73678666":746,"73823944":658,"73824188":658,"74399582":660,"76580797":669,"76580959":693,"76581173":669,"77199119":671,"77565708":673,"77597875":673,"77598435":673,"77599166":673,"77601169":744,"77601407":759,"81446318":690,"82297845":693,"82817010":772,"83146484":724,"83146522":757,"83146524":746,"83146529":759,"83146534":724,"83146535":759,"83146536":724,"83146922":697,"83156966":697,"83157201":697,"83158349":697,"83159490":697,"84861530":704,"84861792":704,"84894386":724,"84894490":755,"84894521":704,"84894641":755,"86285019":746,"88026799":717,"88031250":746,"88031252":746,"88031262":746,"88031268":746,"88031273":717,"88031283":746,"88031288":717,"88031311":717,"88031391":746,"88031652":717,"88031863":717,"88032628":724,"88032749":724,"88033458":724,"88033677":724,"89837430":724,"89838801":724,"93693787":739,"95295568":744,"95824378":746,"95824584":746,"95824849":746,"95824972":746,"98754535":755,"99020218":756,"99380911":771,"99380922":771,"99380925":757,"99380930":757,"99380931":757,"99380937":759,"99380952":772,"99380957":757,"99380959":772,"99381000":726,"99838579":759,"99838674":759,"99839337":759,"99839551":772,"99840077":759,"99840371":759,"99841498":772,"99841789":759,"99841903":759,"99845004":759,"99845080":759,"99845135":759,"100619843":761,"102624038":766,"102624160":766,"102624605":766,"102624716":766,"102624723":766,"102625891":766,"102626476":766,"105239580":772,"105239598":771};
 
 /* What each product is: "type; extra search words". The type decides its closet rack and both feed search. */
 const TAGS = {"53863600":"jacket; cropped, waist length, zip","53863601":"top; bodysuit, scrunch, one piece","55088535":"underwear; thong, seamless, no show","54006111":"sports bra; twist, pink","54006116":"leggings; flare, flared, flares, pink","54006339":"top; long sleeve, base layer, pump cover","54006626":"pants; sweatpants, joggers, pink, pump cover","55972473":"shorts; pink","55972536":"sports bra; pink","54606093":"top; long sleeve, twist front, cropped, ribbed","54606194":"leggings; flare, flared, flares, pink","54606231":"top; twist front, longline, pink","54606331":"pants; sweatpants, joggers, rhinestone, oversized, black","54606695":"leg warmers; socks, knit","54606979":"leggings; seamless, black","55525543":"top; tank","55525954":"shorts; 4 inch","55894791":"sports bra; twist, black","55894651":"leggings; flare, flared, flares, black","56261365":"leggings; flare, flared, flares, pink","56261460":"sports bra; twist front, pink","56647565":"top; tank, black","56647752":"leggings; flare, flared, flares, black","56648011":"belt; running belt, waist pack, fanny pack","57208634":"headband; hair, pink","57530398":"top; wrap, ballet wrap, long sleeve, pink","58226453":"leggings; seamless, pink","58226235":"top; tee, baby tee, t-shirt, short sleeve, black","58226747":"sports bra; racerback, black","59619485":"sports bra; strappy, seamless, pink","59619384":"shorts; seamless, pink","60584083":"top; long sleeve, crop top, sweetheart, pink","60584170":"leggings; seamless, pink","60584327":"sports bra; seamless, pink","61195059":"top; wrap, ballet wrap, long sleeve, black","62746910":"shorts; seamless, pink","62877210":"top; bodysuit, romper, one piece, unitard, pink","64164786":"shorts; mesh, 5 inch, pink","64365627":"top; tee, t-shirt, short sleeve, black","64365697":"pants; wide leg, black","64366201":"bra; wireless, everyday bra","65457084":"top; tank, mesh, black","70976574":"bra; wireless, everyday bra","76581173":"hoodie; fitted, rhinestone, zip, pink, stripe","76580797":"leggings; seamless, pink","76580959":"sports bra; seamless, pink","77597875":"sports bra; bralette, tank, cotton, pink","77598435":"shorts; mesh, oversized, basketball shorts, camo","82297845":"top; long sleeve, tee, t-shirt","83146535":"sports bra; halter, bralette, pink","83146536":"leggings; flare, flared, flares, pants, pink","83146524":"sports bra; square neck, black","83146529":"leggings; flare, flared, flares, pants, black","83146534":"sports bra; halter, bralette, black","83146522":"top; long sleeve, crew neck, black","83146484":"top; tee, t-shirt, crew neck, short sleeve, black","84861530":"top; long sleeve, mesh, layered, black","84861792":"pants; wide leg, sweatpants, black","84894490":"leggings; black","84894521":"leggings; flare, flared, flares, black","84894641":"top; long sleeve, tee, t-shirt, black","99380911":"sports bra; square neck, pink","99380922":"top; tank, racerback, built-in bra, pink","99380925":"pants; straight leg, leggings, pink","99380930":"jacket; zip, pink","99380931":"shorts; micro shorts, 4 inch, pink","99380937":"sweatshirt; off the shoulder, slouchy, black","99380952":"top; long sleeve, off the shoulder, fitted, black","99380957":"sports bra; high neck, black","99380959":"pants; sweatpants, joggers, wide leg, black","99381000":"top; tee, t-shirt, fitted, short sleeve, black","105239598":"sports bra; high neck, pink","105239580":"sports bra; bralette, minimal, pink","89837430":"hoodie; zip, faux fur, rhinestone, black","95295568":"pants; straight leg, fold over, leggings, black","99838579":"sweatshirt; half zip, teddy, fleece, pullover, pink","54607250":"shoes; sneakers, chunky, black","54607533":"shoelaces; laces, pink","64165356":"shoes; sneakers, pink, white","77601169":"shoes; sneakers, black","84894386":"shoes; sneakers","83158349":"shoes; heels, platform, black","67244562":"dress; mini dress, halter, satin, pink","67539789":"dress; mini dress, bodycon, pink","69655675":"dress; mini dress, black","69676103":"shoes; platform, sandals, black","74399582":"top; halter, pink","77599166":"necklace; jewelry, chain","83159490":"earrings; jewelry","83146922":"jacket; leather, moto, black","83156966":"top; lace, sheer, long sleeve","83157201":"top; shirt, button up, lace","59068061":"scrunchie; hair tie, hair, pink","99020218":"water bottle; bottle","54648003":"ankle cuff; ankle strap, cable attachment, glutes, kickbacks","73678666":"barbell pad; squat pad, hip thrust pad","56705521":"ankle cuff; ankle strap, cable attachment, glutes, kickbacks","66061015":"body scale; smart scale, weight, scale","66061053":"tape measure; measuring tape, measurements","57530507":"bag; shoulder bag, purse, spiderweb","66290364":"fan; portable fan, cooling","69328173":"walking pad; treadmill, under desk","77199119":"massage gun; recovery","70977192":"yoga mat; pilates mat, mat","70978760":"microphone; mic, wireless mic, filming","77601407":"headphones; over ear, noise cancelling, pink","89838801":"bag; tote, gym bag","98754535":"bag; gym bag, duffel, holdall, pink","99838674":"keychain; teddy bear, bag charm","99845080":"laptop case; macbook case","99845135":"phone case; iphone case","99841903":"vocal dampener; beltbox, singing","54604084":"food containers; meal prep, tupperware, storage, deli containers","54603962":"food containers; meal prep, tupperware, storage","60380615":"food containers; yogurt, jars, tupperware","60380493":"cups; glass cups, glasses, tumbler","60428166":"cup; coffee cup, mug, tumbler, black","60428239":"cup; coffee cup, mug, tumbler, pink","54604006":"food containers; overnight oats, jars, tupperware","54604249":"food containers; snack box, bento, tupperware","82817010":"food scale; kitchen scale, macros, scale","54604355":"chopper; vegetable chopper, dicer","54604394":"freezer molds; souper cubes, freezer tray, meal prep","54604464":"vacuum sealer; food saver","70978404":"meat chopper; ground meat masher","70978622":"kitchen scissors; shears, bat","73823944":"blender; smoothie","73824188":"chopper; food processor","102625891":"slow cooker; crockpot, crock pot","102624038":"rice cooker; rice","102624160":"blender; smoothie","102624605":"food processor; chopper, dicer","102624716":"blender; personal blender, smoothie, pink","102624723":"blender; smoothie","93693787":"face spray; skincare, sos","54748445":"press-on nails; nails, press ons","54748559":"press-on nails; nails, press ons","54748665":"press-on nails; nails, press ons","54749121":"press-on nails; nails, press ons","54749275":"press-on nails; nails, press ons","54749330":"press-on nails; nails, press ons","54749576":"nail kit; nails, press-on nails, nail glue","61273585":"hair brush; detangling, hair","100619843":"hair cream; air dry, styling, hair","63443548":"curl product; curls, curly hair, styling, hair","63443689":"curl mousse; curls, curly hair, hair","61273515":"leave-in conditioner; hair, mist","63446594":"conditioner; hair, pink hair, color depositing","61273657":"conditioner; hair","61273540":"hair oil; hair","61273586":"hair brush; detangling, hair","88033677":"hair perfume; fragrance, hair","61273289":"mascara; makeup","61273371":"brow; eyebrow, makeup","88031250":"lip stain; lips, makeup","88031252":"highlighter; makeup","88031262":"lip liner; lips, makeup","88031268":"blush; makeup","88031273":"makeup brush; makeup","88031283":"eyeliner; eye pencil, makeup","88031288":"skin tint; foundation, spf, makeup","88031391":"setting powder; powder, makeup","88031311":"lotion; skincare, moisturizer","88032628":"perfume; fragrance","88032749":"perfume; fragrance","88033458":"perfume; body mist, fragrance","61273429":"lip treatment; lip gloss, lip balm, lips","88031863":"face mask; skincare, sheet mask","77565708":"face mask; skincare, sheet mask","88031652":"cleanser; face wash, skincare","70977421":"body lotion; skincare","70977828":"body oil; glow, shimmer","88026799":"brow; eyebrow, brow pen, makeup","95824378":"powder; blurring, makeup","95824584":"skin tint; foundation, makeup","95824849":"eyeliner; makeup","95824972":"setting spray; makeup","99841789":"body butter; lotion, moisturizer","99845004":"moisturizer; face cream, skincare","54649344":"creatine; supplement","81446318":"fiber; supplement","59058198":"sleep gummies; sleep, supplement","54649052":"fiber; gummies, supplement","54650843":"pre-workout; preworkout, gummies, supplement","54649445":"magnesium; supplement, sleep","59828604":"protein powder; whey, protein","59828937":"pre-workout; preworkout, gummies, supplement","70978289":"immunity; vitamins, supplement","70979383":"electrolytes; hydration","99839337":"electrolytes; hydration","102626476":"protein powder; protein","86285019":"hot pot base; soup base","65140269":"hot pot base; soup base","54651183":"protein bars; protein, snack","54651582":"protein shake; protein, drink","54651811":"beef jerky; meat sticks, protein, snack","54651967":"protein bars; protein, snack","59057464":"bone broth; broth","62326002":"sweetener; sugar substitute","70977665":"energy drink; drink","99840077":"granola butter; spread, snack","99840371":"bone broth; broth","99841498":"protein bars; protein, snack","99839551":"protein bars; protein, snack","60761088":"wall lights; led, lighting, lights","60761224":"led lights; rope light, neon, lighting","60761255":"led lights; light bars, lighting","60761390":"light bulbs; smart bulbs, lighting, lights","60761563":"wall lamp; lighting, lights","60761338":"smart plug; plug","60761191":"power strip; smart plug","60762151":"couch; sofa, futon, furniture","60763446":"dining table; table, furniture","64460448":"standing desk; desk, furniture","73187924":"cat tree; cat","60768559":"art print; wall art, poster, artwork, decor","60768978":"art print; wall art, poster, artwork, decor","60768730":"art print; wall art, poster, artwork, decor","60761772":"art print; wall art, poster, artwork, decor","60767572":"art print; wall art, poster, artwork, decor","60767666":"art print; wall art, poster, artwork, decor","60768295":"art print; wall art, poster, artwork, decor","60768406":"art print; wall art, poster, artwork, decor","60768453":"art print; wall art, poster, artwork, decor","60768502":"art print; wall art, poster, artwork, decor","60768597":"art print; wall art, poster, artwork, decor","60768669":"art print; wall art, poster, artwork, decor","60768789":"art print; wall art, poster, artwork, decor","60768832":"art print; wall art, poster, artwork, decor","60768880":"art print; wall art, poster, artwork, decor","60768930":"art print; wall art, poster, artwork, decor","60769025":"art print; wall art, poster, artwork, decor","60769072":"art print; wall art, poster, artwork, decor","60769102":"art print; wall art, poster, artwork, decor"};
@@ -726,9 +750,44 @@ function renderShop(){
     return `<button class="chip" data-cat="${c.id}" aria-pressed="${state.cat===c.id}">${esc(c.label)} <small>${n}</small></button>`;
   }).join("");
   const list = searched.filter(p => state.cat==="all" || p.cat===state.cat).sort((a,b)=>(b.recent-a.recent));
-  $("#grid").innerHTML = list.map(card).join("");
+  $("#grid").innerHTML = ((state.cat==="home" && !state.q) ? galleryCard() : "") + list.map(card).join("");
   $("#count").textContent = `${list.length} ${list.length===1?"favorite":"favorites"}${state.cat!=="all"?" in "+catLabel[state.cat]:""}`;
   $("#empty").hidden = list.length>0;
+}
+
+function galleryCard(){
+  return `<a class="card" href="#${GALLERY.slug}">
+    <div class="thumb gw"><img src="${GALLERY.square}" alt="" loading="lazy"><div class="badges"><span class="code">CODE ${GALLERY.code}</span></div></div>
+    <div class="meta"><span class="brand">drool</span><span class="name">${GALLERY.title}</span><span class="note">every print on my wall</span><span class="shop">see the wall →</span></div></a>`;
+}
+function copyBtn(text, label){ return `<button type="button" class="btn copy" data-copy="${esc(text)}">${esc(label)}</button>`; }
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-copy]"); if(!b) return;
+  const done = () => { const o=b.textContent; b.textContent="copied!"; setTimeout(()=>b.textContent=o,1500); };
+  try { navigator.clipboard.writeText(b.dataset.copy).then(done, () => { b.textContent=b.dataset.copy; }); } catch(_) { b.textContent=b.dataset.copy; }
+});
+function pageUrl(slug){ return (/^https?:/.test(location.origin) && !/claude/.test(location.hostname) ? location.origin : "https://favs.leahcedeno.com") + "/" + slug; }
+function renderVideoPage(el){
+  const v = VIDEOS.find(x => x.slug===state.slug); if(!v){ el.innerHTML=""; return; }
+  const url = v.yt ? "https://www.youtube.com/watch?v="+v.yt : CHANNEL;
+  const items = (byCol[v.col]||[]).filter(p => matches(p, v.title));
+  const thumb = v.yt ? `https://i.ytimg.com/vi/${v.yt}/hqdefault.jpg` : coverUrl(v.col);
+  el.innerHTML = `<a class="back" href="#videos">← all videos</a>
+    <div class="vhead"><a class="vthumb" href="${esc(url)}" target="_blank" rel="noopener" aria-label="watch on youtube">${thumb?`<img src="${esc(thumb)}" alt="" onerror="this.remove()">`:""}<span class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span></a>
+      <div><p class="kicker">shop everything in this video</p><h2>${esc(v.title)}</h2>
+      <div class="socials"><a class="btn primary" href="${esc(url)}" target="_blank" rel="noopener">watch on youtube ↗</a>${copyBtn(pageUrl(v.slug),"copy link to this page")}</div></div></div>
+    <p class="count">${items.length} ${items.length===1?"product":"products"}</p>
+    <div class="grid">${(v.extras||[]).includes("gallery-wall") && !state.q ? galleryCard() : ""}${items.map(card).join("")}</div>`;
+  $("#empty").hidden = true;
+}
+function renderGalleryPage(el){
+  const items = PRODUCTS.filter(p => p.type==="art print" && matches(p));
+  el.innerHTML = `<a class="back" href="#">← back to the shop</a>
+    <div class="closet-head"><h2>${GALLERY.title}</h2><p>every print hanging over my couch. ${items.length} pieces, all from drool.</p></div>
+    <div class="codebar"><span>code <b>${GALLERY.code}</b> for ${GALLERY.off}</span>${copyBtn(GALLERY.code,"copy code")}</div>
+    <img class="wallphoto" src="${GALLERY.photo}" alt="leah's gallery wall of framed art prints above a pink couch">
+    <div class="grid">${items.map(card).join("")}</div>`;
+  $("#empty").hidden = true;
 }
 
 function renderSets(el, sets){
@@ -740,9 +799,9 @@ function renderSets(el, sets){
     const media = s.video ? `<a class="vthumb" href="${esc(s.url)}" target="_blank" rel="noopener" aria-label="Watch ${esc(s.title)}">
         ${s.yt?`<img src="https://i.ytimg.com/vi/${s.yt}/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()">`:(coverUrl(s.col)?`<img src="${esc(coverUrl(s.col))}" alt="" loading="lazy" onerror="this.remove()">`:"")}
         <span class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span></a>` : "";
-    return `<article class="set">${media}<div style="min-width:0"><h3>${esc(s.title)}</h3>
-      <div class="when">${items.length} ${items.length===1?"product":"products"}${s.video?` · <a href="${esc(s.url)}" target="_blank" rel="noopener">Watch on YouTube ↗</a>`:""}</div>
-      <div class="row">${items.map(card).join("")}</div></div></article>`;
+    return `<article class="set">${media}<div style="min-width:0"><h3>${s.slug?`<a href="#video-${s.slug}">${esc(s.title)}</a>`:esc(s.title)}</h3>
+      <div class="when">${items.length} ${items.length===1?"product":"products"}${s.slug?` · <a href="#video-${s.slug}">shop this video →</a>`:""}${s.video?` · <a href="${esc(s.url)}" target="_blank" rel="noopener">Watch on YouTube ↗</a>`:""}</div>
+      <div class="row">${(s.extras||[]).includes("gallery-wall")?galleryCard():""}${items.map(card).join("")}</div></div></article>`;
   }).join("");
   el.innerHTML = html;
   $("#empty").hidden = !!html;
@@ -882,9 +941,13 @@ document.addEventListener("focusin", e => linkHover(e,true));
 document.addEventListener("focusout", e => linkHover(e,false));
 
 function render(){
-  for (const v of ["shop","closet","kitchen","videos","outfits"]) { $("#view-"+v).hidden = state.view!==v; $("#tab-"+v).setAttribute("aria-selected", state.view===v); }
+  for (const v of ["shop","closet","kitchen","videos","outfits"]) { $("#view-"+v).hidden = state.view!==v; $("#tab-"+v).setAttribute("aria-selected", state.view===v || (v==="videos" && state.view==="video")); }
+  $("#view-video").hidden = state.view!=="video"; $("#view-gallery").hidden = state.view!=="gallery";
+  document.body.classList.toggle("subpage", state.view==="video" || state.view==="gallery");
   if (state.view==="shop") renderShop();
-  if (state.view==="videos") renderSets($("#view-videos"), VIDEOS.map(v => ({col:v.col, title:v.title, yt:v.yt, video:true, url: v.yt ? "https://www.youtube.com/watch?v="+v.yt : CHANNEL})));
+  if (state.view==="videos") renderSets($("#view-videos"), VIDEOS.map(v => ({col:v.col, title:v.title, yt:v.yt, slug:v.slug, extras:v.extras, video:true, url: v.yt ? "https://www.youtube.com/watch?v="+v.yt : CHANNEL})));
+  if (state.view==="video") renderVideoPage($("#view-video"));
+  if (state.view==="gallery") renderGalleryPage($("#view-gallery"));
   if (state.view==="closet") renderCloset($("#view-closet"));
   if (state.view==="kitchen") renderKitchen($("#view-kitchen"));
   if (state.view==="outfits") renderLooks($("#view-outfits"));
@@ -893,8 +956,11 @@ function render(){
 $("#chips").addEventListener("click", e => { const b=e.target.closest(".chip"); if(!b) return; state.cat=b.dataset.cat; render(); });
 $("#q").addEventListener("input", e => { state.q=e.target.value.trim().toLowerCase(); render(); });
 document.querySelectorAll(".tab").forEach(t => t.onclick = () => { state.view=t.dataset.view; history.replaceState(null,"",state.view==="shop"?location.pathname:"#"+state.view); render(); });
-const fromHash = () => { const h=location.hash.slice(1); state.view = (h==="videos"||h==="outfits"||h==="closet"||h==="kitchen") ? h : "shop"; };
-window.addEventListener("hashchange", () => { fromHash(); render(); });
+const fromHash = () => { const h=location.hash.slice(1);
+  if (h===GALLERY.slug) state.view="gallery";
+  else if (h.startsWith("video-") && VIDEOS.some(v => v.slug===h.slice(6))) { state.view="video"; state.slug=h.slice(6); }
+  else state.view = (h==="videos"||h==="outfits"||h==="closet"||h==="kitchen") ? h : "shop"; };
+window.addEventListener("hashchange", () => { fromHash(); render(); if (state.view==="video"||state.view==="gallery") window.scrollTo(0,0); });
 fromHash();
 
 (function(){
