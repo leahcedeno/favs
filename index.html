@@ -107,8 +107,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .looks{display:grid;grid-template-columns:repeat(auto-fill,minmax(440px,1fr));gap:18px;padding-block:24px 64px;align-items:start}
 .look{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:grid;grid-template-columns:minmax(0,44%) minmax(0,1fr)}
 .look .cover{position:relative;overflow:hidden;background:var(--raise);min-width:0}
-.look .cover::before{content:"";display:block;padding-top:133%}
-.look .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 25%}
+.look .cover::before{content:"";display:block;padding-top:172%}
+.look .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%}
 .look .body{padding:16px 14px;display:flex;flex-direction:column;gap:4px;min-width:0}
 .look h3{font-family:var(--display);font-size:18px;line-height:1.15;margin:0;text-wrap:balance}
 .look .n{color:var(--pink);font-size:12px;font-weight:600;letter-spacing:.04em;margin-bottom:8px}
@@ -655,7 +655,7 @@ function placeDots(){
     if(!spots.length) return;
     if(!img || !img.naturalWidth){ if(img) img.addEventListener("load", placeDots, {once:true}); return; }
     const cw=c.clientWidth, ch=c.clientHeight, w=img.naturalWidth, h=img.naturalHeight, k=Math.max(cw/w, ch/h);
-    const ox=(cw-w*k)*.5, oy=(ch-h*k)*.25, edge=17;
+    const ox=(cw-w*k)*.5, oy=(ch-h*k)*.5, edge=17;
     spots.forEach(sp => {
       const x=ox+sp.dataset.x*w*k, y=oy+sp.dataset.y*h*k;
       sp.hidden = x<6||y<14||x>cw-6||y>ch-14; if(sp.hidden) return;
