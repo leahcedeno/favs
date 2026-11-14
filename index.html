@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Everything Leah actually uses and wears: gym fits, supplements, meal prep, beauty and more.">
+<meta property="og:title" content="Leah's Favorites">
+<meta property="og:description" content="Everything I actually use and wear. Shop by category, video, or outfit.">
+<meta property="og:url" content="https://favs.leahcedeno.com/">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Leah's Favorites</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Caveat:wght@600&family=UnifrakturCook:wght@700&display=swap">
+<style>
+/* Layout: arched photo + blackletter/rotating headline hero, sticky search + tabs, then product grid / video rows / outfit rows.
+   Deliberately single-theme: black and pink. */
+:root{
+  --bg:#0B0A0C; --surface:#151217; --raise:#1E1920; --ink:#F8EEF4; --muted:#A8949F; --line:#2B2329;
+  --pink:#FF4FA3; --pink-ink:#140A10; --blush:#FFC6DE; --paper:#F7EFF3; --paper-ink:#1A1218;
+  --display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --body:"DM Sans","Helvetica Neue",system-ui,sans-serif;
+  --script:"Caveat","Bradley Hand",cursive;
+  --gothic:"UnifrakturCook","Old English Text MT",serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--pink);outline-offset:2px;border-radius:6px}
+
+/* hero */
+.hero{background:radial-gradient(60% 80% at 15% 30%,color-mix(in srgb,var(--pink) 22%,transparent),transparent 70%)}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,290px) minmax(0,1fr);gap:56px;align-items:center;padding-block:56px 44px}
+.photo{position:relative;aspect-ratio:4/5;max-width:100%;border-radius:999px 999px 20px 20px;background:var(--raise);overflow:hidden;display:grid;place-items:center;cursor:pointer;border:2px solid var(--pink);padding:0;color:var(--muted);font:inherit;box-shadow:0 0 0 8px var(--bg),0 0 0 9px color-mix(in srgb,var(--pink) 50%,transparent)}
+.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.photo .ph{display:grid;gap:6px;text-align:center;font-size:14px;padding:24px}
+.photo .ph b{font-family:var(--gothic);font-size:84px;line-height:1;color:var(--pink);font-weight:700}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(42px,7.2vw,84px);line-height:1.1;letter-spacing:-.03em;margin:0;display:grid;justify-items:start;gap:.04em}
+h1 .name{display:block;font-family:var(--gothic);font-weight:700;letter-spacing:0;color:var(--pink);font-size:1.15em;line-height:1.15}
+h1 .word{display:block}
+.rot{display:grid;justify-items:start;height:1.25em;margin-top:.1em}
+.rot span{grid-area:1/1;line-height:1.25;padding-inline:.16em;background:var(--pink);color:var(--pink-ink);border-radius:.12em;transform:rotate(-1.5deg);transition:transform .5s cubic-bezier(.7,0,.2,1),opacity .4s;white-space:nowrap}
+.rot span.out{transform:translateY(-70%) rotate(-1.5deg);opacity:0}
+.rot span.in{transform:translateY(70%) rotate(-1.5deg);opacity:0}
+.lede{color:var(--muted);font-size:18px;max-width:48ch;margin:22px 0 26px}
+.lede b{color:var(--ink);font-weight:600}
+.socials{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;border:1.5px solid var(--line);text-decoration:none;font-weight:600;font-size:14px;color:var(--ink);background:var(--surface)}
+.btn.primary{background:var(--pink);border-color:var(--pink);color:var(--pink-ink)}
+.btn:hover{border-color:var(--pink)}
+
+/* toolbar */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(10px);border-block:1px solid var(--line)}
+.bar .wrap{display:flex;gap:12px;align-items:center;padding-block:12px;flex-wrap:wrap}
+.tabs{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px}
+.tab{border:0;background:none;padding:8px 16px;border-radius:999px;font:600 14px var(--body);color:var(--muted);cursor:pointer}
+.tab[aria-selected="true"]{background:var(--pink);color:var(--pink-ink)}
+.search{flex:1;min-width:200px;position:relative}
+.search input{width:100%;padding:11px 16px 11px 42px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:16px var(--body)}
+.search input::placeholder{color:var(--muted)}
+.search svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--muted)}
+
+/* chips */
+.chips{display:flex;gap:8px;flex-wrap:wrap;padding-block:24px 8px}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 14px;border-radius:999px;font:500 14px var(--body);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip small{color:var(--muted);font-variant-numeric:tabular-nums}
+.chip:hover{border-color:var(--pink)}
+.chip[aria-pressed="true"]{background:var(--blush);color:var(--paper-ink);border-color:var(--blush)}
+.chip[aria-pressed="true"] small{color:inherit;opacity:.65}
+.count{color:var(--muted);font-size:14px;margin:8px 0 16px}
+
+/* grid + cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:22px 18px;padding-bottom:64px}
+.card{display:flex;flex-direction:column;text-decoration:none;color:inherit;min-width:0}
+.thumb{aspect-ratio:1;border-radius:16px;overflow:hidden;position:relative;display:grid;place-items:center;background:var(--paper);transition:transform .2s,box-shadow .2s}
+.card:hover .thumb{transform:translateY(-3px);box-shadow:0 0 0 2px var(--pink)}
+.thumb img{width:100%;height:100%;object-fit:contain;padding:8px}
+.thumb .mono{font-family:var(--display);font-weight:700;font-size:40px;color:var(--paper-ink);text-align:center;line-height:1;padding:12px}
+.thumb .mono em{display:block;font:500 11px var(--body);letter-spacing:.08em;text-transform:uppercase;opacity:.6;margin-top:10px;font-style:normal}
+.badges{position:absolute;left:8px;top:8px;right:8px;display:flex;gap:6px;flex-wrap:wrap}
+.code{background:var(--bg);color:var(--blush);font:600 11px var(--body);letter-spacing:.05em;padding:4px 8px;border-radius:6px}
+.fav{background:var(--pink);color:var(--pink-ink);font:700 11px var(--body);padding:4px 8px;border-radius:6px}
+.meta{padding:11px 2px 0;display:grid;gap:2px}
+.brand{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--pink);font-weight:600}
+.name{font-weight:500;font-size:14.5px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.note{font-family:var(--script);font-size:20px;line-height:1.1;color:var(--blush);margin-top:4px}
+.shop{margin-top:6px;font-size:12.5px;font-weight:600;color:var(--muted)}
+.card:hover .shop{color:var(--pink)}
+
+/* rows (videos + outfits) */
+.rows{display:grid;gap:22px;padding-block:24px 64px}
+.set{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;display:grid;grid-template-columns:220px minmax(0,1fr);gap:24px}
+.vthumb{aspect-ratio:16/9;border-radius:12px;background:var(--raise);color:var(--ink);display:grid;place-items:center;text-decoration:none;position:relative;overflow:hidden;border:1px solid var(--line)}
+.vthumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vthumb .play{position:relative;width:52px;height:52px;border-radius:50%;background:var(--pink);color:var(--pink-ink);display:grid;place-items:center}
+.vthumb .play svg{width:22px;height:22px;margin-left:3px}
+.set h3{font-family:var(--display);font-size:21px;line-height:1.15;margin:0 0 4px;text-wrap:balance}
+.set .when{color:var(--muted);font-size:13px;margin-bottom:14px}
+.set .when a{color:var(--pink);font-weight:600;text-decoration:none}
+.row{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory;scrollbar-color:var(--line) transparent}
+.row .card{flex:0 0 150px;scroll-snap-align:start}
+.row .thumb .mono{font-size:26px}
+.row .note,.row .shop{display:none}
+.outfits .set{grid-template-columns:1fr}
+.outfits .set h3{font-size:19px}
+
+.empty{padding:48px 0 80px;text-align:center;color:var(--muted)}
+.empty b{display:block;font-family:var(--display);font-size:24px;color:var(--ink);margin-bottom:6px}
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+footer .wrap{padding-block:24px 40px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
+
+@media (max-width:760px){
+  .hero .wrap{grid-template-columns:1fr;gap:28px;padding-block:32px 28px}
+  .photo{max-width:210px}
+  .set{grid-template-columns:1fr}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 12px}
+  .thumb .mono{font-size:30px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <button class="photo" id="photo" type="button" aria-label="Choose a photo to preview">
+      <div class="ph"><b>L</b>Your photo here<br><small>Tap to preview one</small></div>
+    </button>
+    <input type="file" id="photo-input" accept="image/*" hidden>
+    <div>
+      <h1><span class="name">Leah's</span><span class="word">favorite</span> <span class="rot" id="rot" aria-live="polite"><span>gym fits</span></span></h1>
+      <p class="lede">Everything I actually use and wear, <b id="total-count">236 favorites</b> in all. Search it, browse by category, or shop straight from a video or an outfit.</p>
+      <div class="socials">
+        <a class="btn primary" href="https://youtube.com/channel/UCeyDa72TsUQN6bMaOsk4Yjw" target="_blank" rel="noopener">YouTube</a>
+        <a class="btn" href="https://www.instagram.com/leahlcedeno" target="_blank" rel="noopener">Instagram</a>
+        <a class="btn" href="https://www.tiktok.com/@leahcedeno" target="_blank" rel="noopener">TikTok</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="tabs" role="tablist" aria-label="Browse">
+      <button class="tab" role="tab" id="tab-shop" data-view="shop" aria-selected="true">Shop all</button>
+      <button class="tab" role="tab" id="tab-videos" data-view="videos" aria-selected="false">Videos</button>
+      <button class="tab" role="tab" id="tab-outfits" data-view="outfits" aria-selected="false">Outfits</button>
+    </div>
+    <label class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Search gymshark, protein, containers…" aria-label="Search products">
+    </label>
+  </div>
+</div>
+
+<main class="wrap">
+  <section id="view-shop">
+    <div class="chips" id="chips"></div>
+    <p class="count" id="count"></p>
+    <div class="grid" id="grid"></div>
+  </section>
+  <section id="view-videos" class="rows" hidden></section>
+  <section id="view-outfits" class="rows outfits" hidden></section>
+  <div class="empty" id="empty" hidden><b>Nothing matches that yet</b>Try another word, or clear the search.</div>
+</main>
+
+<footer><div class="wrap"><span>Links on this page are affiliate links, so I may earn a small commission at no extra cost to you. Thank you for supporting me!</span><span class="sig">xo, Leah</span></div></footer>
+
+<script>
+/* ============ SHOP DATA (pulled from ShopMy, Nov 13 2026) ============
+   Each product: [ShopMy pin id, name, note, image, collection ids]
+   Links are built as https://go.shopmy.us/p-<id>, which jumps straight to the
+   brand's product page with Leah's affiliate tracking. */
+const RAW = [
+[53863600,"BUFFBUNNY | Rosa Waist Length Jacket","","S:pins/zoom-53863286-1776749034547-02_19_26-LockedInGabsEcom6555-2Large.jpg","4920789 5060256 5110168 7342013 8599786"],
+[53863601,"BUFFBUNNY | Poshknit Scrunch Bodysuit","","S:pins/zoom-53863245-1776749002725-BB-FULL-DAY-ONE3052.jpg","4920789 5060256 7342013 8599786"],
+[55088535,"Seamless Workout Thongs","","P:zoom-55088431-1777318564276-51Tq68P4O2L._AC_SX569_.jpg","4920789 4933406 4933420 4981913 4985549 5060256 5110168 5123212 5141903 5476731 5653186 5662853 6001470 6024585 6048030 6327823 8679582"],
+[54006111,"BUFFBUNNY | Twist Fit Sports Bra","","S:pins/zoom-53863208-1776748974777-02_19_26-LockedInGabsEcom6433Large.jpg","4933406 5060256 5201645 5527915 6001470 7342013 8599786"],
+[54006116,"BUFFBUNNY | Legacy Flare Legging","","S:pins/zoom-53863147-1776748929027-01_30_26-EssentialsSpring2406Large.jpg","4933406 5060256 5201645 5527915 7342013 8599786"],
+[54006339,"BUFFBUNNY | Base Layer Long Sleeve Waist Top","","U:0ebcd1d1-a424-440f-b3b4-59a4e681f2b2imgi_116_BB-FULL-DAY-ONE0987.jpg","4933420 4981973 5060256 7342013 8599786"],
+[54006626,"Malfunction Sweatpants, Baby Pink","","P:zoom-54006626-1776809226248-PINK_SWEATPANTS_copy.jpg","4933420 5060256"],
+[55972473,"GYMSHARK | Adapt Animal X Whitney Shorts (similar)","","P:zoom-55972473-1777685938385-images-AdaptAnimalShortsENG_L_A0277GSElectricPinkGSSorbetYellowB6B3H_KDGT_0056_V1.jpg","4933420 7342013 8599644"],
+[55972536,"GYMSHARK | Adapt Animal X Whitney Sports Bra (similar)","","P:zoom-55972536-1777685976367-images-AdaptAnimalSportsBraENG_L_A0282GSElectricPinkGSSorbetYellowB5C7Q_KDHW_0006_V1.jpg","4933420 7342013 8599644"],
+[54604084,"20oz Food Storage Containers With Lids Set","","P:zoom-54604084-1777059111843-61%2BDTY6vGVL._AC_SY300_SX300_QL70_ML2_.jpg","4981736 6327823 6559199 8368716"],
+[54603962,"10-Pack Meal Prep Containers With Snap Locking Lids","","P:zoom-54603962-1777059087744-41GAt1xOX9L._AC_.jpg","4981736 6327823 6559199 8679582 8893759"],
+[60380615,"Yogurt containers","","S:pins/zoom-60380591-1779664630353-71pGa2PwqIL._AC_UF894%2C1000_QL80_.jpg","4981736 6559199"],
+[60380493,"Lidded glass cups","","P:zoom-60380421-1779664565044-71h-pG0%2BNAL._AC_UF894%2C1000_QL80_.jpg","4981736 8368716 8679582"],
+[60428166,"Black coffee cup","","P:zoom-60428166-1779684205433-61OX00kFuVL._AC_UF894%2C1000_QL80_.jpg","4981736"],
+[60428239,"Pink coffee cup","","P:zoom-60428239-1779684253154-5171bziShBL._AC_UF894%2C1000_QL80_.jpg","4981736"],
+[54604006,"Overnight Oats Containers With Lids","","P:zoom-54604006-1777059099388-61xJc3r2M4L._AC_SY300_SX300_QL70_ML2_.jpg","4981736 6559199"],
+[54604249,"6 Pack Snack Containers, 4 Compartment Bento Box","","P:zoom-33738826-1764559831472-71elc5AQHjL._AC_UF894%2C1000_QL80_.jpg","4981736"],
+[82817010,"My new food scale","different from the one in the video, but way easier to clean lol","P:zoom-70979514-1783881359876-7196JaBTGmL._AC_SY300_SX300_QL70_ML2_.jpg","4981795 6327823 6559199 8679582 8893759"],
+[54604355,"RUFUS AI | Vegetable Chopper","","P:zoom-3768591-1708662624550-81m5GFr6aeL._AC_UF894%2C1000_QL80_.jpg","4981795"],
+[54604394,"SOUPER CUBES | 1 Cup Silicone Freezer Molds with Lids","","P:zoom-28971491-1761603437098-71nILZfze1L._AC_SX679_.jpg","4981795"],
+[54604464,"FOODSAVER | Compact Vacuum Sealer Machine","","P:zoom-54604464-1777059212160-31HhCEjsGML._AC_.jpg","4981795"],
+[54606093,"INGIA | Long Sleeve Twist Front Cropped Ribbed Top","","U:289f9def-3b58-46ce-80bb-f693169dbcae71FqIThxiGL._AC_SX569_.jpg","4981913"],
+[54606194,"LOTUS | Vision Flares","","P:zoom-54606194-1777059637238-VISION_FLARES_LOTUS_IMG_0582-Edit_ebad7e65-9c6f-463b-b880-f34f696fad2a_1024x1024.jpg","4981913"],
+[54606231,"LOTUS | Vision Twist Front Longline Top","","P:zoom-54606231-1777059645223-VISION_LONGLINE_LOTUS_IMG_1189-Edit_7b2d39ac-26f0-412d-896b-4c6da984ca2a_1024x1024.jpg","4981913"],
+[54606331,"NAMED COLLECTIVE | Fallen Rhinestone Oversized Sweatpants, Washed Black","","P:zoom-54606331-1777059668891-fallen-rhinestone-oversized-sweatpants-washed-black-1.jpg","4981913 7743887 7889527"],
+[54606695,"Ribbed Knit Leg Warmers","","P:zoom-54606695-1777059780369-31VVuWPo5YL._AC_.jpg","4981973"],
+[54606979,"GYMSHARK | Everyday Seamless Leggings","","P:zoom-2704974-1700146895119-EverydaySeamlessLeggingsGSBlackB7A3L-BB2J-1661_42557aaa-7e58-4d51-9cfa-9e2ee970e439_2048x.jpg","4981973 7342013 8599644"],
+[54607250,"SKECHERS | Women's Doja'Lite","","P:zoom-54607250-1777059933140-41TyKYmO09L._AC_.jpg","4981973 5060256 5110168 5285738 5401843 5476731 5653186 5662853 5786032 5911433 6001470 7342948"],
+[54607533,"Oval Athletic Shoelaces (2 pairs)","","P:zoom-54607533-1777060004841-71kHrWhfDuL._AC_SY625_.jpg","4981973 5401843 5476731 5653186 5662853 5786032 5911433 6001470 7271179 7342013 7342948"],
+[59068061,"BUFFBUNNY | NuBre Scrunchie, Candy Crush","the BEST scrunchie ever","P:zoom-59068061-1779131259709-031424BOYFRIENDRESHOOTS7718.jpg","4985549 6327823 7342013 8599786"],
+[99020218,"OWALA | FreeSip Bottle","","P:zoom-99020218-1793309396367-OW_read_my_lips_24oz_Freesip_SC_ef60d931-81cc-47df-8ba5-18e9bde3fcba.png","4985549"],
+[54648003,"EKKO | Ankle Lifting Cuff","","P:zoom-54648003-1777075448256-52d0d87a-439a-4257-8542-abdaad77b3c5.jpg","4985549"],
+[73678666,"NEALFIT | Barbell Squat Pad","","P:zoom-73678666-1784775644677-71x5xLIcemL._AC_UF1000%2C1000_QL80_.jpg","4985549 8368716"],
+[93693787,"TOWER 28 | SOS Rescue Spray","","U:pretty-prod-1787972799551","4985549"],
+[54649344,"Creatine","IF I CAN CONVINCE YOU TAKE ONE SUPPLEMENT TAKE THIS ONE","P:zoom-54649344-1777076205874-71bt5up3IUL._AC_UF894%2C1000_QL80_.jpg","4985646"],
+[81446318,"LEMME | Fiber","","P:pin-81446318-1787602073150-fiber_02_9.png","4985646"],
+[59058198,"LEMME | Sleep Tight Gummies","","P:zoom-59058198-1779128964367-GUEST_17c703fe-4a0c-4bca-8818-54a5a844f990","4985646"],
+[54649052,"Fiber gummies","i take 2 every night before bed","P:zoom-54649052-1777076035482-81CXYcvCozL._AC_UF1000%2C1000_QL80_.jpg","4985646"],
+[54650843,"Pre-workout gummies","","P:zoom-54650843-1777076957605-71GZE1a6W7L._AC_UF1000%2C1000_QL80_.jpg","4985646 8679582"],
+[54649445,"Magnesium","i take one every night before bed","P:zoom-54649445-1777076269671-71hl47W8qAL._AC_UF1000%2C1000_QL80_.jpg","4985646"],
+[59828604,"GHOST | Whey Protein, Oreo","What I use for my Ninja Creami icecream!! My FAV protein powder <3","P:zoom-10998310-1733667090830-528005_web_GHOST%2520Whey%2520Oreo_tub_Front.jpg","4985646"],
+[59828937,"OXYSHRED | Gummies, Strawberry","my favvvvvv preworkout","P:zoom-54243445-1776900923424-559629-Oxyshred-Gummies_TheDrop_TheDrop_318x397.jpg","4985646"],
+[86285019,"LEE KUM KEE | Hot and Spicy Hot Pot Soup Base","","P:zoom-86285019-1789337079863-F302BE61433E517.jpg","4985836 8368716"],
+[65140269,"Hot Pot Base (option 2)","","P:zoom-65140269-1781644954655-41SLWwIaXSL._SY300_SX300_QL70_FMwebp_.jpg","4985836 6559199 8368716"],
+[54651183,"DAVID | Cookie Dough Protein Bars","","P:zoom-54651183-1777077120338-71j2RTfxMyL._AC_UF894%2C1000_QL80_.jpg","4985836"],
+[54651582,"FAIRLIFE | Nutrition Plan 30g Protein Shake, Chocolate (12 pack)","","S:pins/zoom-54651565-1777077277728-Fairlife-Nutrition-Plan-30g-Protein-Shake-Chocolate-11-5-fl-oz-12-Pack_e9bb2ddd-d651-4b61-b1aa-f16a80e4f9c0.00e2229558668f52bba7c4f034d2ab64.png","4985836"],
+[54651811,"CHOMPS | Habanero Beef Jerky (24 pack)","","P:zoom-54651811-1777077384587-Chomps-Grass-Fed-Finished-Habanero-Beef-Jerky-1-15-Oz-Snack-Sticks-24-Pack-Keto-Paleo-Whole30-10g-Lean-Meat-Protein-Gluten-Free-Zero-Sugar-Food-Non-G_86bf1bf5-a71e-4928-87ad-f92d7ef88e1a.9d81ab9fec7dcd91ce74aab507ea6ea2.jpeg","4985836"],
+[54651967,"BAREBELLS | Protein Bar, Cookies & Cream (12 bars)","","P:zoom-54651967-1777077450132-574907_Barebells_Protein_Bar_Cookies_%26_Cream_Front.jpg","4985836 8679582"],
+[59057464,"KETTLE AND FIRE | Classic Beef Bone Broth","","P:zoom-49470489-1774572057994-41gVbmT0jhL._SY300_SX300_QL70_ML2_.jpg","4985836"],
+[62326002,"Monk fruit sweetener","","P:zoom-62326002-1780494972733-71OTH4DzWuL._AC_UF894%2C1000_QL80_.jpg","4985836 6559199 8679582"],
+[54748445,"TANGHULU | Sweet Reverie","","P:zoom-54748445-1777143920098-Sweet_Reverie.png","4994307"],
+[54748559,"TANGHULU | Blue Abyss","","P:zoom-54748559-1777143969860-25_ad1f5480-8cb2-4823-a4c0-ebe9fd7bd655.png","4994307"],
+[54748665,"TANGHULU | Nightcap","","P:zoom-54748665-1777144022363-Extra_Long_Oval_2_4ba2beca-730c-4158-916d-8cdb049d9a2a.png","4994307"],
+[54749121,"TANGHULU | Pressed Metal","","P:zoom-54749121-1777144178654-IMG_9773_991ef3ea-b11b-40d2-8f41-43ad3635cf5a.jpg","4994307"],
+[54749275,"TANGHULU | Pinky Promise","","P:zoom-54749275-1777144224161-DSCF5956.jpg","4994307"],
+[54749330,"TANGHULU | Xoxo","","P:zoom-54749330-1777144241660-DSCF5958_b01f9cb7-d5ad-4c3f-a393-a6cb4ce12b13.jpg","4994307"],
+[54749576,"TANGHULU | Application Kit","i get mine applied in person but you can diy at home too! :)","P:zoom-54749576-1777144328804-Yiwei-2_ffa1dda0-5a3d-411d-960c-57ef50300e9f.png","4994307"],
+[55525543,"BUFFBUNNY | Poshknit Waist Tank Top","","U:807fa461-7dbe-452b-a949-6012db69cfcaimgi_7_BB-FULL-DAY-ONE3244.png","5060256 5110168 7342013 8599786"],
+[55525954,"BUFFBUNNY | Legacy Short 4\"","","P:zoom-55525954-1777494015435-legacyshort4inmiamivice-7_7332643e-27fa-4372-91ea-88f1fd0144fc.jpg","5060256 6327823 7342013 8599786"],
+[55894791,"BUFFBUNNY | Twist Fit Sports Bra, Black","","P:zoom-51690814-1775755870050-02_19_26-LockedInGabsEcom6227-2Large.jpg","5060256 5141903 5228277 7342013 8599786"],
+[55894651,"BUFFBUNNY | Legacy Flare Legging, Black","","P:zoom-55894651-1777657912154-01_30_26-EssentialsSpring1172Large.jpg","5060256 5110168 5141903 5228277 7342013 8599786"],
+[56705521,"EKKO | Ankle Lifting Cuff (TikTok Shop)","","S:pins/zoom-54648003-1777075448256-52d0d87a-439a-4257-8542-abdaad77b3c5.jpg","5060256"],
+[66061015,"RENPHO | Smart Scale for Body Composition","","P:pin-66061015-1781999878673-710eUS5fjwL._AC_SL1500_.jpg","5064348 6327823"],
+[66061053,"RENPHO | Smart Tape Measure","","P:pin-66061053-1781999841315-71nE12xyYoL._SL1500_.jpg","5064348"],
+[56261365,"GYMSHARK | Whitney Mid-High Rise Flared Leggings","","P:zoom-56261365-1777855311844-images-WhitneyMidRiseFlareGSFocusPinkB6B1Z_KDFX_1802_V1_3840x.jpg","5123212 7271179 7342013 8599644"],
+[56261460,"GYMSHARK | Twist Front Sports Bra","","P:zoom-56261460-1777855342257-images-MediumSupportTwistFrontSportsBraGSFocusPinkB5C6A_KDFX_0270_V1_3840x.jpg","5123212 5653186 7342013 8599644"],
+[56647565,"GYMSHARK | Featherform Tank","","P:zoom-56647565-1778022014205-images-40GGPerfectTankGSBlackB5C7U_BB2J_0227_V1_3840x.jpg","5155141 5768776 6327823 7342013 7743887 8599644"],
+[56647752,"LOTUS | Origin Flares","","P:zoom-56647752-1778022084729-ORIGIN_FLARES_BLACK_IMG_0277.jpg","5155141"],
+[56648011,"BUFFBUNNY | Story Running Belt","","P:zoom-56648011-1778022166313-Essentials_ValentinesResize-26007Large.jpg","5155141 7342013 8599786"],
+[57208634,"BUFFBUNNY | Poshknit Wide Headband","","S:uploads/323beb13-bfe8-4c19-a551-e5f8dc9bf115_image-1777494175328","5201645 7342013 8599786"],
+[57530398,"BUFFBUNNY | Ballet Wrap, Pink Vibes","","P:zoom-57530398-1778446884412-SUMMERESSENTIALSMOBILITY7513Large.jpg","5228277 7342013 8599786"],
+[57530507,"WICKED MISFIT | Puff Spiderweb Shoulder Bag","","P:zoom-57530507-1778446933071-IMG_9974.jpg","5228277 7889527"],
+[58226453,"GYMSHARK | Apex Seamless Leggings","","P:zoom-58226453-1778722156181-images-ApexSeamlessLeggingsGSFocusPinkGSSuper_SetPinkB2C8D_KDHL_0805_3840x.jpg","5285738 7342013 8599644"],
+[58226235,"BUFFBUNNY | Halo Baby Tee, Onyx Black","","P:zoom-58226235-1778722079966-112524ESSENTIALS0383_ea8ddb35-ca38-4d46-9aac-1f21166337f2.jpg","5285738 7342013 6327823 8599786"],
+[58226747,"GYMSHARK | Cotton Blend Racerback Sports Bra","","P:zoom-58226747-1778722263911-images-LightSupportCottonSportsBraGSBlackCottonRacerbackSportsBra_0582_V1_3840x.jpg","5285738 7342013 8599644"],
+[59619485,"GYMSHARK | Apex Seamless Strappy Sports Bra","","P:zoom-59619485-1779331116656-images-ApexSeamlessStrappySportsBraGSFocusPinkGSSuper_SetPinkB3B3K_KDHL_0756_3840x.jpg","5401843 7342013 8599644"],
+[59619384,"GYMSHARK | Apex Seamless Shorts","perfect shorts with NO scrunch","P:zoom-59619384-1779331086499-images-ApexSeamlessShortsGSFocusPinkGSSuper_SetPinkB3B4P_KDHL_0791_3840x.jpg","5401843 7342013 8599644"],
+[60584083,"GYMSHARK | Vital Sweetheart Neck Crop Top","","P:zoom-60584083-1779754342081-images-VitalSweetheartNeckCropTopGSSuper_SetPinkMarlB5C9W_KDHF_0654_V2_3840x.jpg","5476731 7342013 8599644"],
+[60584170,"GYMSHARK | Vital Seamless 2.0 Leggings","","P:zoom-60584170-1779754382294-images-VitalSeamless2_0LeggingsGSSuper_SetPinkMarlB1A2B_KDHF_0634_V2_3840x.jpg","5476731 7342013 8599644"],
+[60584327,"GYMSHARK | Vital Sports Bra","","P:zoom-60584327-1779754434428-images-VitalSeamlessNewSportsBraGSFocusPinkB5C7S_KDFX_0182_V2_3840x.jpg","5476731 7342013 8599644"],
+[60761088,"NANOLEAF | Shapes LED Wall Lights","","P:zoom-60761088-1779831983330-71TEA6eiZPL._AC_SX342_SY445_QL70_ML2_.jpg","5491299"],
+[60761224,"GOVEE | RGBIC Neon Rope Light","","P:zoom-60761224-1779832035177-51sx%2BVWIqeL._AC_.jpg","5491299"],
+[60761255,"GOVEE | Smart LED Light Bars","The lights behind Irie's desk","P:zoom-10099819-1732204480674-71BjVOxoWuL._AC_UF1000%2C1000_QL80_.jpg","5491299"],
+[60761390,"GOVEE | Smart Light Bulbs","","P:zoom-60761390-1779832088420-61CdOX1-OoL._AC_SX342_SY445_QL70_ML2_.jpg","5491299"],
+[60761563,"IKEA | UPPLYST LED Wall Lamp","","P:zoom-60761563-1779832159527-upplyst-led-wall-lamp-cloud-white__0716259_pe730767_s5.jpg","5491299"],
+[60761338,"GOVEE | Smart Plug","","P:zoom-60761338-1779832070209-319nDi8kRhL._AC_.jpg","5491299"],
+[60761191,"Smart Power Strip","","P:zoom-60761191-1779832023248-61YogMuvpNL._AC_SY300_SX300_QL70_ML2_.jpg","5491299"],
+[60768559,"UTSAV VERMA | The Little Death (Mono)","","P:zoom-60768559-1779834583311-req-fc22ffba-221b-4e3c-b5a9-eb1015be741e.jpg","5491352"],
+[60768978,"ALEXANDER KHABBAZI | Nine Lives","","U:pretty-prod-1769442328621","5491352"],
+[60768730,"Espresso With The Pinky Out","","P:zoom-60768730-1779834633268-req-842f0d3f-7403-47b3-a8ab-36fddcdbe5b7.jpg","5491352"],
+[60761772,"Missing","","P:zoom-60761772-1779832235535-qsCYmnx7gU6SVe3XkQ4vMRSX69ZGgvS9kUkiQG1U1NI.jpg","5491352"],
+[60767572,"Japan World","","P:zoom-60767572-1779834232527-TXhwJD_S-arKkKEIGVR_x5qVdYsksg7R82SkIWGh6iE.jpg","5491352"],
+[60767666,"Time","","P:zoom-60767666-1779834259700-5aN0Iahl8Ft5Fx7YmjnEoBhemzGoDs7JzNde7NZhK5s.jpg","5491352"],
+[60768295,"Yoshino Mountain","","P:zoom-60768295-1779834495521-req-355f6c00-19d5-49df-8d9a-c74d54d3eef4.jpg","5491352"],
+[60768406,"I Won't Bite","","P:zoom-60768406-1779834534160-req-600b6950-bc24-4f7f-907d-62c5b28f5822.jpg","5491352"],
+[60768453,"Shiny Things","","P:zoom-60768453-1779834550750-req-374f4019-ffe7-4e41-b77e-2ab307844c01.jpg","5491352"],
+[60768502,"As If Dreaming","","P:zoom-60768502-1779834566619-req-300a9ca1-1a1f-4e8e-b63c-ddbda64ce28c.jpg","5491352"],
+[60768597,"See","","P:zoom-60768597-1779834599835-928LeT4amBD9OYyl1hVORiLKx88qjYezcR6DrWwKZ4I.jpg","5491352"],
+[60768669,"MAX BLACKMORE | Flower 6 Print","","P:zoom-60768669-1779834617572-KjMvFW-0SD-Y32QFUJbdLvm70msfGbFMg-HBsKQOhE8.jpg","5491352"],
+[60768789,"Repeating","","P:zoom-60768789-1779834650314-BGb2qZfMa0S6M7A2bIS5SdGNYp0MKyuZ21J2FEjZ3Oo.jpg","5491352"],
+[60768832,"Astral Projection","","P:zoom-60768832-1779834666569-Qne-WkhKVVamAIS2dCIekDcjqvllc8jrvnmll-VnG7U.jpg","5491352"],
+[60768880,"You're Always On Fire","","P:zoom-60768880-1779834682670-req-29d32c6d-8cb2-48b8-8091-0ded2ae3a274.jpg","5491352"],
+[60768930,"Choke","","P:zoom-60768930-1779834698793-IzFg4hB6dwVowtxQKRI7yBkQ4a3NrQ7fIUeFV-CLuzY.jpg","5491352"],
+[60769025,"MEDG | Love is Like a Magnet","","U:img-product-1765863801125","5491352"],
+[60769072,"Shine","","P:zoom-60769072-1779834748692-req-604d68a3-ca4b-4302-8222-2c48045c4ed1.jpg","5491352"],
+[60769102,"Shapes","","P:zoom-60769102-1779834763035-req-af3c5bf4-a6ce-4880-9c2e-5de8eeb92f0d.jpg","5491352"],
+[60762151,"Folding Convertible Couch","","P:zoom-60762151-1779832369523-51lliRCs7FL._AC_.jpg","5491386"],
+[60763446,"Dining Table","","P:zoom-60763446-1779832788183-413jPRCLscL._AC_SY300_SX300_QL70_FMwebp_.jpg","5491386"],
+[64460448,"FLEXISPOT | E6 Max Standing Desk","","P:zoom-64460448-1781374489997-41uVYvYAqyL._AC_.jpg","5491386"],
+[61273585,"UNBRUSH | Detangling Hair Brush Mini","","S:pins/zoom-61273578-1780033444042-2632379","5492246"],
+[100619843,"Smoothing Air Dry Cream","","P:zoom-100619843-1793736031021-500904-AirDryCream-Consumables-hero-1280x1280px.jpg","5492246"],
+[63443548,"Quick Curls","the MAIN product","P:zoom-63443548-1780951424190-71cJMihcF5L._AC_UF1000%2C1000_QL80_.jpg","5492246"],
+[63443689,"Curl mousse","","P:zoom-63443689-1780951466547-71IKWNvvkhL._AC_UF1000%2C1000_QL80_.jpg","5492246"],
+[61273515,"GISOU | Honey Milk Leave-In Conditioner Mist","","https://www.sephora.com/productimages/sku/s2962934-main-zoom.jpg","5492246"],
+[63446594,"Pink coloring conditioner","","P:zoom-63446594-1780952230131-71GuokeDfrL._AC_UF1000%2C1000_QL80_.jpg","5492246"],
+[61273657,"MIELLE | Rosemary Mint Strengthening Conditioner","","S:uploads/pretty-prod-1772086005737","5492246"],
+[61273540,"GISOU | Honey Infused Hair Oil","","https://www.sephora.com/productimages/sku/s2389203-main-zoom.jpg","5492246"],
+[61273586,"UNBRUSH | Plus Detangling Hair Brush","","S:uploads/pretty-prod-1756014047016","5492246"],
+[88033677,"GISOU | Wild Rose Honey Infused Hair Perfume","","https://www.sephora.com/productimages/sku/s2806743-av-01-zoom.jpg","5492246 5492251 7889527"],
+[61273289,"TARTE | Tartelette Tubing Mascara","","https://www.sephora.com/productimages/sku/s2585628-main-zoom.jpg","5492249 7743887 8368716"],
+[61273371,"NYX | Fluff N Snatch Brow","","S:uploads/pretty-prod-1776648157284","5492249 8368716"],
+[88031250,"WONDERSKIN | Wonder Blading Lip Stain, Charming","","https://www.sephora.com/productimages/sku/s2921187-main-zoom.jpg","5492249 7743887 7889527 8368716"],
+[88031252,"HAUS LABS | Bio-Radiant Glassy Highlighter Balm","","https://www.sephora.com/productimages/sku/s2850337-main-zoom-1.jpg","5492249 7743887 8368716"],
+[88031262,"WONDERSKIN | 360 Contour Lipliner","","https://www.sephora.com/productimages/sku/s2984326-main-zoom.jpg","5492249 7743887 8368716"],
+[88031268,"ABOUT-FACE | Blush Rush","","P:zoom-88026423-1789934874493-2630319","5492249 7743887 8368716"],
+[88031273,"E.L.F. | Smudge Brush","","U:pretty-prod-1760113105559","5492249 7743887"],
+[88031283,"MAKE UP FOR EVER | Aqua Resist Color Pencil","","https://www.sephora.com/productimages/sku/s2943165-main-zoom.jpg","5492249 7743887 8368716"],
+[88031288,"ILIA | Super Serum Skin Tint SPF 40","","https://www.sephora.com/productimages/sku/s2428803-main-zoom.jpg","5492249 7743887"],
+[88031391,"KIMCHI CHIC | Puff Puff Pass Set & Bake Powder","","U:pretty-prod-1760207952807","5492249 8368716"],
+[88031311,"Skin Barrier Calming Lotion","","P:zoom-88027672-1789935127743-l_p0223757465.jpg","5492249 5492257 7743887"],
+[88032628,"CHANEL | Chance Eau Tendre Eau de Parfum","","https://www.sephora.com/productimages/product/p440093-av-1-zoom.jpg","5492251 7889527"],
+[88032749,"CHANEL | Chance Eau Tendre Eau de Toilette","","https://www.sephora.com/productimages/product/p258612-av-1-zoom.jpg","5492251 7889527"],
+[88033458,"SOL DE JANEIRO | Cheirosa 62 Perfume Mist","","https://www.sephora.com/productimages/sku/s1930759-av-1-zoom.jpg","5492251 7889527"],
+[61273429,"RHODE | Peptide Lip Treatment","","https://www.sephora.com/productimages/sku/s2895894-av-3202508071734500870700-zoom.jpg","5492257"],
+[88031863,"BIODANCE | Hydro Cera-Nol Real Deep Mask","","https://www.sephora.com/productimages/sku/s2865137-main-zoom.jpg","5492257"],
+[77565708,"My fav face mask (bulk, 24 pack)","","U:8218db8c-6faa-40fb-8064-1160df5260ec_DD8F4F24-4684-4AFC-A99C-371F1F8E520C.jpg","5492257"],
+[88031652,"GLOSSIER | Milky Jelly Cleanser","","P:zoom-88031652-1789935976066-glossier-skincare-mjc177ml-carousel-1.png","5492257"],
+[61195059,"BUFFBUNNY | Ballet Wrap Top","","P:zoom-61195059-1780003570854-SUMMERESSENTIALSMOBILITY7175Large.jpg","5527915 6001470 7342013 8599786"],
+[62746910,"GYMSHARK | Vital Seamless Shorts","","P:zoom-62746910-1780630013176-images-VitalSeamless2_0ShortsGSFocusPinkB1A4J_KDFX_0119_3840x.jpg","5653186 7342013 8599644"],
+[62877210,"BUFFBUNNY | Perform Reversible Bodysuit, Candy Crush Pink","","P:zoom-62877210-1780685807235-040925VIDA6012.jpg","5662853 7342013 8599786"],
+[64164786,"GYMSHARK | Lifting Mesh 5\" Shorts","","S:pins/zoom-63874992-1781121724029-images-Mesh_0005ShortNEWREP_M_A0091GSSuper_SetPinkA4B7V_KDH1_0001_3840x.jpg","5768776 7342013 8599644"],
+[64165356,"NEW BALANCE | 530","","P:zoom-64165356-1781230593078-MR530PK_01","5768776 6327823"],
+[64365627,"GYMSHARK | Featherform Short Sleeve T-Shirt","","P:zoom-64365627-1781314665423-images-40GGPerfectSSTeeGSBlackB6B4J_BB2J_0531_V1_3840x.jpg","5786032 7342013 8599644"],
+[64365697,"GYMSHARK | Lightweight Wide Leg Pants","","P:zoom-64365697-1781314689995-images-EffortlessWideLegPantGSBlackB5C8L_BB2J_0200_V2_3840x.jpg","5786032 6001470 6327823 6606226 7342013 8599644"],
+[64366201,"VERISH | Wireless Bra","SO COMFY","P:zoom-64366201-1781314871286-41JFsvPLAiL._AC_UY1000_.jpg","5786032"],
+[65457084,"GYMSHARK | Dark Energy Mesh Tank","","P:zoom-65457084-1781748605106-images-DarkEnergyTankGSBlackB6B9C_BB2J_1044_V4_3840x.jpg","5880396 7342013 8599644"],
+[66290364,"SHARKNINJA | Chill Pill Personal Fan","","P:zoom-66290364-1782125781483-FA022PK_01.jpg","5949353"],
+[67244562,"ARITZIA | Audience Satin Mini Halter Dress","","https://assets.aritzia.com/image/upload/c_crop,ar_1920:2623,g_south/q_auto,f_auto,dpr_auto,w_1800/s26_a08_131185_36149_on_a","6024585 7342050"],
+[67539789,"ARITZIA | Original Contour Fascinate Dress","","https://assets.aritzia.com/image/upload/c_crop,ar_1920:2623,g_south/q_auto,f_auto,dpr_auto/s26_a08_130583_36525_on_a","6048030 7342050"],
+[69328173,"Walking pad","","P:zoom-69328173-1783274568233-41WPVTUITbL._AC_.jpg","6193183 6327823"],
+[77199119,"RENPHO | Thermacool 2 Massage Gun","","P:pin-77199119-1785987867422-61mtD8h_HyL._AC_SL1500_.jpg","6193183"],
+[69655675,"ARITZIA | Technique Poplin Mini Dress","","https://assets.aritzia.com/image/upload/c_crop,ar_1920:2623,g_south/q_auto,f_auto,dpr_auto,w_1800/s26_a08_131090_1274_on_a","6219034 7342050"],
+[69676103,"Shaker-13","","P:zoom-69676103-1783394883009-shaker-13-bvl_960x960_crop_center.jpg","6219034"],
+[70976574,"VERISH | Cool Fit Bra","","P:zoom-70976574-1783880564225-212bvGHp5BL._AC_.jpg","6327823 7889527 8368716"],
+[70978289,"IMMÜN | Daily Immunity Support","","P:zoom-70978289-1783881003961-immun-socialshare_2x_3d5f2e68-1e54-4ae7-9f01-dcc0f18d99ce.webp","6327823"],
+[70977192,"POPFLEX | CloudCushion Vegan Suede Yoga Mat","","U:pretty-prod-1763966027573","6327823"],
+[70977421,"Summer Skin Serum + Lotion Hybrid","","P:zoom-70977421-1783880771465-1_1.jpg","6327823 8679582"],
+[70977665,"BLOOM | Sparkling Energy","","P:zoom-70977665-1783880829854-SummerSplashPDP_Shopify_00_e5d96ba0-f48e-426d-a0bf-0cd5b05ffed2.jpg","6327823"],
+[70977828,"SOL DE JANEIRO | GlowMotions Body Oil, Rio Sunset","","P:zoom-70977828-1783880869624-2637271","6327823"],
+[70978404,"Meat Chopper","","P:zoom-70978404-1783881036505-316vAkZXSmL._AC_.jpg","6327823 6559199"],
+[70978622,"OTOTO | Elizabat Bat Kitchen Scissors","","P:zoom-70978622-1783881104104-41zmwQ43fwL._AC_.jpg","6327823 6559199"],
+[70978760,"INSTA360 | Mic Pro Transmitter","","P:zoom-66243582-1782092445177-51a322U0WLL._AC_UF894%2C1000_QL80_.jpg","6327823"],
+[70979383,"LEISURE | Hydration 4 Flavor Variety Pack","","P:zoom-70979383-1783881319639-pomelli_photoshoot_image_1_1_0507_1.webp","6327823"],
+[73187924,"Moonlight Cat Tree","","P:zoom-73187924-1784650364065-20241012-103000_1.jpg","6506256"],
+[73823944,"NUTRIBULLET | Pro 1200-Watt Blender","","P:zoom-73823944-1784828326004-26161663_fpx.tif","6559199"],
+[73824188,"HAMILTON BEACH | 3 Cup Electric Vegetable Chopper","","P:zoom-73824188-1784828376694-41XYgH3KqUL._AC_.jpg","6559199"],
+[74399582,"SKIMS | Halter Top","","P:zoom-74399582-1785025064050-SKIMS-LOUNGEWEAR-TP-TNK-11868W-PEO-FLT.jpg","6606226 7342050"],
+[76581173,"Vice Rhinestone Fitted Hoodie, Hot Pink Stripe","","P:zoom-76581173-1785791688226-vice-rhinestone-sculpt-stretch-hoodie-hot-pink-stripe-1.jpg","6793039"],
+[76580797,"GYMSHARK | Lift Seamless 2.0 Mid-Rise Leggings","","P:zoom-76580797-1785791596705-LiftSeamless2_0LeggingsGSPhysicalPinkB7B2N_KB7C_7540_3840x.jpg","6793039 7342013 8599644"],
+[76580959,"GYMSHARK | Lift Seamless Sports Bra","","P:zoom-76580959-1785791634466-LiftSeamlessLightSupportSportsBraGSPhysicalPinkB5C9A_KB7C_7532_3840x.jpg","6793039 7271179 7342013 8599644"],
+[77597875,"Organic Cotton Tank Bralette (2 pack)","","P:zoom-77597875-1786133438853-W--53-LIGPIN-01_EDITED.jpg","6877369 7342013"],
+[77598435,"NTH ACTIVE | Airtex Mesh Oversized Shorts, Camo","","P:zoom-77598435-1786133563370-NthACTIVEAIRTEXMESHOVERSIZEDSHORTSCAMO1.jpg","6877369 7342013"],
+[77599166,"VITALY | Horizon Necklace","","P:zoom-77599166-1786133740176-Horizon-Vitaly-SS-MS-1_9f373773-d5cc-4017-9462-1370cd8b1049.jpg","6877369 7342035"],
+[77601169,"NEW BALANCE | 1954Rs","","P:zoom-77601169-1786134298360-u19543vu_nb_02_i","6877369 7271179 7342013 7342948 8326088"],
+[77601407,"SKULLCANDY | Crusher 1080 ANC Headphones","","P:zoom-77601407-1786134354746-26B_Crusher_1080_ANC_Candy_S6CNW-U044_Web_Buy_Boxes_1.png","6877369 7271179 7478921 7743887 7874219 7889527 8326088 8368716 8679582"],
+[82297845,"GYMSHARK | Featherform Long Sleeve T-Shirt","black sold out :/","S:pins/zoom-82297809-1787882408650-images-40GGPerfectLST_ShirtGSPebbleGreyB6B4M_GB7P_1086_3840x.jpg","7271179 7342013 8599644"],
+[83146535,"ONER ACTIVE | SoftMotion Minimal Halter Neck Bralette, Rose Pink","","P:zoom-83040600-1788196267049-JULYMINIDROP_SOFTMOTION_MINIMAL_HALTER_NECK_BRALETTE_NB_ROSEPINK_260608_PDP_1440x1800_V2_01_bbd4792b-9149-4ff6-b6f2-53a45cb677a9.jpg","7342013 7743887 7874219 7889527 8326088 8599665 8679582"],
+[83146536,"ONER ACTIVE | SoftMotion Flared Pants, Rose Pink","","P:zoom-83040529-1788196252788-JULYMINIDROP_SOFTMOTION_HIGH_WAISTED_FLARED_PANTS_ROSEPINK_260616_PDP_1440x1800_V2_02_dd3365e1-c17a-457f-b29b-bd5f7e868a4a.jpg","7342013 7743887 7889527 8599665"],
+[83146524,"ONER ACTIVE | SoftMotion Square Neck Sports Bra, Black","","P:zoom-83040869-1788196325457-BUILT_FOR_STRENGTH_SOFTMOTION_SQUARE_NECK_SPORTS_BRA_BLACK_260804_PDP_1440x1800_01.jpg","7342013 8368716 8599665"],
+[83146529,"ONER ACTIVE | SoftMotion Flared Pants, Black","","P:zoom-83040715-1788196292772-NOOS_SOFTMOTION_FLARED_BOTTOMS_NB_BLACK_260720_PDP_1440x1800_02_1d9eb602-775d-4188-9a49-8fc7a4f345c4.jpg","7342013 7743887 7874219 7929028 8599665 8679582"],
+[83146534,"ONER ACTIVE | SoftMotion Minimal Halter Neck Bralette, Black","","P:zoom-83040637-1788196274714-NOOS_SOFTMOTION_MINIMAL_HALTER_NECK_BRALETTE_NB_BLACK_260608_PDP_1440x1800_01_1463c8bb-27cc-48c8-90f1-9e78e98cdc4f.jpg","7342013 7743887 7889527 8599665"],
+[83146522,"ONER ACTIVE | Mellow Motion Crew Neck Long Sleeve Top, Black","","P:zoom-83040916-1788196331068-NOOS_MELLOW_MOTION_CREW_NECK_LONG_SLEEVE_MID_TOP_BLACK_251113_PDP_1440x1800_01_f40e3807-7eaa-41eb-b941-2feb1314fe1b.jpg","7342013"],
+[83146484,"ONER ACTIVE | Mellow Motion Crew Neck Top, Black","","P:zoom-83040964-1788196338004-NOOS_MELLOW_MOTION_CREW_NECK_TOP_BLACK_251113_PDP_1440x1800_01_ff06b24e-db4c-44cd-9ba2-eb3fc67d4302.jpg","7342013 7889527"],
+[84861530,"Active Layered Mesh Long Sleeve Top","","P:zoom-84861530-1788819320140-100108412_06V_1920x2880.jpg","7342013 7478921"],
+[84861792,"StretchTerry Wide Leg Pants","","P:zoom-84861792-1788819381781-100105066_06V_1920x2880.jpg","7342013 7478921"],
+[84894386,"NIKE | Air Max Moto 2K","","P:zoom-84862199-1788819489525-W%2BNIKE%2BAIR%2BMAX%2BMOTO%2B2K.png","7342013 7342948 7478921 7743887 7889527"],
+[84894490,"BUFFBUNNY | Legacy Legging, Onyx Black","","P:zoom-56774094-1778085679703-01_30_26-EssentialsSpring1101Large.jpg","7342013 8599786"],
+[84894521,"BUFFBUNNY | Poshknit Flare Legging, Onyx Black","","P:zoom-84894521-1788827821406-011625-ONE-MORE-ECOMM-DAY-24321.jpg","7342013"],
+[84894641,"GYMSHARK | Featherform Long Sleeve Tee","","U:407c8369-69d1-414d-81e1-40cb4bb2850f_5ACF5713-9E07-42BB-9A46-DA6CA547D646.jpg","7342013 8599644"],
+[99380911,"ONER ACTIVE | SoftMotion Square Neck Sports Bra, Rose Pink","","S:pins/zoom-98754992-1793240518577-NOOS_SOFTMOTION_SOFT_SCOOP_NECK_SPORTS_BRA_ROSEPINK_261002_PDP_1440x1800_01.jpg","7342013 8599665"],
+[99380922,"ONER ACTIVE | SoftMotion Racer Back Tank with Built-in Bra, Rose Pink","","S:pins/zoom-98755084-1793240538281-NOOS_SOFTMOTION_RACER_BACK_MID_VEST_BUILT_IN_BRA_SHELF_ROSEPINK_261002_PDP_1440x1800_01.jpg","7342013 8599665"],
+[99380925,"ONER ACTIVE | SoftMotion Straight Leg Pants, Rose Pink","","S:pins/zoom-98755176-1793240554301-JULYMINIDROP_SOFTMOTION_STRAIGHT_LEG_PANTS_NB_ROSEPINK_260616_PDP_1440x1800_V2_02_b578f5d2-eb18-4306-84b4-235157adcd39.jpg","7342013 8599665"],
+[99380930,"ONER ACTIVE | SoftMotion Jacket, Rose Pink","","S:pins/zoom-98755230-1793240566166-NOOS_SOFTMOTION_JACKET_NB_ROSEPINK_261002_PDP_1440x1800_01.jpg","7342013 8599665"],
+[99380931,"ONER ACTIVE | SoftMotion Mid Rise Micro Shorts 4\", Rose Pink","","S:pins/zoom-98755325-1793240587421-SOFTMOTION_WORLD_SOFTMOTION_MID_RISE_MICRO_SHORTS_ROSEPINK_260608_PDP_1440x1800_V2_02_88380216-fdfb-4839-918d-849802f319fe.jpg","7342013 8599665"],
+[99380937,"ONER ACTIVE | Cotton Vintage Lounge Off-the-Shoulder Sweatshirt, Washed Black","","S:pins/zoom-98755635-1793240654515-NOOS_RAW_LOUNGE_OFF_SHOULDER_SLOUCHY_SWEATSHIRT_ONER_EMBROIDERY_WASHEDBLACK_251203_PDP_1440x1800_01_b7a69c35-a312-41bc-bf3b-0a406eda12ef.jpg","7342013 8599665 8679582"],
+[99380952,"ONER ACTIVE | FormeSoft Off-the-Shoulder Long Sleeve Top, Black","","S:pins/zoom-95825694-1792445196659-OFF_GRID_FORMESOFT_FITTED_OFF-SHOULDER_LONG_SLEEVE_TOP_BLACK_260424_PDP_1440x1800_01.jpg","7342013 8368716 8599665 8679582"],
+[99380957,"ONER ACTIVE | SoftMotion High Neck Sports Bra, Black","","S:pins/zoom-96368031-1792597794061-NOOS_SOFTMOTION_HIGH_NECK_SPORTS_BRA_NB_BLACK_260721_PDP_1440x1800_01.jpg","7342013 8599665"],
+[99380959,"ONER ACTIVE | Cotton Vintage Lounge Wide Leg Sweatpants, Washed Black","","S:pins/zoom-95825529-1792445163353-NOOS_RAW_LOUNGE_WIDE_LEG_JOGGERS_ONER_EMBROIDERY_WASHEDBLACK_251203_PDP_1440x1800_01_cd0647b4-300b-4e02-832d-c1325edd4d94.jpg","7342013 8368716 8599665 8679582"],
+[99381000,"ONER ACTIVE | Seamless Fitted Top, Black","","S:pins/zoom-90353382-1790701077185-COURT_ONER_SEAMLESS_FITTED_SHORT_SLEEVE_TOP_BLACK_260427_PDP_1440x1800_01_81317777-da70-4a64-9af4-80dcb2e94d00.jpg","7342013 7929028"],
+[83159490,"VITALY | Fractal Earrings","","P:zoom-83159490-1788223189790-Fractal-Vitaly-SS-1_3dd7625d-d7c3-46e4-8242-65c4a1868554.jpg","7342035"],
+[83146922,"Slim Leather Moto Jacket","","P:zoom-79366780-1786815186772-Descriptionimages_11_Custom_3ee3ab12-4676-43da-b40b-3a871b942966.jpg","7342050"],
+[83156966,"Sheer Lace Pullover Top","","P:zoom-83156966-1788222524428-Descriptionimages_03_Custom_bc8792d8-7b4e-4cad-8647-5bcaefc5c3ec.jpg","7342050"],
+[83157201,"FLOWERS BIRDS MARKET | Lace Panel Button-Up Shirt","","P:zoom-83157201-1788222594452-Descriptionimages_06_Custom_b0c92553-473a-48d6-b1ef-b318f2773c46.jpg","7342050"],
+[83158349,"KOI FOOTWEAR | Gurren Strappy Platform Heels","","P:zoom-83158349-1788222894839-Gurren_Strappy_Buckles_Black_Chunky_Platform_Block_Heels_6_5c77c341-eb51-4c42-9def-a26a0c5267d8.jpg","7342948"],
+[88026799,"NYX | Fluff & Snatch Brow Powder Pen, Black","","P:zoom-88026799-1789934948455-2655554","7743887"],
+[89838801,"COMFRT | Anywhere Bag","","P:zoom-54698718-1777122282454-1_-_2026-02-11T110732.960.jpg","7889527"],
+[89837430,"NAMED COLLECTIVE | Fallen Faux Fur Rhinestone Zip Hoodie, Washed Black","","P:zoom-89837430-1790538695712-fallen-faux-fu-rhinestone-zip-hoodie-washed-black-_detachable-fur_-1.jpg","7889527"],
+[95295568,"ONER ACTIVE | SoftMotion Fold Over Mid Rise Straight Leg Pants, Black","i'm 5'8\" and i get regular length","P:zoom-95295568-1792277702562-BUILT_FOR_STRENGTH_SOFTMOTION_FOLDOVER_MID_RISE_STRAIGHT_LEG_PANTS_BLACK_260804_PDP_1440x1800_02.jpg","8326088 8599665"],
+[95824378,"DANESSA MYRICKS | Yummy Skin Blurring Balm Powder","","https://www.sephora.com/productimages/sku/s2576130-main-zoom.jpg","8368716"],
+[95824584,"KYLIE COSMETICS | Skin Tint Blurring Elixir","","P:zoom-95824584-1792444971494-2627223","8368716"],
+[95824849,"MARC JACOBS BEAUTY | Drawn This Way Eyeliner","","V:e7594032-e472-43c0-b49c-f6b6117b4164_27884","8368716"],
+[95824972,"ONE/SIZE | Powder Melt Glass Setting Spray","","U:pretty-prod-1779582939103","8368716"],
+[98754535,"GYMSHARK | Everyday Holdall Bag","","P:zoom-54652507-1777077682978-images-EverydayHoldallMediumGSLightPinkI3A2H_KB01_0202_V2_3840x.jpg","8599644"],
+[99838579,"COMFRT | Teddy Half Zip, Cherry Blossom","","P:zoom-92814899-1791488158627-1_27e5ebdd-924a-4957-a7b8-05becc2cdbff.jpg","8679582"],
+[99838674,"COMFRT | Teddy Bear Keychain","","P:zoom-99838674-1793567729144-1_d747a000-008b-4ec0-8f70-f56587996433.jpg","8679582"],
+[99845080,"Telepathy (laptop case)","","P:zoom-99845080-1793568886091-37431557_macbook-pro-16-2021_16005647__render39.png.560x560-w.m80.jpg","8679582"],
+[99845135,"Crying Girl (phone case)","","P:zoom-99845135-1793568894406-37498943_iphone-17-pro_16009402.png.560x560-w.m80.jpg","8679582"],
+[99839337,"CURE | Hydration","","S:pins/zoom-46873461-1773233174882-Cure-Pouch_StickPacket-PeachMango_804f1f30-63b8-4515-9e8b-1fb8c3aa5585.jpg","8679582"],
+[99840077,"OAT HAUS | Cookie Dough Granola Butter","","P:zoom-99840077-1793567988270-GUEST_87de1152-63ab-4711-9342-3beba9b2a31d","8679582"],
+[99840371,"Thai Lemongrass Bone Broth","","P:zoom-99840371-1793568042824-bb-Thailemongrass-3.jpg","8679582"],
+[99841789,"JOSIE MARAN | Whipped Argan Oil Body Butter","","U:pretty-prod-1785247182165","8679582"],
+[99841498,"DAVID | Protein Bars","","P:zoom-99841498-1793568245332-SHOT_02_DAVID_GOLD_TARGET_FLAVORS_GROUP_1214_FS_Hero.jpg","8679582"],
+[99839551,"MISFITS | Protein Bars","","P:zoom-99839551-1793567872888-GUEST_46a1eddb-c584-498c-aed6-55ea6da9705f","8679582"],
+[99841903,"Beltbox 2.0","","P:zoom-99841903-1793568313186-beltbox-mainimage__52489.1727810381.jpg","8679582"],
+[99845004,"TATCHA | The Dewy Skin Cream","","U:pretty-prod-1789473794794","8679582"],
+[102626476,"ORA | Protein Powder","one of my fav protein powders!","P:zoom-102626476-1794166036161-Ora_eComm-Front-LargeTin-SoLeanSoClean-Vanilla.png","8893759"],
+[102625891,"CROCK-POT | 6-Quart Slow Cooker with Sous Vide, Oat Milk","","P:zoom-102625891-1794165963356-4e475ef5-54ec-4472-8a3c-6fd1b9d9050e.jpg%3BmaxHeight%3D1080%3BmaxWidth%3D900","8893759"],
+[102624038,"ZOJIRUSHI | Neuro Fuzzy Rice Cooker","","P:zoom-102624038-1794165683296-.jpg","8893759"],
+[102624160,"NUTRIBULLET | Pro","","P:zoom-102624160-1794165702155-.jpg","8893759"],
+[102624605,"NINJA | PREPi 6-in-1 Prep System","","P:zoom-102624605-1794165769167-PN301PK1B1_01.jpg","8893759"],
+[102624716,"NINJA | BlendBOSS Personal Blender, Pink","","P:zoom-102624716-1794165787585-DB351PK2_01.jpg","8893759"],
+[102624723,"NINJA | CrushBOSS Intelligent Blender","","P:zoom-102624723-1794165788697-LB201PKBRN_01.jpg","8893759"]
+];
+
+/* Discount codes, by product id or by ShopMy collection */
+const CODES_BY_ID = {54648003:"LEAHC10", 56705521:"LEAHC10", 69328173:"W60CEDENO", 99839337:"LEAHCEDENO20", 99839551:"LEAHCEDENO20"};
+const CODES_BY_COLLECTION = {4994307:"LEAH", 5491352:"LEAH15"};
+
+/* Categories: label + which ShopMy collections feed them (checked in this order) */
+const CATEGORIES = [
+  {id:"gym",      label:"Gym Clothes"},
+  {id:"shoes",    label:"Shoes",                  cols:[7342948,5911433]},
+  {id:"out",      label:"Going Out",              cols:[7342050,7342035]},
+  {id:"supps",    label:"Supplements",            cols:[4985646]},
+  {id:"food",     label:"Food & Snacks",          cols:[4985836]},
+  {id:"kitchen",  label:"Meal Prep & Tupperware", cols:[4981736,4981795]},
+  {id:"beauty",   label:"Beauty, Hair & Nails",   cols:[5492246,5492249,5492251,5492257,4994307]},
+  {id:"gear",     label:"Gym Gear & Extras",      cols:[4985549,5064348,6193183,5949353]},
+  {id:"home",     label:"Home & Decor",           cols:[5491299,5491352,5491386,6506256]},
+];
+/* Products that only live in video collections, placed by hand */
+const CATEGORY_OVERRIDES = {
+  gym:[55088535],
+  shoes:[64165356],
+  out:[69676103],
+  supps:[70978289,70979383,99839337,102626476],
+  food:[70977665,99840077,99840371,99841498,99839551],
+  kitchen:[70978404,70978622,73823944,73824188,102625891,102624038,102624160,102624605,102624716,102624723],
+  beauty:[70977421,70977828,88026799,95824378,95824584,95824849,95824972,99841789,99845004,93693787],
+  gear:[77601407,70977192,70978760,89838801,57530507,99838674,99845080,99845135,99841903,56705521,98754535],
+};
+
+const VIDEOS = [
+  {col:8893759, yt:"ZiCbZa4KPrc", title:"i tried to meal prep my cravings | testing viral recipes so you don't have to"},
+  {col:8679582, yt:"bHH4LI6lF6I", title:"REALISTIC SUNDAY RESET: getting my life together, gym, grocery haul, cleaning"},
+  {col:8368716, yt:"PGrP54aE5Vg", title:"back on track"},
+  {col:7889527, yt:"VP8l4pJrtjw", title:"how i stay on track while traveling (without being perfect) + getting out of my comfort zone"},
+  {col:7743887, yt:"nMcF8w9JUKI", title:"productive day in my life | mic'd up back + arms workout"},
+  {col:6559199, yt:"m-UGlYoElb4", title:"meal prep with me ep. 1 | high protein low cal recipes for fat loss and muscle gain"},
+  {col:6327823, yt:"",            title:"a realistic day of getting back on track"},
+];
+const CHANNEL = "https://youtube.com/channel/UCeyDa72TsUQN6bMaOsk4Yjw";
+
+const OUTFITS = [
+  [8326088,"🩷 halter + 🖤 fold-over straight legs"],[7929028,"leg day fit"],[7874219,"softmotion set"],
+  [7478921,"layered black mesh top + wide leg sweats"],[7271179,"12-3-30 fit"],[6877369,"basketball shorts fit"],
+  [6793039,"avril fit"],[6606226,"skims pink halter"],[6219034,"date night black dress"],[6048030,"pink contour dress"],
+  [6024585,"pink dress"],[6001470,"yoga fit"],[5880396,"alt gym top"],[5786032,"gymshark featherform fit 🖤"],
+  [5768776,"gymshark shorts + tank 🖤💕"],[5662853,"birthday suit"],[5653186,"pink gymshark twist top and shorts"],
+  [5527915,"pink flare set and black wrap top"],[5476731,"pink gymshark longsleeve + leggings set"],
+  [5401843,"pink gymshark apex set"],[5285738,"leg day fit 🦵💕"],[5228277,"pilates fit"],[5201645,"pink flare set"],
+  [5155141,"walking fit"],[5141903,"black twist bra + flares"],[5123212,"pink mid rise flare set"],
+  [5110168,"black jacket + flares 🖤🩷"],[5060256,"FULL WEEK OF WORKOUTS: all outfits"],[4981973,"pink + black leg warmer fit"],
+  [4981913,"pink set + layering"],[4933420,"pink pump covers"],[4933406,"pink twist & flare set"],[4920789,"leg day fit"],
+];
+
+const ROTATING = ["gym fits","supplements","Tupperware","makeup","snacks","sneakers","decor"];
+/* ============ END DATA ============ */
+
+const $ = s => document.querySelector(s);
+const HOSTS = {P:"https://production-shopmyshelf-pins.s3.us-east-2.amazonaws.com/", U:"https://production-shopmyshelf-uploads.s3.us-east-2.amazonaws.com/", V:"https://production-shopmyshelf-uploads.s3-us-east-2.amazonaws.com/", S:"https://static.shopmy.us/"};
+const imgUrl = s => /^https?:/.test(s) ? s : (HOSTS[s[0]] || "") + s.slice(2);
+const overrideOf = {}; for (const [c, ids] of Object.entries(CATEGORY_OVERRIDES)) ids.forEach(id => overrideOf[id] = c);
+const catLabel = Object.fromEntries(CATEGORIES.map(c => [c.id, c.label]));
+
+const PRODUCTS = RAW.map(([id, title, note, img, cols]) => {
+  const colIds = cols.split(" ").map(Number);
+  let brand = "", name = title;
+  const m = title.match(/^([^|]+?)\s\|\s(.+)$/);
+  if (m) { brand = m[1]; name = m[2]; }
+  let cat = overrideOf[id];
+  if (!cat) { const hit = CATEGORIES.find(c => c.cols && c.cols.some(x => colIds.includes(x))); cat = hit ? hit.id : "gym"; }
+  const code = CODES_BY_ID[id] || colIds.map(c => CODES_BY_COLLECTION[c]).find(Boolean) || "";
+  return {id, brand, name, note, img: imgUrl(img), cols: colIds, cat, code, top: new Set(colIds).size >= 6,
+          link: "https://go.shopmy.us/p-" + id};
+});
+const byCol = {}; PRODUCTS.forEach(p => p.cols.forEach(c => (byCol[c] ||= []).push(p)));
+$("#total-count").textContent = PRODUCTS.length + " favorites";
+
+const state = { cat:"all", q:"", view:"shop" };
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function initials(n){return n.replace(/[^A-Za-z ]/g,"").split(" ").filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join("")||"♥"}
+
+function card(p){
+  return `<a class="card" href="${esc(p.link)}" target="_blank" rel="noopener sponsored">
+    <div class="thumb"><img src="${esc(p.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'mono',innerHTML:this.dataset.f}))" data-f="${esc(initials(p.brand||p.name))}<em>${esc(catLabel[p.cat].split(/[ ,&]/)[0])}</em>">
+      <div class="badges">${p.top?`<span class="fav">Top pick</span>`:""}${p.code?`<span class="code">CODE ${esc(p.code)}</span>`:""}</div></div>
+    <div class="meta">${p.brand?`<span class="brand">${esc(p.brand)}</span>`:""}<span class="name">${esc(p.name)}</span>
+      ${p.note?`<span class="note">${esc(p.note)}</span>`:""}<span class="shop">Shop it ↗</span></div></a>`;
+}
+
+function matches(p, extra=""){
+  if(!state.q) return true;
+  const hay = [p.brand,p.name,p.note,p.code,catLabel[p.cat],extra].join(" ").toLowerCase();
+  return state.q.split(/\s+/).every(t => hay.includes(t));
+}
+
+function renderShop(){
+  const searched = PRODUCTS.filter(p => matches(p));
+  $("#chips").innerHTML = [{id:"all",label:"All"}, ...CATEGORIES].map(c => {
+    const n = c.id==="all" ? searched.length : searched.filter(p=>p.cat===c.id).length;
+    return `<button class="chip" data-cat="${c.id}" aria-pressed="${state.cat===c.id}">${esc(c.label)} <small>${n}</small></button>`;
+  }).join("");
+  const list = searched.filter(p => state.cat==="all" || p.cat===state.cat).sort((a,b)=>(b.top-a.top));
+  $("#grid").innerHTML = list.map(card).join("");
+  $("#count").textContent = `${list.length} ${list.length===1?"favorite":"favorites"}${state.cat!=="all"?" in "+catLabel[state.cat]:""}`;
+  $("#empty").hidden = list.length>0;
+}
+
+function renderSets(el, sets){
+  const html = sets.map(s => {
+    const all = byCol[s.col] || [];
+    const titleHit = state.q && s.title.toLowerCase().includes(state.q);
+    const items = titleHit ? all : all.filter(p => matches(p, s.title));
+    if(!items.length) return "";
+    const media = s.video ? `<a class="vthumb" href="${esc(s.url)}" target="_blank" rel="noopener" aria-label="Watch ${esc(s.title)}">
+        ${s.yt?`<img src="https://i.ytimg.com/vi/${s.yt}/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()">`:""}
+        <span class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span></a>` : "";
+    return `<article class="set">${media}<div style="min-width:0"><h3>${esc(s.title)}</h3>
+      <div class="when">${items.length} ${items.length===1?"product":"products"}${s.video?` · <a href="${esc(s.url)}" target="_blank" rel="noopener">Watch on YouTube ↗</a>`:""}</div>
+      <div class="row">${items.map(card).join("")}</div></div></article>`;
+  }).join("");
+  el.innerHTML = html;
+  $("#empty").hidden = !!html;
+}
+
+function render(){
+  for (const v of ["shop","videos","outfits"]) { $("#view-"+v).hidden = state.view!==v; $("#tab-"+v).setAttribute("aria-selected", state.view===v); }
+  if (state.view==="shop") renderShop();
+  if (state.view==="videos") renderSets($("#view-videos"), VIDEOS.map(v => ({col:v.col, title:v.title, yt:v.yt, video:true, url: v.yt ? "https://www.youtube.com/watch?v="+v.yt : CHANNEL})));
+  if (state.view==="outfits") renderSets($("#view-outfits"), OUTFITS.map(([col,title]) => ({col, title})));
+}
+
+$("#chips").addEventListener("click", e => { const b=e.target.closest(".chip"); if(!b) return; state.cat=b.dataset.cat; render(); });
+$("#q").addEventListener("input", e => { state.q=e.target.value.trim().toLowerCase(); render(); });
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => { state.view=t.dataset.view; history.replaceState(null,"",state.view==="shop"?location.pathname:"#"+state.view); render(); });
+const fromHash = () => { const h=location.hash.slice(1); state.view = (h==="videos"||h==="outfits") ? h : "shop"; };
+window.addEventListener("hashchange", () => { fromHash(); render(); });
+fromHash();
+
+(function(){
+  const box=$("#rot"); let i=0;
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  setInterval(()=>{
+    i=(i+1)%ROTATING.length;
+    const cur=box.querySelector("span:not(.out)"), next=document.createElement("span");
+    next.className="in"; next.textContent=ROTATING[i]; box.appendChild(next);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{ next.className=""; cur.className="out"; }));
+    setTimeout(()=>cur.remove(),600);
+  },2200);
+})();
+
+$("#photo").onclick = () => $("#photo-input").click();
+$("#photo-input").onchange = e => {
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader(); r.onload=()=>{ $("#photo").innerHTML=`<img src="${r.result}" alt="Leah">`; }; r.readAsDataURL(f);
+};
+
+render();
+</script>
+</body>
+</html>
