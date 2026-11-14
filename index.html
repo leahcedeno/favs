@@ -593,7 +593,7 @@ function renderSets(el, sets){
 }
 
 function renderLooks(el){
-  const html = OUTFITS.map(([col,title]) => {
+  const html = OUTFITS.map(([col,title], idx) => {
     const all = byCol[col] || [];
     const titleHit = state.q && title.toLowerCase().includes(state.q);
     const items = titleHit ? all : all.filter(p => matches(p, title));
@@ -607,7 +607,7 @@ function renderLooks(el){
       <span class="lt"><img src="${esc(p.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span>
       <span class="lm">${p.brand?`<span class="brand">${esc(p.brand)}</span>`:""}<span class="name">${esc(p.name)}</span>${p.code?`<span class="lcode">code ${esc(p.code)}</span>`:""}</span>
       <span class="go" aria-hidden="true">↗</span></a>`).join("");
-    return `<article class="look"><div class="cover">${coverUrl(col)?`<img src="${esc(coverUrl(col))}" alt="${esc(title)}" loading="lazy" onerror="this.remove()">`:""}${dots}</div>
+    return `<article class="look"><div class="cover">${coverUrl(col)?`<img src="${esc(coverUrl(col))}" alt="${esc(title)}" loading="${idx<3?"eager":"lazy"}" onerror="this.remove()">`:""}${dots}</div>
       <div class="body"><h3>${esc(title)}</h3><div class="n">shop the look · ${items.length} ${items.length===1?"piece":"pieces"}</div><div class="items">${rows}</div></div></article>`;
   }).join("");
   el.innerHTML = html;
