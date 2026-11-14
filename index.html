@@ -692,7 +692,7 @@ const RACKS = [
 ];
 function rackOf(p){
   const n = p.name.toLowerCase();
-  if (/scrunchie|headband|belt|\bbag\b|necklace|earring|keychain|shoelace/.test(n)) return (p.cat==="gym"||p.cat==="out"||p.cat==="shoes") ? "acc" : null;
+  if (/leg warmer|scrunchie|headband|belt|\bbag\b|necklace|earring|keychain|shoelace/.test(n)) return (p.cat==="gym"||p.cat==="out"||p.cat==="shoes") ? "acc" : null;
   if (p.cat==="shoes" || /platform heels/.test(n)) return "shoes";
   if (p.cat==="out") return /shaker/.test(n) ? "shoes" : "out";
   if (p.cat!=="gym") return null;
