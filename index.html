@@ -181,7 +181,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .zone header .sub{font-family:var(--script);font-size:20px;color:var(--blush);margin-left:6px}
 .zone .railwrap{border-radius:18px}
 /* counter: a thick countertop slab */
-.zone-counter .railwrap::before{height:16px;border-radius:3px;background:linear-gradient(#fff,var(--blush) 35%,var(--pink) 90%,#B3246B)}
+.rack.is-shelf.zone-counter .railwrap::before{height:16px;border-radius:3px;background:linear-gradient(#fff,var(--blush) 35%,var(--pink) 90%,#B3246B)}
 .zone-counter .sit .tag{padding-top:24px}
 /* cabinet: a framed cupboard */
 .zone-cabinet .railwrap{border:2px solid var(--line);background:var(--surface);box-shadow:inset 0 0 0 6px var(--bg),inset 0 0 0 7px var(--line)}
@@ -189,14 +189,14 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 /* drawer: an open tray with a handle */
 .zone-drawer .railwrap{border:2px solid var(--line);border-top:0;border-radius:0 0 18px 18px;background:var(--raise);margin-top:22px}
 .zone-drawer .railwrap::after{content:"";position:absolute;left:0;right:0;top:-16px;height:16px;border:2px solid var(--line);border-radius:10px 10px 0 0;background:radial-gradient(closest-side,var(--pink) 99%,transparent) center/64px 6px no-repeat,var(--surface)}
-.zone-drawer .railwrap::before{background:none;box-shadow:none;border-top:1px dashed var(--line);height:0}
+.rack.is-shelf.zone-drawer .railwrap::before{background:none;box-shadow:none;border-top:1px dashed var(--line);height:0}
 /* fridge: cool light inside, glass shelf, door handle */
 .zone-fridge .railwrap{border:2px solid var(--line);background:linear-gradient(color-mix(in srgb,var(--paper) 20%,var(--surface)),var(--surface));box-shadow:inset 0 14px 30px -14px rgba(255,255,255,.35)}
-.zone-fridge .railwrap::before{height:4px;background:rgba(255,255,255,.55);box-shadow:0 2px 6px rgba(255,255,255,.2)}
+.rack.is-shelf.zone-fridge .railwrap::before{height:4px;background:rgba(255,255,255,.55);box-shadow:0 2px 6px rgba(255,255,255,.2)}
 .zone-fridge .railwrap::after{content:"";position:absolute;right:8px;top:22%;bottom:22%;width:6px;border-radius:3px;background:var(--pink);pointer-events:none;z-index:3}
 .zone-fridge .rail{padding-right:30px}
 /* pantry: stacked shelf edge */
-.zone-pantry .railwrap::before{height:10px;background:repeating-linear-gradient(90deg,var(--blush) 0 46px,var(--pink) 46px 48px)}
+.rack.is-shelf.zone-pantry .railwrap::before{height:10px;background:repeating-linear-gradient(90deg,var(--blush) 0 46px,var(--pink) 46px 48px)}
 .zone-pantry .sit .tag{padding-top:20px}
 
 .empty{padding:48px 0 80px;text-align:center;color:var(--muted)}
