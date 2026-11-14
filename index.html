@@ -678,10 +678,17 @@ function card(p){
       ${p.note?`<span class="note">${esc(p.note)}</span>`:""}<span class="shop">Shop it ↗</span></div></a>`;
 }
 
+/* Search matches whole words (or the start of a word), so "art" finds art prints but not "smart" or "tarte". */
+const CAT_WORDS = {gym:"gym clothes activewear", shoes:"shoes", out:"going out", supps:"supplements", food:"food snacks", kitchen:"kitchen meal prep", beauty:"beauty", gear:"gym gear accessories", home:"home decor"};
+const norm = t => String(t||"").toLowerCase().replace(/t[- ]shirt/g,"tshirt").replace(/pre[- ]workout/g,"preworkout").replace(/[^a-z0-9]+/g," ").trim();
+function wordsOf(p){ return p.words || (p.words = norm([p.brand,p.name,p.note,p.code,CAT_WORDS[p.cat],p.tags,TYPE_WORDS[p.type]].join(" ")).split(" ")); }
 function matches(p, extra=""){
   if(!state.q) return true;
-  const hay = [p.brand,p.name,p.note,p.code,catLabel[p.cat],p.tags,TYPE_WORDS[p.type],extra].join(" ").toLowerCase().replace(/[-’']/g," ");
-  return state.q.replace(/[-’']/g," ").split(/\s+/).filter(Boolean).every(t => hay.includes(t) || (t.length>3 && /s$/.test(t) && hay.includes(t.replace(/e?s$/,""))));
+  const words = extra ? wordsOf(p).concat(norm(extra).split(" ")) : wordsOf(p);
+  return norm(state.q).split(" ").filter(Boolean).every(t => {
+    const stem = (t.length>3 && /s$/.test(t)) ? t.replace(/e?s$/,"") : t;
+    return words.some(w => w.startsWith(t) || w.startsWith(stem));
+  });
 }
 
 function renderShop(){
