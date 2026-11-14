@@ -656,7 +656,7 @@ const WALL_SPOTS = [
   [60769025, 70,65,     70,83],     // love is like a magnet
   [60768832, 81.3,62.5, 89,62.5],   // astral projection
 ];
-const GALLERY = {slug:"gallery-wall", title:"my gallery wall", code:"LEAH15", off:"15% off", photo:"gallery-wall.jpg", square:"gallery-wall-square.jpg"};
+const GALLERY = {shopLink:"https://go.shopmy.us/p-60768559", /* where "copy code + shop" lands: one of the prints, so the visit is tracked to Leah */ slug:"gallery-wall", title:"my gallery wall", code:"LEAH15", off:"15% off", photo:"gallery-wall.jpg", square:"gallery-wall-square.jpg"};
 const CHANNEL = "https://youtube.com/channel/UCeyDa72TsUQN6bMaOsk4Yjw";
 
 const OUTFITS = [
@@ -830,7 +830,7 @@ function renderGalleryPage(el){
   const onWall = items.filter(p => numOf(p.id)), rest = items.filter(p => !numOf(p.id));
   el.innerHTML = `<a class="back" href="#">← back to the shop</a>
     <div class="closet-head"><h2>${GALLERY.title}</h2><p>every print hanging over my couch. hover or tap a number to see the print, then shop it.</p></div>
-    <div class="codebar"><span>code <b>${GALLERY.code}</b> for ${GALLERY.off}</span>${copyBtn(GALLERY.code,"copy code")}</div>
+    <div class="codebar"><span>code <b>${GALLERY.code}</b> for ${GALLERY.off}</span><a class="btn copy" data-copy="${GALLERY.code}" href="${GALLERY.shopLink}" target="_blank" rel="noopener sponsored">copy code + shop ↗</a></div>
     <div class="wall"><img src="${GALLERY.photo}" alt="leah's gallery wall of framed art prints above a pink couch">
       <svg class="wires" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${wires}</svg>${pins}<div class="pop" hidden></div></div>
     <div class="grid">${onWall.map(wallCard).join("")}</div>
