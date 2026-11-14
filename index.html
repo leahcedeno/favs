@@ -177,6 +177,28 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .sit .tag{padding-top:16px}
 .rack.is-shelf .railwrap::before{content:"";position:absolute;left:0;right:0;top:calc(16px + 136px);height:8px;border-radius:2px;background:linear-gradient(var(--blush),var(--pink) 70%,#B3246B);box-shadow:0 6px 10px rgba(0,0,0,.5);z-index:2;pointer-events:none}
 
+/* kitchen zones: same shelves as the closet, each dressed as a different part of the kitchen */
+.zone header .sub{font-family:var(--script);font-size:20px;color:var(--blush);margin-left:6px}
+.zone .railwrap{border-radius:18px}
+/* counter: a thick countertop slab */
+.zone-counter .railwrap::before{height:16px;border-radius:3px;background:linear-gradient(#fff,var(--blush) 35%,var(--pink) 90%,#B3246B)}
+.zone-counter .sit .tag{padding-top:24px}
+/* cabinet: a framed cupboard */
+.zone-cabinet .railwrap{border:2px solid var(--line);background:var(--surface);box-shadow:inset 0 0 0 6px var(--bg),inset 0 0 0 7px var(--line)}
+.zone-cabinet .rail,.zone-drawer .rail,.zone-fridge .rail{padding-bottom:18px}
+/* drawer: an open tray with a handle */
+.zone-drawer .railwrap{border:2px solid var(--line);border-top:0;border-radius:0 0 18px 18px;background:var(--raise);margin-top:22px}
+.zone-drawer .railwrap::after{content:"";position:absolute;left:0;right:0;top:-16px;height:16px;border:2px solid var(--line);border-radius:10px 10px 0 0;background:radial-gradient(closest-side,var(--pink) 99%,transparent) center/64px 6px no-repeat,var(--surface)}
+.zone-drawer .railwrap::before{background:none;box-shadow:none;border-top:1px dashed var(--line);height:0}
+/* fridge: cool light inside, glass shelf, door handle */
+.zone-fridge .railwrap{border:2px solid var(--line);background:linear-gradient(color-mix(in srgb,var(--paper) 20%,var(--surface)),var(--surface));box-shadow:inset 0 14px 30px -14px rgba(255,255,255,.35)}
+.zone-fridge .railwrap::before{height:4px;background:rgba(255,255,255,.55);box-shadow:0 2px 6px rgba(255,255,255,.2)}
+.zone-fridge .railwrap::after{content:"";position:absolute;right:8px;top:22%;bottom:22%;width:6px;border-radius:3px;background:var(--pink);pointer-events:none;z-index:3}
+.zone-fridge .rail{padding-right:30px}
+/* pantry: stacked shelf edge */
+.zone-pantry .railwrap::before{height:10px;background:repeating-linear-gradient(90deg,var(--blush) 0 46px,var(--pink) 46px 48px)}
+.zone-pantry .sit .tag{padding-top:20px}
+
 .empty{padding:48px 0 80px;text-align:center;color:var(--muted)}
 .empty b{display:block;font-family:var(--display);font-size:24px;color:var(--ink);margin-bottom:6px}
 footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px}
@@ -217,7 +239,11 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
   .li{grid-template-columns:40px minmax(0,1fr) auto;gap:8px;padding:5px 8px 5px 5px;min-height:52px}
   .lt{width:40px;height:40px}
   .lm .name{font-size:12.5px}
-  .tab{font-size:13px;padding:10px 2px}
+  .tab{font-size:12.5px;padding:10px 1px}
+  .zone header{flex-wrap:wrap;row-gap:0}
+  .zone header .sub{flex-basis:100%;margin-left:0;font-size:18px}
+  .zone .railwrap{margin-inline:0}
+  .zone .rail{padding-inline:12px}
   .closet{padding-block:16px 48px}
   .brands{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px}
   .brands::-webkit-scrollbar{display:none}
@@ -247,7 +273,7 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
     <div class="photo"><img src="leah.jpg" alt="Leah Cedeño" width="800" height="960"></div>
     <div>
       <h1><span class="name">Leah's</span><span class="word">favorite</span> <span class="rot" id="rot" aria-live="polite"><span>gym fits</span></span></h1>
-      <p class="lede">Everything I actually use and wear, <b id="total-count">236 favorites</b> in all. Search it, flip through my closet, or shop straight from an outfit or a video.</p>
+      <p class="lede">Everything I actually use and wear, <b id="total-count">236 favorites</b> in all. Search it, flip through my closet and kitchen, or shop straight from an outfit or a video.</p>
       <div class="socials">
         <a class="btn primary" href="https://youtube.com/channel/UCeyDa72TsUQN6bMaOsk4Yjw" target="_blank" rel="noopener">YouTube</a>
         <a class="btn" href="https://www.instagram.com/leahlcedeno" target="_blank" rel="noopener">Instagram</a>
@@ -262,6 +288,7 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
     <div class="tabs" role="tablist" aria-label="Browse">
       <button class="tab" role="tab" id="tab-shop" data-view="shop" aria-selected="true">Shop all</button>
       <button class="tab" role="tab" id="tab-closet" data-view="closet" aria-selected="false">Closet</button>
+      <button class="tab" role="tab" id="tab-kitchen" data-view="kitchen" aria-selected="false">Kitchen</button>
       <button class="tab" role="tab" id="tab-outfits" data-view="outfits" aria-selected="false">Outfits</button>
       <button class="tab" role="tab" id="tab-videos" data-view="videos" aria-selected="false">Videos</button>
     </div>
@@ -279,6 +306,7 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
     <div class="grid" id="grid"></div>
   </section>
   <section id="view-closet" class="closet" hidden></section>
+  <section id="view-kitchen" class="closet kitchen" hidden></section>
   <section id="view-videos" class="rows" hidden></section>
   <section id="view-outfits" class="looks" hidden></section>
   <div class="empty" id="empty" hidden><b>Nothing matches that yet</b>Try another word, or clear the search.</div>
@@ -770,6 +798,35 @@ document.addEventListener("click", e => {
   const n = e.target.closest(".rack .nav button"); if (n) { const rail=n.closest(".rack").querySelector(".rail"); rail.scrollBy({left: n.dataset.dir*rail.clientWidth*.8, behavior:"smooth"}); }
 });
 
+/* ===== kitchen: each part of the kitchen is its own zone ===== */
+const ZONES = [
+  {id:"counter", label:"on the counter",   sub:"the appliances i actually use",
+   types:["blender","slow cooker","rice cooker","food processor","chopper","vacuum sealer"]},
+  {id:"cabinet", label:"in the cabinet",   sub:"meal prep containers + cups",
+   types:["food containers","cups","cup","freezer molds"]},
+  {id:"drawer",  label:"in the drawer",    sub:"little tools that do a lot",
+   types:["food scale","meat chopper","kitchen scissors"]},
+  {id:"fridge",  label:"in the fridge",    sub:"grab and go",
+   types:["protein shake","energy drink","bone broth"]},
+  {id:"pantry",  label:"in the pantry",    sub:"snacks + ingredients",
+   types:["protein bars","beef jerky","hot pot base","sweetener","granola butter"]},
+  {id:"supps",   label:"supplement shelf", sub:"what i take every day",
+   types:["creatine","fiber","sleep gummies","pre-workout","magnesium","protein powder","immunity","electrolytes"]},
+];
+function renderKitchen(el){
+  let total = 0;
+  const zones = ZONES.map(z => {
+    const items = PRODUCTS.filter(p => z.types.includes(p.type) && matches(p, z.label)).sort((a,b) => b.recent-a.recent);
+    if(!items.length) return "";
+    total += items.length;
+    return `<section class="rack is-shelf zone zone-${z.id}"><header><h3>${esc(z.label)}</h3><span class="n">${items.length}</span><span class="sub">${esc(z.sub)}</span>
+      <span class="nav"><button type="button" data-dir="-1" aria-label="scroll ${esc(z.label)} back">←</button><button type="button" data-dir="1" aria-label="scroll ${esc(z.label)} forward">→</button></span></header>
+      <div class="railwrap"><div class="rail">${items.map(p => closetItem(p, "shelf")).join("")}</div></div></section>`;
+  }).join("");
+  el.innerHTML = `<div class="closet-head"><h2>my kitchen</h2><p>${total} things i cook, prep and snack with. swipe through, tap anything to shop it.</p></div>${zones}`;
+  $("#empty").hidden = !!zones;
+}
+
 function renderLooks(el){
   const html = OUTFITS.map(([col,title], idx) => {
     const all = byCol[col] || [];
@@ -825,17 +882,18 @@ document.addEventListener("focusin", e => linkHover(e,true));
 document.addEventListener("focusout", e => linkHover(e,false));
 
 function render(){
-  for (const v of ["shop","closet","videos","outfits"]) { $("#view-"+v).hidden = state.view!==v; $("#tab-"+v).setAttribute("aria-selected", state.view===v); }
+  for (const v of ["shop","closet","kitchen","videos","outfits"]) { $("#view-"+v).hidden = state.view!==v; $("#tab-"+v).setAttribute("aria-selected", state.view===v); }
   if (state.view==="shop") renderShop();
   if (state.view==="videos") renderSets($("#view-videos"), VIDEOS.map(v => ({col:v.col, title:v.title, yt:v.yt, video:true, url: v.yt ? "https://www.youtube.com/watch?v="+v.yt : CHANNEL})));
   if (state.view==="closet") renderCloset($("#view-closet"));
+  if (state.view==="kitchen") renderKitchen($("#view-kitchen"));
   if (state.view==="outfits") renderLooks($("#view-outfits"));
 }
 
 $("#chips").addEventListener("click", e => { const b=e.target.closest(".chip"); if(!b) return; state.cat=b.dataset.cat; render(); });
 $("#q").addEventListener("input", e => { state.q=e.target.value.trim().toLowerCase(); render(); });
 document.querySelectorAll(".tab").forEach(t => t.onclick = () => { state.view=t.dataset.view; history.replaceState(null,"",state.view==="shop"?location.pathname:"#"+state.view); render(); });
-const fromHash = () => { const h=location.hash.slice(1); state.view = (h==="videos"||h==="outfits"||h==="closet") ? h : "shop"; };
+const fromHash = () => { const h=location.hash.slice(1); state.view = (h==="videos"||h==="outfits"||h==="closet"||h==="kitchen") ? h : "shop"; };
 window.addEventListener("hashchange", () => { fromHash(); render(); });
 fromHash();
 
