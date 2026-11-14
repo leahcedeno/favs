@@ -230,6 +230,23 @@ body.subpage .hero{display:none}
 .page .grid{padding-bottom:36px}
 .thumb.gw img{object-fit:cover;padding:0}
 
+/* admin mode */
+.piece .fav{position:absolute;left:6px;top:6px;z-index:1}
+.adm{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.adm button,.adm select{height:30px;min-width:30px;border-radius:8px;border:1px solid var(--line);background:var(--raise);color:var(--ink);font:600 13px var(--body);cursor:pointer;padding:0 6px}
+.adm select{flex:1;min-width:0;max-width:100%;text-transform:lowercase}
+.adm button.on{background:var(--pink);border-color:var(--pink);color:var(--pink-ink)}
+body.admin{padding-bottom:110px}
+#adminbar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:2px solid var(--pink);padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));font-size:14px}
+#adminbar .row1{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+#adminbar b{color:var(--pink)}
+#adm-status{flex:1;min-width:140px;color:var(--muted)}
+#adminbar button{height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--raise);color:var(--ink);font:600 13px var(--body);cursor:pointer;text-transform:lowercase}
+#adm-save,#adm-token-save{background:var(--pink)!important;border-color:var(--pink)!important;color:var(--pink-ink)!important}
+#adm-token p{margin:10px 0 6px;color:var(--muted);text-transform:none}
+#adm-token .trow{display:flex;gap:8px;flex-wrap:wrap}
+#adm-token input{flex:1;min-width:180px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:0 10px;font:14px var(--body);text-transform:none}
+
 .empty{padding:48px 0 80px;text-align:center;color:var(--muted)}
 .empty b{display:block;font-family:var(--display);font-size:24px;color:var(--ink);margin-bottom:6px}
 footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px}
@@ -762,9 +779,9 @@ function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&l
 function initials(n){return n.replace(/[^A-Za-z ]/g,"").split(" ").filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join("")||"♥"}
 
 function card(p){
-  return `<a class="card" href="${esc(p.link)}" target="_blank" rel="noopener sponsored">
+  return `<a class="card" data-id="${p.id}" href="${esc(p.link)}" target="_blank" rel="noopener sponsored">
     <div class="thumb"><img src="${esc(p.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'mono',innerHTML:this.dataset.f}))" data-f="${esc(initials(p.brand||p.name))}<em>${esc(catLabel[p.cat].split(/[ ,&]/)[0])}</em>">
-      <div class="badges">${p.top?`<span class="fav">Top pick</span>`:""}${p.code?`<span class="code">CODE ${esc(p.code)}</span>`:""}</div></div>
+      <div class="badges">${p.code?`<span class="code">CODE ${esc(p.code)}</span>`:""}</div></div>
     <div class="meta">${p.brand?`<span class="brand">${esc(p.brand)}</span>`:""}<span class="name">${esc(p.name)}</span>
       ${p.note?`<span class="note">${esc(p.note)}</span>`:""}<span class="shop">Shop it ↗</span></div></a>`;
 }
@@ -782,13 +799,99 @@ function matches(p, extra=""){
   });
 }
 
+/* ===== Leah's own choices: top picks, manual order, and moves. Saved in overrides.json next to the page. =====
+   top:   {"global":[ids], "video:<id>":[ids]}   top picks, site-wide or inside one video
+   order: {"<list>":[ids]}                        hand-set order for one list (a category, rack, kitchen zone or video)
+   move:  {"<product id>":{cat|rack|zone:"<id>"}}  a product moved to another category / rack / zone */
+const OV = {top:{}, order:{}, move:{}};
+let dirty = 0;
+const catOf = p => (OV.move[p.id]||{}).cat || p.cat;
+function zoneOf(p){ const m=(OV.move[p.id]||{}).zone; if(m) return m==="none"?null:m; const z=ZONES.find(z => z.types.includes(p.type)); return z ? z.id : null; }
+function isTop(p, ctx){ return ctx.startsWith("video:") ? (OV.top[ctx]||[]).includes(p.id) : (OV.top.global ? OV.top.global.includes(p.id) : p.top); }
+function arrange(items, ctx){
+  let out = items.filter(p => isTop(p,ctx)).concat(items.filter(p => !isTop(p,ctx)));   // top picks go first
+  const ord = OV.order[ctx];
+  if (ord) { const pos = id => { const i=ord.indexOf(id); return i<0 ? 1e6 : i; };
+    out = out.map((p,i) => [p,i]).sort((a,b) => (pos(a[0].id)-pos(b[0].id)) || (a[1]-b[1])).map(x => x[0]); }
+  return out;
+}
+const MOVE_TARGETS = () => ({cat: CATEGORIES.map(c => [c.id,c.label]), rack: RACKS.map(r => [r.id,r.label]).concat([["none","not in closet"]]), zone: ZONES.map(z => [z.id,z.label]).concat([["none","not in kitchen"]])});
+function decorate(){
+  document.querySelectorAll("[data-ctx]").forEach(box => {
+    const ctx = box.dataset.ctx, kind = ctx.split(":")[0];
+    box.querySelectorAll(":scope > a[data-id]").forEach(a => {
+      const p = PRODUCTS.find(x => x.id===+a.dataset.id); if(!p) return;
+      const top = isTop(p, ctx);
+      if (top) (a.querySelector(".badges") || a.querySelector(".piece")).insertAdjacentHTML("afterbegin", `<span class="fav">top pick</span>`);
+      if (!state.admin) return;
+      const targets = MOVE_TARGETS()[kind], here = ctx.split(":")[1];
+      a.insertAdjacentHTML("beforeend", `<span class="adm" data-id="${p.id}" data-ctx="${ctx}">
+        <button type="button" data-act="star" class="${top?"on":""}" aria-label="top pick">★</button>
+        <button type="button" data-act="left" aria-label="move earlier">←</button><button type="button" data-act="right" aria-label="move later">→</button>
+        ${targets && here!=="all" ? `<select data-act="move" aria-label="move to"><option value="">move to…</option>${targets.filter(t => t[0]!==here).map(t => `<option value="${t[0]}">${esc(t[1])}</option>`).join("")}</select>` : ""}</span>`);
+    });
+  });
+  let bar = $("#adminbar");
+  if (state.admin && !bar) { document.body.insertAdjacentHTML("beforeend", `<div id="adminbar"><div class="row1"><b>admin mode</b><span id="adm-status"></span>
+      <button type="button" id="adm-save">save changes</button><button type="button" id="adm-copy">copy changes</button><button type="button" id="adm-exit">exit</button></div>
+      <div id="adm-token" hidden><p>to save from here, paste a github access token for the <b>favs</b> repo (contents: read and write). it stays in this browser only.</p>
+      <span class="trow"><input id="adm-token-input" type="password" placeholder="github token" autocomplete="off"><button type="button" id="adm-token-save">save token + changes</button></span></div></div>`); bar = $("#adminbar"); }
+  if (!state.admin && bar) bar.remove();
+  document.body.classList.toggle("admin", !!state.admin);
+  if (state.admin) admStatus();
+}
+function admStatus(msg){ const el=$("#adm-status"); if(el) el.textContent = msg || (dirty ? dirty+" unsaved "+(dirty===1?"change":"changes") : "★ top pick · ← → reorder · move to…"); }
+function changed(){ dirty++; render(); }
+document.addEventListener("click", e => {
+  const ctl = e.target.closest(".adm"); 
+  if (ctl) { e.preventDefault(); e.stopPropagation();
+    const b = e.target.closest("button[data-act]"); if(!b) return;
+    const id = +ctl.dataset.id, ctx = ctl.dataset.ctx, box = ctl.closest("[data-ctx]:not(.adm)");
+    if (b.dataset.act==="star") {
+      const key = ctx.startsWith("video:") ? ctx : "global";
+      if (key==="global" && !OV.top.global) OV.top.global = PRODUCTS.filter(p => p.top).map(p => p.id);
+      const list = OV.top[key] || (OV.top[key]=[]), i = list.indexOf(id);
+      if (i>=0) list.splice(i,1); else { list.push(id); if (OV.order[ctx]) OV.order[ctx] = [id].concat(OV.order[ctx].filter(x => x!==id)); }
+    } else {
+      const ids = [...box.querySelectorAll(":scope > a[data-id]")].map(a => +a.dataset.id), i = ids.indexOf(id), j = i + (b.dataset.act==="left" ? -1 : 1);
+      if (j<0 || j>=ids.length) return;
+      [ids[i], ids[j]] = [ids[j], ids[i]]; OV.order[ctx] = ids;
+    }
+    changed(); return;
+  }
+  if (e.target.id==="adm-exit") { state.admin=false; try{sessionStorage.removeItem("favs_admin")}catch(_){ } render(); }
+  if (e.target.id==="adm-copy") { const t=JSON.stringify(OV); try{ navigator.clipboard.writeText(t).then(()=>admStatus("copied. paste it to claude to save it for you."), ()=>admStatus("couldn't copy")); }catch(_){ admStatus("couldn't copy"); } }
+  if (e.target.id==="adm-save") { let tok=""; try{tok=localStorage.getItem("favs_admin_token")||""}catch(_){ } if(tok) saveOverrides(tok); else $("#adm-token").hidden=false; }
+  if (e.target.id==="adm-token-save") { const tok=$("#adm-token-input").value.trim(); if(!tok) return; try{localStorage.setItem("favs_admin_token",tok)}catch(_){ } $("#adm-token").hidden=true; saveOverrides(tok); }
+}, true);
+document.addEventListener("change", e => {
+  const sel = e.target.closest('.adm select[data-act="move"]'); if(!sel || !sel.value) return;
+  const ctl = sel.closest(".adm"), id = ctl.dataset.id, kind = ctl.dataset.ctx.split(":")[0];
+  (OV.move[id] || (OV.move[id]={}))[kind] = sel.value; changed();
+});
+async function saveOverrides(tok){
+  const api = "https://api.github.com/repos/leahcedeno/favs/contents/overrides.json", h = {Authorization:"Bearer "+tok, Accept:"application/vnd.github+json"};
+  admStatus("saving…");
+  try {
+    const cur = await fetch(api, {headers:h, cache:"no-store"});
+    if (cur.status===401 || cur.status===403) { try{localStorage.removeItem("favs_admin_token")}catch(_){ } $("#adm-token").hidden=false; return admStatus("that token didn't work. paste a new one."); }
+    const sha = cur.ok ? (await cur.json()).sha : undefined;
+    const body = {message:"Update top picks and order from admin mode", content: btoa(unescape(encodeURIComponent(JSON.stringify(OV,null,1)))), sha};
+    const put = await fetch(api, {method:"PUT", headers:h, body:JSON.stringify(body)});
+    if (!put.ok) return admStatus("couldn't save (error "+put.status+"). try copy changes instead.");
+    dirty = 0; admStatus("saved. live for everyone in about a minute.");
+  } catch(_) { admStatus("couldn't reach github. try copy changes instead."); }
+}
+fetch("overrides.json?t="+Date.now()).then(r => r.ok ? r.json() : null).then(j => { if(j && !dirty){ OV.top=j.top||{}; OV.order=j.order||{}; OV.move=j.move||{}; render(); } }).catch(()=>{});
+
 function renderShop(){
   const searched = PRODUCTS.filter(p => matches(p));
   $("#chips").innerHTML = [{id:"all",label:"All"}, ...CATEGORIES].map(c => {
-    const n = c.id==="all" ? searched.length : searched.filter(p=>p.cat===c.id).length;
+    const n = c.id==="all" ? searched.length : searched.filter(p=>catOf(p)===c.id).length;
     return `<button class="chip" data-cat="${c.id}" aria-pressed="${state.cat===c.id}">${esc(c.label)} <small>${n}</small></button>`;
   }).join("");
-  const list = searched.filter(p => state.cat==="all" || p.cat===state.cat).sort((a,b)=>(b.recent-a.recent));
+  const list = arrange(searched.filter(p => state.cat==="all" || catOf(p)===state.cat).sort((a,b)=>(b.recent-a.recent)), "cat:"+state.cat);
+  $("#grid").dataset.ctx = "cat:"+state.cat;
   $("#grid").innerHTML = ((state.cat==="home" && !state.q) ? galleryCard() : "") + list.map(card).join("");
   $("#count").textContent = `${list.length} ${list.length===1?"favorite":"favorites"}${state.cat!=="all"?" in "+catLabel[state.cat]:""}`;
   $("#empty").hidden = list.length>0;
@@ -809,14 +912,14 @@ function pageUrl(slug){ return (/^https?:/.test(location.origin) && !/claude/.te
 function renderVideoPage(el){
   const v = VIDEOS.find(x => x.slug===state.slug); if(!v){ el.innerHTML=""; return; }
   const url = v.yt ? "https://www.youtube.com/watch?v="+v.yt : CHANNEL;
-  const items = (byCol[v.col]||[]).filter(p => matches(p, v.title));
+  const items = arrange((byCol[v.col]||[]).filter(p => matches(p, v.title)), "video:"+v.col);
   const thumb = v.yt ? `https://i.ytimg.com/vi/${v.yt}/hqdefault.jpg` : coverUrl(v.col);
   el.innerHTML = `<a class="back" href="#videos">← all videos</a>
     <div class="vhead"><a class="vthumb" href="${esc(url)}" target="_blank" rel="noopener" aria-label="watch on youtube">${thumb?`<img src="${esc(thumb)}" alt="" onerror="this.remove()">`:""}<span class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span></a>
       <div><p class="kicker">shop everything in this video</p><h2>${esc(v.title)}</h2>
       <div class="socials"><a class="btn primary" href="${esc(url)}" target="_blank" rel="noopener">watch on youtube ↗</a>${copyBtn(pageUrl(v.slug),"copy link to this page")}</div></div></div>
     <p class="count">${items.length} ${items.length===1?"product":"products"}</p>
-    <div class="grid">${(v.extras||[]).includes("gallery-wall") && !state.q ? galleryCard() : ""}${items.map(card).join("")}</div>`;
+    <div class="grid" data-ctx="video:${v.col}">${(v.extras||[]).includes("gallery-wall") && !state.q ? galleryCard() : ""}${items.map(card).join("")}</div>`;
   $("#empty").hidden = true;
 }
 function renderGalleryPage(el){
@@ -867,14 +970,15 @@ function renderSets(el, sets){
   const html = sets.map(s => {
     const all = byCol[s.col] || [];
     const titleHit = state.q && s.title.toLowerCase().includes(state.q);
-    const items = titleHit ? all : all.filter(p => matches(p, s.title));
+    let items = titleHit ? all : all.filter(p => matches(p, s.title));
     if(!items.length) return "";
+    if(s.video) items = arrange(items, "video:"+s.col);
     const media = s.video ? `<a class="vthumb" href="${esc(s.url)}" target="_blank" rel="noopener" aria-label="Watch ${esc(s.title)}">
         ${s.yt?`<img src="https://i.ytimg.com/vi/${s.yt}/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()">`:(coverUrl(s.col)?`<img src="${esc(coverUrl(s.col))}" alt="" loading="lazy" onerror="this.remove()">`:"")}
         <span class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span></a>` : "";
     return `<article class="set">${media}<div style="min-width:0"><h3>${s.slug?`<a href="#video-${s.slug}">${esc(s.title)}</a>`:esc(s.title)}</h3>
       <div class="when">${items.length} ${items.length===1?"product":"products"}${s.slug?` · <a href="#video-${s.slug}">shop this video →</a>`:""}${s.video?` · <a href="${esc(s.url)}" target="_blank" rel="noopener">Watch on YouTube ↗</a>`:""}</div>
-      <div class="row">${(s.extras||[]).includes("gallery-wall")?galleryCard():""}${items.map(card).join("")}</div></div></article>`;
+      <div class="row"${s.video?` data-ctx="video:${s.col}"`:""}>${(s.extras||[]).includes("gallery-wall")?galleryCard():""}${items.map(card).join("")}</div></div></article>`;
   }).join("");
   el.innerHTML = html;
   $("#empty").hidden = !!html;
@@ -895,13 +999,14 @@ const RACK_BY_TYPE = {"sports bra":"bras","bra":"bras","underwear":"bras","top":
   "leggings":"bottoms","pants":"bottoms","shorts":"shorts","dress":"out","shoes":"shoes",
   "leg warmers":"acc","shoelaces":"acc","scrunchie":"acc","headband":"acc","belt":"acc","bag":"acc","necklace":"acc","earrings":"acc"};
 function rackOf(p){
+  const moved = (OV.move[p.id]||{}).rack; if (moved) return moved==="none" ? null : moved;
   const r = RACK_BY_TYPE[p.type]; if (!r) return null;
   if (p.cat==="out" && r!=="shoes" && r!=="acc") return "out";   // going-out tops and jackets stay on the going out rack
   return r;
 }
 const HANGER = `<svg class="hgr" viewBox="0 0 80 36" aria-hidden="true"><path d="M40 13c0-3 4-3 4-7a4 4 0 0 0-8 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M40 13 6 31h68z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></svg>`;
 function closetItem(p, kind){
-  return `<a class="${kind==="rail"?"hang":"sit"}" href="${esc(p.link)}" target="_blank" rel="noopener sponsored">${kind==="rail"?HANGER:""}
+  return `<a class="${kind==="rail"?"hang":"sit"}" data-id="${p.id}" href="${esc(p.link)}" target="_blank" rel="noopener sponsored">${kind==="rail"?HANGER:""}
     <span class="piece"><img src="${esc(p.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">${p.code?`<span class="code">code ${esc(p.code)}</span>`:""}</span>
     <span class="tag">${p.brand?`<span class="brand">${esc(p.brand)}</span>`:""}<span class="name">${esc(p.name)}</span>${p.note?`<span class="note">${esc(p.note)}</span>`:""}</span></a>`;
 }
@@ -913,10 +1018,11 @@ function renderCloset(el){
   const shown = mine.filter(({p}) => matches(p) && (state.brand==="all" || (p.brand||"").toLowerCase()===state.brand));
   const racks = RACKS.map(r => {
     const items = shown.filter(x => x.rack===r.id).map(x => x.p).sort((a,b) => (/thong/i.test(a.name)-/thong/i.test(b.name)) || (b.recent-a.recent));
+    items.splice(0, items.length, ...arrange(items, "rack:"+r.id));
     if(!items.length) return "";
     return `<section class="rack is-${r.kind}"><header><h3>${esc(r.label)}</h3><span class="n">${items.length}</span>
       <span class="nav"><button type="button" data-dir="-1" aria-label="scroll ${esc(r.label)} back">←</button><button type="button" data-dir="1" aria-label="scroll ${esc(r.label)} forward">→</button></span></header>
-      <div class="railwrap"><div class="rail">${items.map(p => closetItem(p, r.kind)).join("")}</div></div></section>`;
+      <div class="railwrap"><div class="rail" data-ctx="rack:${r.id}">${items.map(p => closetItem(p, r.kind)).join("")}</div></div></section>`;
   }).join("");
   const favs = (state.q || state.brand!=="all") ? "" : `<section class="favs"><h3>current favs <span>what i'm reaching for right now</span></h3><div class="favgrid">${CLOSET_FAVS.map(f => { const p=PRODUCTS.find(x => x.id===f.id); return p ? `<a class="fav4" href="${esc(p.link)}" target="_blank" rel="noopener sponsored">
       <span class="piece"><img src="${esc(p.img)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()"><span class="slot">my fav ${esc(f.label)}</span></span>
@@ -948,12 +1054,12 @@ const ZONES = [
 function renderKitchen(el){
   let total = 0;
   const zones = ZONES.map(z => {
-    const items = PRODUCTS.filter(p => z.types.includes(p.type) && matches(p, z.label)).sort((a,b) => b.recent-a.recent);
+    const items = arrange(PRODUCTS.filter(p => zoneOf(p)===z.id && matches(p, z.label)).sort((a,b) => b.recent-a.recent), "zone:"+z.id);
     if(!items.length) return "";
     total += items.length;
     return `<section class="rack is-shelf zone zone-${z.id}"><header><h3>${esc(z.label)}</h3><span class="n">${items.length}</span><span class="sub">${esc(z.sub)}</span>
       <span class="nav"><button type="button" data-dir="-1" aria-label="scroll ${esc(z.label)} back">←</button><button type="button" data-dir="1" aria-label="scroll ${esc(z.label)} forward">→</button></span></header>
-      <div class="railwrap"><div class="rail">${items.map(p => closetItem(p, "shelf")).join("")}</div></div></section>`;
+      <div class="railwrap"><div class="rail" data-ctx="zone:${z.id}">${items.map(p => closetItem(p, "shelf")).join("")}</div></div></section>`;
   }).join("");
   el.innerHTML = `<div class="closet-head"><h2>my kitchen</h2><p>${total} things i cook, prep and snack with. swipe through, tap anything to shop it.</p></div>${zones}`;
   $("#empty").hidden = !!zones;
@@ -1029,7 +1135,9 @@ function render(){
 $("#chips").addEventListener("click", e => { const b=e.target.closest(".chip"); if(!b) return; state.cat=b.dataset.cat; render(); });
 $("#q").addEventListener("input", e => { state.q=e.target.value.trim().toLowerCase(); render(); });
 document.querySelectorAll(".tab").forEach(t => t.onclick = () => { state.view=t.dataset.view; history.replaceState(null,"",state.view==="shop"?location.pathname:"#"+state.view); render(); });
-const fromHash = () => { const h=location.hash.slice(1);
+try { state.admin = sessionStorage.getItem("favs_admin")==="1"; } catch(_) {}
+const fromHash = () => { let h=location.hash.slice(1);
+  if (h==="admin") { state.admin=true; try{sessionStorage.setItem("favs_admin","1")}catch(_){ } history.replaceState(null,"",location.pathname); h=""; }
   if (h===GALLERY.slug) state.view="gallery";
   else if (h.startsWith("video-") && VIDEOS.some(v => v.slug===h.slice(6))) { state.view="video"; state.slug=h.slice(6); }
   else state.view = (h==="videos"||h==="outfits"||h==="closet"||h==="kitchen") ? h : "shop"; };
@@ -1052,6 +1160,8 @@ fromHash();
   addEventListener("resize",()=>{ box.style.width=""; });
 })();
 
+const baseRender = render;
+render = function(){ baseRender(); decorate(); };
 render();
 </script>
 </body>
