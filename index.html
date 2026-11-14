@@ -707,7 +707,7 @@ function renderSets(el, sets){
 const RACKS = [
   {id:"bras",    label:"bras & basics",     kind:"rail"},
   {id:"tops",    label:"tops & bodysuits",  kind:"rail"},
-  {id:"layers",  label:"layers",            kind:"rail"},
+  {id:"layers",  label:"jackets & sweatshirts",            kind:"rail"},
   {id:"bottoms", label:"leggings & pants",  kind:"rail"},
   {id:"shorts",  label:"shorts",            kind:"rail"},
   {id:"out",     label:"going out",         kind:"rail"},
@@ -723,7 +723,7 @@ function rackOf(p){
   if (/\bbra\b|bralette|thong/.test(n)) return "bras";
   if (/short/.test(n) && !/short sleeve/.test(n)) return "shorts";
   if (/legging|flare|pant|jogger/.test(n)) return "bottoms";
-  if (/jacket|hoodie|sweatshirt|long sleeve|longsleeve|wrap|half zip/.test(n)) return "layers";
+  if (/jacket|hoodie|sweatshirt|half zip/.test(n)) return "layers";
   return "tops";
 }
 const HANGER = `<svg class="hgr" viewBox="0 0 80 36" aria-hidden="true"><path d="M40 13c0-3 4-3 4-7a4 4 0 0 0-8 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M40 13 6 31h68z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></svg>`;
