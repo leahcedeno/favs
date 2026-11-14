@@ -132,6 +132,43 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .go{color:var(--muted);font-weight:600}
 .li:hover .go{color:var(--pink)}
 
+/* closet */
+.closet{padding-block:24px 64px}
+.closet-head h2{font-family:var(--gothic);font-weight:700;color:var(--pink);font-size:clamp(40px,6vw,64px);line-height:1;margin:0}
+.closet-head p{color:var(--muted);margin:8px 0 14px}
+.brands{display:flex;gap:8px;flex-wrap:wrap}
+.rack{margin-top:34px}
+.rack header{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
+.rack h3{font-family:var(--display);font-size:24px;line-height:1.1;margin:0}
+.rack .n{color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
+.rack .nav{margin-left:auto;display:flex;gap:6px}
+.rack .nav button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 15px var(--body);cursor:pointer}
+.rack .nav button:hover{border-color:var(--pink);color:var(--pink)}
+.railwrap{position:relative;background:linear-gradient(var(--surface),transparent 85%);border-radius:18px 18px 0 0}
+.rail{display:flex;gap:16px;overflow-x:auto;padding:0 18px 12px;scroll-snap-type:x proximity;scroll-padding-inline:18px;scrollbar-color:var(--line) transparent}
+/* the rod: stays put while the hangers slide along it */
+.rack.rail .railwrap::before{content:"";position:absolute;left:0;right:0;top:15px;height:7px;border-radius:4px;background:linear-gradient(var(--blush),var(--pink) 60%,#B3246B);box-shadow:0 3px 8px rgba(0,0,0,.5);z-index:2;pointer-events:none}
+.rack.rail .railwrap::after{content:"";position:absolute;left:10px;right:10px;top:9px;height:19px;border-inline:5px solid var(--line);pointer-events:none;z-index:1}
+.hang{flex:0 0 150px;display:flex;flex-direction:column;text-decoration:none;color:inherit;padding-top:6px;transform-origin:50% 18px;scroll-snap-align:start;min-width:0}
+.hgr{width:88px;height:40px;margin:0 auto -9px;color:var(--muted);position:relative;z-index:3}
+.piece{display:block;position:relative;aspect-ratio:3/4;border-radius:10px 10px 14px 14px;overflow:hidden;background:var(--paper);box-shadow:0 10px 18px rgba(0,0,0,.45)}
+.piece img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block}
+.piece .code{position:absolute;left:6px;bottom:6px}
+.tag{display:grid;gap:1px;padding:10px 2px 0}
+.tag .name{font-size:13.5px}
+.tag .note{font-size:17px}
+@keyframes sway{0%{transform:rotate(0)}30%{transform:rotate(3.2deg)}65%{transform:rotate(-2deg)}100%{transform:rotate(0)}}
+.hang:hover,.hang:focus-visible{animation:sway .7s ease}
+.hang:hover .hgr{color:var(--pink)}
+.hang:hover .piece,.sit:hover .piece{box-shadow:0 0 0 2px var(--pink),0 10px 18px rgba(0,0,0,.45)}
+/* shelves: things sit on a plank */
+.rack.shelf .rail{padding-top:16px;gap:14px}
+.sit{flex:0 0 136px;display:flex;flex-direction:column;text-decoration:none;color:inherit;scroll-snap-align:start;min-width:0}
+.sit .piece{aspect-ratio:1;border-radius:12px 12px 0 0;box-shadow:none}
+.sit .piece img{object-fit:contain;padding:8px;object-position:50% 100%}
+.sit .tag{padding-top:16px}
+.rack.shelf .railwrap::before{content:"";position:absolute;left:0;right:0;top:calc(16px + 136px);height:8px;border-radius:2px;background:linear-gradient(var(--blush),var(--pink) 70%,#B3246B);box-shadow:0 6px 10px rgba(0,0,0,.5);z-index:2;pointer-events:none}
+
 .empty{padding:48px 0 80px;text-align:center;color:var(--muted)}
 .empty b{display:block;font-family:var(--display);font-size:24px;color:var(--ink);margin-bottom:6px}
 footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px}
@@ -172,9 +209,24 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
   .li{grid-template-columns:40px minmax(0,1fr) auto;gap:8px;padding:5px 8px 5px 5px;min-height:52px}
   .lt{width:40px;height:40px}
   .lm .name{font-size:12.5px}
+  .tab{font-size:13px;padding:10px 2px}
+  .closet{padding-block:16px 48px}
+  .brands{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px}
+  .brands::-webkit-scrollbar{display:none}
+  .brands .chip{flex:0 0 auto}
+  .rack{margin-top:26px}
+  .rack h3{font-size:20px}
+  .rack .nav{display:none}
+  .railwrap{margin-inline:-16px;border-radius:0}
+  .rail{gap:12px;padding-inline:16px;scroll-padding-inline:16px;scrollbar-width:none}
+  .rail::-webkit-scrollbar{display:none}
+  .hang{flex-basis:128px}
+  .hgr{width:76px;height:35px}
+  .sit{flex-basis:116px}
+  .rack.shelf .railwrap::before{top:calc(16px + 116px)}
   footer .wrap{flex-direction:column;padding-block:20px 32px}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
 </head>
@@ -184,7 +236,7 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
     <div class="photo"><img src="leah.jpg" alt="Leah Cedeño" width="800" height="960"></div>
     <div>
       <h1><span class="name">Leah's</span><span class="word">favorite</span> <span class="rot" id="rot" aria-live="polite"><span>gym fits</span></span></h1>
-      <p class="lede">Everything I actually use and wear, <b id="total-count">236 favorites</b> in all. Search it, browse by category, or shop straight from a video or an outfit.</p>
+      <p class="lede">Everything I actually use and wear, <b id="total-count">236 favorites</b> in all. Search it, flip through my closet, or shop straight from an outfit or a video.</p>
       <div class="socials">
         <a class="btn primary" href="https://youtube.com/channel/UCeyDa72TsUQN6bMaOsk4Yjw" target="_blank" rel="noopener">YouTube</a>
         <a class="btn" href="https://www.instagram.com/leahlcedeno" target="_blank" rel="noopener">Instagram</a>
@@ -198,8 +250,9 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
   <div class="wrap">
     <div class="tabs" role="tablist" aria-label="Browse">
       <button class="tab" role="tab" id="tab-shop" data-view="shop" aria-selected="true">Shop all</button>
-      <button class="tab" role="tab" id="tab-videos" data-view="videos" aria-selected="false">Videos</button>
+      <button class="tab" role="tab" id="tab-closet" data-view="closet" aria-selected="false">Closet</button>
       <button class="tab" role="tab" id="tab-outfits" data-view="outfits" aria-selected="false">Outfits</button>
+      <button class="tab" role="tab" id="tab-videos" data-view="videos" aria-selected="false">Videos</button>
     </div>
     <label class="search">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -214,6 +267,7 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
     <p class="count" id="count"></p>
     <div class="grid" id="grid"></div>
   </section>
+  <section id="view-closet" class="closet" hidden></section>
   <section id="view-videos" class="rows" hidden></section>
   <section id="view-outfits" class="looks" hidden></section>
   <div class="empty" id="empty" hidden><b>Nothing matches that yet</b>Try another word, or clear the search.</div>
@@ -578,7 +632,7 @@ const PRODUCTS = RAW.map(([id, title, note, img, cols]) => {
 const byCol = {}; PRODUCTS.forEach(p => p.cols.forEach(c => (byCol[c] ||= []).push(p)));
 $("#total-count").textContent = PRODUCTS.length + " favorites";
 
-const state = { cat:"all", q:"", view:"shop" };
+const state = { cat:"all", q:"", view:"shop", brand:"all" };
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function initials(n){return n.replace(/[^A-Za-z ]/g,"").split(" ").filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join("")||"♥"}
 
@@ -624,6 +678,57 @@ function renderSets(el, sets){
   el.innerHTML = html;
   $("#empty").hidden = !!html;
 }
+
+/* ===== closet: clothes hang on rails, shoes and accessories sit on shelves ===== */
+const RACKS = [
+  {id:"bras",    label:"bras & basics",     kind:"rail"},
+  {id:"tops",    label:"tops & bodysuits",  kind:"rail"},
+  {id:"layers",  label:"layers",            kind:"rail"},
+  {id:"bottoms", label:"leggings & pants",  kind:"rail"},
+  {id:"shorts",  label:"shorts",            kind:"rail"},
+  {id:"out",     label:"going out",         kind:"rail"},
+  {id:"shoes",   label:"shoes",             kind:"shelf"},
+  {id:"acc",     label:"accessories",       kind:"shelf"},
+];
+function rackOf(p){
+  const n = p.name.toLowerCase();
+  if (/scrunchie|headband|belt|\bbag\b|necklace|earring|keychain|shoelace/.test(n)) return (p.cat==="gym"||p.cat==="out"||p.cat==="shoes") ? "acc" : null;
+  if (p.cat==="shoes" || /platform heels/.test(n)) return "shoes";
+  if (p.cat==="out") return /shaker/.test(n) ? "shoes" : "out";
+  if (p.cat!=="gym") return null;
+  if (/\bbra\b|bralette|thong/.test(n)) return "bras";
+  if (/short/.test(n) && !/short sleeve/.test(n)) return "shorts";
+  if (/legging|flare|pant|jogger/.test(n)) return "bottoms";
+  if (/jacket|hoodie|sweatshirt|long sleeve|longsleeve|wrap|half zip/.test(n)) return "layers";
+  return "tops";
+}
+const HANGER = `<svg class="hgr" viewBox="0 0 80 36" aria-hidden="true"><path d="M40 13c0-3 4-3 4-7a4 4 0 0 0-8 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M40 13 6 31h68z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></svg>`;
+function closetItem(p, kind){
+  return `<a class="${kind==="rail"?"hang":"sit"}" href="${esc(p.link)}" target="_blank" rel="noopener sponsored">${kind==="rail"?HANGER:""}
+    <span class="piece"><img src="${esc(p.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">${p.code?`<span class="code">code ${esc(p.code)}</span>`:""}</span>
+    <span class="tag">${p.brand?`<span class="brand">${esc(p.brand)}</span>`:""}<span class="name">${esc(p.name)}</span>${p.note?`<span class="note">${esc(p.note)}</span>`:""}</span></a>`;
+}
+function renderCloset(el){
+  const mine = PRODUCTS.map(p => ({p, rack:rackOf(p)})).filter(x => x.rack);
+  const counts = {}; mine.forEach(({p}) => { const b=(p.brand||"").toLowerCase(); if(b) counts[b]=(counts[b]||0)+1; });
+  const brands = Object.keys(counts).filter(b => counts[b]>=3).sort((a,b) => counts[b]-counts[a]);
+  if (state.brand!=="all" && !brands.includes(state.brand)) state.brand="all";
+  const shown = mine.filter(({p}) => matches(p) && (state.brand==="all" || (p.brand||"").toLowerCase()===state.brand));
+  const racks = RACKS.map(r => {
+    const items = shown.filter(x => x.rack===r.id).map(x => x.p).sort((a,b) => b.top-a.top);
+    if(!items.length) return "";
+    return `<section class="rack ${r.kind}"><header><h3>${esc(r.label)}</h3><span class="n">${items.length}</span>
+      <span class="nav"><button type="button" data-dir="-1" aria-label="scroll ${esc(r.label)} back">←</button><button type="button" data-dir="1" aria-label="scroll ${esc(r.label)} forward">→</button></span></header>
+      <div class="railwrap"><div class="rail">${items.map(p => closetItem(p, r.kind)).join("")}</div></div></section>`;
+  }).join("");
+  el.innerHTML = `<div class="closet-head"><h2>my closet</h2><p>${shown.length} pieces on the racks. swipe through, tap anything to shop it.</p>
+    <div class="brands"><button class="chip" data-brand="all" aria-pressed="${state.brand==="all"}">everything</button>${brands.map(b => `<button class="chip" data-brand="${esc(b)}" aria-pressed="${state.brand===b}">${esc(b)} <small>${counts[b]}</small></button>`).join("")}</div></div>${racks}`;
+  $("#empty").hidden = !!racks;
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest(".closet [data-brand]"); if (b) { state.brand=b.dataset.brand; render(); return; }
+  const n = e.target.closest(".rack .nav button"); if (n) { const rail=n.closest(".rack").querySelector(".rail"); rail.scrollBy({left: n.dataset.dir*rail.clientWidth*.8, behavior:"smooth"}); }
+});
 
 function renderLooks(el){
   const html = OUTFITS.map(([col,title], idx) => {
@@ -680,16 +785,17 @@ document.addEventListener("focusin", e => linkHover(e,true));
 document.addEventListener("focusout", e => linkHover(e,false));
 
 function render(){
-  for (const v of ["shop","videos","outfits"]) { $("#view-"+v).hidden = state.view!==v; $("#tab-"+v).setAttribute("aria-selected", state.view===v); }
+  for (const v of ["shop","closet","videos","outfits"]) { $("#view-"+v).hidden = state.view!==v; $("#tab-"+v).setAttribute("aria-selected", state.view===v); }
   if (state.view==="shop") renderShop();
   if (state.view==="videos") renderSets($("#view-videos"), VIDEOS.map(v => ({col:v.col, title:v.title, yt:v.yt, video:true, url: v.yt ? "https://www.youtube.com/watch?v="+v.yt : CHANNEL})));
+  if (state.view==="closet") renderCloset($("#view-closet"));
   if (state.view==="outfits") renderLooks($("#view-outfits"));
 }
 
 $("#chips").addEventListener("click", e => { const b=e.target.closest(".chip"); if(!b) return; state.cat=b.dataset.cat; render(); });
 $("#q").addEventListener("input", e => { state.q=e.target.value.trim().toLowerCase(); render(); });
 document.querySelectorAll(".tab").forEach(t => t.onclick = () => { state.view=t.dataset.view; history.replaceState(null,"",state.view==="shop"?location.pathname:"#"+state.view); render(); });
-const fromHash = () => { const h=location.hash.slice(1); state.view = (h==="videos"||h==="outfits") ? h : "shop"; };
+const fromHash = () => { const h=location.hash.slice(1); state.view = (h==="videos"||h==="outfits"||h==="closet") ? h : "shop"; };
 window.addEventListener("hashchange", () => { fromHash(); render(); });
 fromHash();
 
