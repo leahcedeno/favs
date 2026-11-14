@@ -137,6 +137,14 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .closet-head h2{font-family:var(--gothic);font-weight:700;color:var(--pink);font-size:clamp(40px,6vw,64px);line-height:1;margin:0}
 .closet-head p{color:var(--muted);margin:8px 0 14px}
 .brands{display:flex;gap:8px;flex-wrap:wrap}
+.favs{margin-top:26px;padding:18px;border:1.5px solid var(--pink);border-radius:22px;background:radial-gradient(80% 120% at 0% 0%,color-mix(in srgb,var(--pink) 20%,transparent),transparent 70%),var(--surface)}
+.favs h3{font-family:var(--display);font-size:24px;line-height:1.1;margin:0 0 14px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.favs h3 span{font-family:var(--script);font-size:22px;font-weight:600;color:var(--blush)}
+.favgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.fav4{display:flex;flex-direction:column;text-decoration:none;color:inherit;min-width:0}
+.fav4 .piece{box-shadow:none;border-radius:14px}
+.fav4:hover .piece{box-shadow:0 0 0 2px var(--pink)}
+.slot{position:absolute;left:8px;top:8px;background:var(--pink);color:var(--pink-ink);font:700 11.5px var(--body);padding:4px 9px;border-radius:999px}
 .rack{margin-top:34px}
 .rack header{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
 .rack h3{font-family:var(--display);font-size:24px;line-height:1.1;margin:0}
@@ -214,6 +222,9 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
   .brands{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px}
   .brands::-webkit-scrollbar{display:none}
   .brands .chip{flex:0 0 auto}
+  .favs{margin-top:18px;padding:14px}
+  .favs h3{font-size:20px}.favs h3 span{font-size:19px}
+  .favgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 12px}
   .rack{margin-top:26px}
   .rack h3{font-size:20px}
   .rack .nav{display:none}
@@ -303,8 +314,8 @@ const RAW = [
 [54604394,"SOUPER CUBES | 1 Cup Silicone Freezer Molds with Lids","","P:zoom-28971491-1761603437098-71nILZfze1L._AC_SX679_.jpg","4981795"],
 [54604464,"FOODSAVER | Compact Vacuum Sealer Machine","","P:zoom-54604464-1777059212160-31HhCEjsGML._AC_.jpg","4981795"],
 [54606093,"INGIA | Long Sleeve Twist Front Cropped Ribbed Top","","U:289f9def-3b58-46ce-80bb-f693169dbcae71FqIThxiGL._AC_SX569_.jpg","4981913"],
-[54606194,"LOTUS | Vision Flares","","P:zoom-54606194-1777059637238-VISION_FLARES_LOTUS_IMG_0582-Edit_ebad7e65-9c6f-463b-b880-f34f696fad2a_1024x1024.jpg","4981913"],
-[54606231,"LOTUS | Vision Twist Front Longline Top","","P:zoom-54606231-1777059645223-VISION_LONGLINE_LOTUS_IMG_1189-Edit_7b2d39ac-26f0-412d-896b-4c6da984ca2a_1024x1024.jpg","4981913"],
+[54606194,"DFYNE | Vision Flares","","P:zoom-54606194-1777059637238-VISION_FLARES_LOTUS_IMG_0582-Edit_ebad7e65-9c6f-463b-b880-f34f696fad2a_1024x1024.jpg","4981913"],
+[54606231,"DFYNE | Vision Twist Front Longline Top","","P:zoom-54606231-1777059645223-VISION_LONGLINE_LOTUS_IMG_1189-Edit_7b2d39ac-26f0-412d-896b-4c6da984ca2a_1024x1024.jpg","4981913"],
 [54606331,"NAMED COLLECTIVE | Fallen Rhinestone Oversized Sweatpants, Washed Black","","P:zoom-54606331-1777059668891-fallen-rhinestone-oversized-sweatpants-washed-black-1.jpg","4981913 7743887 7889527"],
 [54606695,"Ribbed Knit Leg Warmers","","P:zoom-54606695-1777059780369-31VVuWPo5YL._AC_.jpg","4981973"],
 [54606979,"GYMSHARK | Everyday Seamless Leggings","","P:zoom-2704974-1700146895119-EverydaySeamlessLeggingsGSBlackB7A3L-BB2J-1661_42557aaa-7e58-4d51-9cfa-9e2ee970e439_2048x.jpg","4981973 7342013 8599644"],
@@ -348,7 +359,7 @@ const RAW = [
 [56261365,"GYMSHARK | Whitney Mid-High Rise Flared Leggings","","P:zoom-56261365-1777855311844-images-WhitneyMidRiseFlareGSFocusPinkB6B1Z_KDFX_1802_V1_3840x.jpg","5123212 7271179 7342013 8599644"],
 [56261460,"GYMSHARK | Twist Front Sports Bra","","P:zoom-56261460-1777855342257-images-MediumSupportTwistFrontSportsBraGSFocusPinkB5C6A_KDFX_0270_V1_3840x.jpg","5123212 5653186 7342013 8599644"],
 [56647565,"GYMSHARK | Featherform Tank","","P:zoom-56647565-1778022014205-images-40GGPerfectTankGSBlackB5C7U_BB2J_0227_V1_3840x.jpg","5155141 5768776 6327823 7342013 7743887 8599644"],
-[56647752,"LOTUS | Origin Flares","","P:zoom-56647752-1778022084729-ORIGIN_FLARES_BLACK_IMG_0277.jpg","5155141"],
+[56647752,"DFYNE | Origin Flares","","P:zoom-56647752-1778022084729-ORIGIN_FLARES_BLACK_IMG_0277.jpg","5155141"],
 [56648011,"BUFFBUNNY | Story Running Belt","","P:zoom-56648011-1778022166313-Essentials_ValentinesResize-26007Large.jpg","5155141 7342013 8599786"],
 [57208634,"BUFFBUNNY | Poshknit Wide Headband","","S:uploads/323beb13-bfe8-4c19-a551-e5f8dc9bf115_image-1777494175328","5201645 7342013 8599786"],
 [57530398,"BUFFBUNNY | Ballet Wrap, Pink Vibes","","P:zoom-57530398-1778446884412-SUMMERESSENTIALSMOBILITY7513Large.jpg","5228277 7342013 8599786"],
@@ -607,6 +618,14 @@ const HOTSPOTS = {
   4920789: {53863600:[.43,.42], 53863601:[.45,.705]},
 };
 
+/* The four "current favs" at the top of the closet. Swap an id to change one. */
+const CLOSET_FAVS = [
+  {id:83146535, label:"sports bra"},
+  {id:56647565, label:"top"},
+  {id:83146529, label:"legging"},
+  {id:77601169, label:"shoe"},
+];
+
 const ROTATING = ["gym fits","supplements","tupperware","makeup","snacks","sneakers","decor"];
 /* ============ END DATA ============ */
 
@@ -721,8 +740,11 @@ function renderCloset(el){
       <span class="nav"><button type="button" data-dir="-1" aria-label="scroll ${esc(r.label)} back">←</button><button type="button" data-dir="1" aria-label="scroll ${esc(r.label)} forward">→</button></span></header>
       <div class="railwrap"><div class="rail">${items.map(p => closetItem(p, r.kind)).join("")}</div></div></section>`;
   }).join("");
+  const favs = (state.q || state.brand!=="all") ? "" : `<section class="favs"><h3>current favs <span>what i'm reaching for right now</span></h3><div class="favgrid">${CLOSET_FAVS.map(f => { const p=PRODUCTS.find(x => x.id===f.id); return p ? `<a class="fav4" href="${esc(p.link)}" target="_blank" rel="noopener sponsored">
+      <span class="piece"><img src="${esc(p.img)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()"><span class="slot">my fav ${esc(f.label)}</span></span>
+      <span class="tag">${p.brand?`<span class="brand">${esc(p.brand)}</span>`:""}<span class="name">${esc(p.name)}</span></span></a>` : ""; }).join("")}</div></section>`;
   el.innerHTML = `<div class="closet-head"><h2>my closet</h2><p>${shown.length} pieces on the racks. swipe through, tap anything to shop it.</p>
-    <div class="brands"><button class="chip" data-brand="all" aria-pressed="${state.brand==="all"}">everything</button>${brands.map(b => `<button class="chip" data-brand="${esc(b)}" aria-pressed="${state.brand===b}">${esc(b)} <small>${counts[b]}</small></button>`).join("")}</div></div>${racks}`;
+    <div class="brands"><button class="chip" data-brand="all" aria-pressed="${state.brand==="all"}">everything</button>${brands.map(b => `<button class="chip" data-brand="${esc(b)}" aria-pressed="${state.brand===b}">${esc(b)} <small>${counts[b]}</small></button>`).join("")}</div></div>${favs}${racks}`;
   $("#empty").hidden = !!racks;
 }
 document.addEventListener("click", e => {
