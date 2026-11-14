@@ -212,7 +212,14 @@ body.subpage .hero{display:none}
 .codebar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;background:var(--pink);color:var(--pink-ink);border-radius:16px;padding:14px 18px;margin:18px 0;font-size:18px;font-weight:500}
 .codebar b{font-weight:800;text-transform:uppercase;letter-spacing:.04em}
 .codebar .btn{background:var(--pink-ink);color:var(--ink);border-color:var(--pink-ink)}
-.wallphoto{display:block;width:100%;border-radius:20px;border:1px solid var(--line);margin-bottom:28px}
+.wall{position:relative;border-radius:20px;border:1px solid var(--line);overflow:hidden;margin-bottom:28px}
+.wall img{display:block;width:100%;height:auto}
+.wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.wires line{stroke:#fff;stroke-width:1.5;vector-effect:non-scaling-stroke;filter:drop-shadow(0 0 2px rgba(0,0,0,.8))}
+.badges .num{position:static;flex:none}
+.card.hot .thumb{box-shadow:0 0 0 2px var(--pink)}
+.more{font-family:var(--display);font-size:22px;margin:0 0 14px}
+.page .grid{padding-bottom:36px}
 .thumb.gw img{object-fit:cover;padding:0}
 
 .empty{padding:48px 0 80px;text-align:center;color:var(--muted)}
@@ -257,6 +264,9 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
   .lm .name{font-size:12.5px}
   .tab{font-size:12.5px;padding:10px 1px}
   .vhead{grid-template-columns:1fr;gap:16px}
+  .wall{border-radius:14px;margin-inline:-8px}
+  .wall .dot{width:18px;height:18px;margin:-9px 0 0 -9px;font-size:10px;box-shadow:0 0 0 1.5px #fff,0 2px 6px rgba(0,0,0,.5)}
+  .wall .pin{width:5px;height:5px;margin:-2.5px 0 0 -2.5px}
   .kicker{font-size:22px}
   .codebar{font-size:16px;padding:12px 14px}
   .zone header{flex-wrap:wrap;row-gap:0}
@@ -617,6 +627,25 @@ const VIDEOS = [
   {col:5060256, slug:"week-of-workouts",      yt:"JpNX_ZNqp54", title:"FULL WEEK OF WORKOUTS: all outfits"},
 ];
 /* The gallery wall: one card that opens its own page of prints */
+/* Prints you can see in the gallery wall photo, numbered left to right, top to bottom.
+   [product id, point x, point y, number x, number y] as percentages of the photo. */
+const WALL_SPOTS = [
+  [60767572, 44.5,15,   44.5,5],    // japan world
+  [60768559, 54,25,     54,5],      // the little death
+  [60768930, 64.6,21,   64.6,6],    // choke
+  [60768669, 73.1,24.5, 73.1,8.5],  // flower 6
+  [60769102, 43.5,35,   35.5,35],   // shapes
+  [60768597, 64.1,42,   64.1,93],   // see
+  [60768880, 76.1,45,   76.1,89],   // you're always on fire
+  [60761772, 83.3,40.5, 91,40.5],   // missing
+  [60768453, 39,54.5,   33.5,54.5], // shiny things
+  [60768789, 44.6,55.5, 44.6,70],   // repeating
+  [60768730, 52,58,     52,75],     // espresso with the pinky out
+  [60769072, 57.5,50,   56.5,90],   // shine
+  [60768978, 60,63,     60,79],     // nine lives
+  [60769025, 70,65,     70,83],     // love is like a magnet
+  [60768832, 81.3,62.5, 89,62.5],   // astral projection
+];
 const GALLERY = {slug:"gallery-wall", title:"my gallery wall", code:"LEAH15", off:"15% off", photo:"gallery-wall.jpg", square:"gallery-wall-square.jpg"};
 const CHANNEL = "https://youtube.com/channel/UCeyDa72TsUQN6bMaOsk4Yjw";
 
@@ -781,12 +810,21 @@ function renderVideoPage(el){
   $("#empty").hidden = true;
 }
 function renderGalleryPage(el){
-  const items = PRODUCTS.filter(p => p.type==="art print" && matches(p));
+  const all = PRODUCTS.filter(p => p.type==="art print");
+  const numOf = id => WALL_SPOTS.findIndex(w => w[0]===id)+1;
+  const items = all.filter(p => matches(p)).sort((a,b) => (numOf(a.id)||99)-(numOf(b.id)||99));
+  const spots = WALL_SPOTS.map((w,i) => ({p: all.find(x => x.id===w[0]), n:i+1, ax:w[1], ay:w[2], bx:w[3], by:w[4]})).filter(x => x.p);
+  const wires = spots.map(x => `<line x1="${x.ax}" y1="${x.ay}" x2="${x.bx}" y2="${x.by}"/>`).join("");
+  const pins = spots.map(x => `<i class="pin" style="left:${x.ax}%;top:${x.ay}%"></i><a class="dot" style="left:${x.bx}%;top:${x.by}%" href="${esc(x.p.link)}" target="_blank" rel="noopener sponsored" data-pid="${x.p.id}" aria-label="shop ${esc(x.p.name)}">${x.n}</a>`).join("");
+  const wallCard = p => { const n=numOf(p.id); return n ? card(p).replace('<a class="card"', `<a class="card" data-pid="${p.id}"`).replace('<div class="badges">', `<div class="badges"><span class="num">${n}</span>`) : card(p); };
+  const onWall = items.filter(p => numOf(p.id)), rest = items.filter(p => !numOf(p.id));
   el.innerHTML = `<a class="back" href="#">← back to the shop</a>
-    <div class="closet-head"><h2>${GALLERY.title}</h2><p>every print hanging over my couch. ${items.length} pieces, all from drool.</p></div>
+    <div class="closet-head"><h2>${GALLERY.title}</h2><p>every print hanging over my couch. tap a number to shop that print.</p></div>
     <div class="codebar"><span>code <b>${GALLERY.code}</b> for ${GALLERY.off}</span>${copyBtn(GALLERY.code,"copy code")}</div>
-    <img class="wallphoto" src="${GALLERY.photo}" alt="leah's gallery wall of framed art prints above a pink couch">
-    <div class="grid">${items.map(card).join("")}</div>`;
+    <div class="wall"><img src="${GALLERY.photo}" alt="leah's gallery wall of framed art prints above a pink couch">
+      <svg class="wires" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${wires}</svg>${pins}</div>
+    <div class="grid">${onWall.map(wallCard).join("")}</div>
+    ${rest.length ? `<h3 class="more">more prints i own</h3><div class="grid">${rest.map(card).join("")}</div>` : ""}`;
   $("#empty").hidden = true;
 }
 
@@ -931,8 +969,8 @@ function placeDots(){
 }
 addEventListener("resize", placeDots);
 function linkHover(e, on){
-  const t=e.target.closest(".dot,.li[data-pid]"); if(!t) return;
-  const look=t.closest(".look"); if(!look) return;
+  const t=e.target.closest(".dot,.li[data-pid],.card[data-pid]"); if(!t) return;
+  const look=t.closest(".look,.page"); if(!look) return;
   look.querySelectorAll(`[data-pid="${t.dataset.pid}"]`).forEach(x => x.classList.toggle("hot", on));
 }
 document.addEventListener("mouseover", e => linkHover(e,true));
