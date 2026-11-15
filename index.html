@@ -242,10 +242,14 @@ body.admin{padding-bottom:110px}
 #adminbar b{color:var(--pink)}
 #adm-status{flex:1;min-width:140px;color:var(--muted)}
 #adminbar button{height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--raise);color:var(--ink);font:600 13px var(--body);cursor:pointer;text-transform:lowercase}
-#adm-save,#adm-token-save{background:var(--pink)!important;border-color:var(--pink)!important;color:var(--pink-ink)!important}
-#adm-token p{margin:10px 0 6px;color:var(--muted);text-transform:none}
-#adm-token .trow{display:flex;gap:8px;flex-wrap:wrap}
-#adm-token input{flex:1;min-width:180px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:0 10px;font:14px var(--body);text-transform:none}
+#adm-save{background:var(--pink)!important;border-color:var(--pink)!important;color:var(--pink-ink)!important}
+#login{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.72);display:grid;place-items:center;padding:16px}
+#login form{width:min(360px,100%);background:var(--surface);border:1.5px solid var(--pink);border-radius:20px;padding:22px;display:grid;gap:12px}
+#login h2{font-family:var(--gothic);color:var(--pink);font-size:40px;line-height:1;margin:0}
+#login p{margin:0;color:var(--muted);text-transform:none}
+#login input{height:44px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:0 12px;font:16px var(--body);text-transform:none}
+#login .lrow{display:flex;gap:8px}
+#login .btn{cursor:pointer;font-family:inherit;flex:1;justify-content:center}
 
 .empty{padding:48px 0 80px;text-align:center;color:var(--muted)}
 .empty b{display:block;font-family:var(--display);font-size:24px;color:var(--ink);margin-bottom:6px}
@@ -833,9 +837,7 @@ function decorate(){
   });
   let bar = $("#adminbar");
   if (state.admin && !bar) { document.body.insertAdjacentHTML("beforeend", `<div id="adminbar"><div class="row1"><b>admin mode</b><span id="adm-status"></span>
-      <button type="button" id="adm-save">save changes</button><button type="button" id="adm-copy">copy changes</button><button type="button" id="adm-exit">exit</button></div>
-      <div id="adm-token" hidden><p>to save from here, paste a github access token for the <b>favs</b> repo (contents: read and write). it stays in this browser only.</p>
-      <span class="trow"><input id="adm-token-input" type="password" placeholder="github token" autocomplete="off"><button type="button" id="adm-token-save">save token + changes</button></span></div></div>`); bar = $("#adminbar"); }
+      <button type="button" id="adm-save">save changes</button><button type="button" id="adm-copy">copy changes</button><button type="button" id="adm-exit">log out</button></div></div>`); bar = $("#adminbar"); }
   if (!state.admin && bar) bar.remove();
   document.body.classList.toggle("admin", !!state.admin);
   if (state.admin) admStatus();
@@ -859,29 +861,48 @@ document.addEventListener("click", e => {
     }
     changed(); return;
   }
-  if (e.target.id==="adm-exit") { state.admin=false; try{sessionStorage.removeItem("favs_admin")}catch(_){ } render(); }
-  if (e.target.id==="adm-copy") { const t=JSON.stringify(OV); try{ navigator.clipboard.writeText(t).then(()=>admStatus("copied. paste it to claude to save it for you."), ()=>admStatus("couldn't copy")); }catch(_){ admStatus("couldn't copy"); } }
-  if (e.target.id==="adm-save") { let tok=""; try{tok=localStorage.getItem("favs_admin_token")||""}catch(_){ } if(tok) saveOverrides(tok); else $("#adm-token").hidden=false; }
-  if (e.target.id==="adm-token-save") { const tok=$("#adm-token-input").value.trim(); if(!tok) return; try{localStorage.setItem("favs_admin_token",tok)}catch(_){ } $("#adm-token").hidden=true; saveOverrides(tok); }
+  if (e.target.id==="adm-exit") { state.admin=false; try{localStorage.removeItem("favs_admin_on")}catch(_){ } fetch("/api/session",{method:"POST"}).catch(()=>{}); render(); }
+  if (e.target.id==="adm-copy") { const t=JSON.stringify(OV); try{ navigator.clipboard.writeText(t).then(()=>admStatus("copied."), ()=>admStatus("couldn't copy")); }catch(_){ admStatus("couldn't copy"); } }
+  if (e.target.id==="adm-save") saveOverrides();
+  if (e.target.id==="login-close") closeLogin();
 }, true);
 document.addEventListener("change", e => {
   const sel = e.target.closest('.adm select[data-act="move"]'); if(!sel || !sel.value) return;
   const ctl = sel.closest(".adm"), id = ctl.dataset.id, kind = ctl.dataset.ctx.split(":")[0];
   (OV.move[id] || (OV.move[id]={}))[kind] = sel.value; changed();
 });
-async function saveOverrides(tok){
-  const api = "https://api.github.com/repos/leahcedeno/favs/contents/overrides.json", h = {Authorization:"Bearer "+tok, Accept:"application/vnd.github+json"};
+async function saveOverrides(){
   admStatus("saving…");
   try {
-    const cur = await fetch(api, {headers:h, cache:"no-store"});
-    if (cur.status===401 || cur.status===403) { try{localStorage.removeItem("favs_admin_token")}catch(_){ } $("#adm-token").hidden=false; return admStatus("that token didn't work. paste a new one."); }
-    const sha = cur.ok ? (await cur.json()).sha : undefined;
-    const body = {message:"Update top picks and order from admin mode", content: btoa(unescape(encodeURIComponent(JSON.stringify(OV,null,1)))), sha};
-    const put = await fetch(api, {method:"PUT", headers:h, body:JSON.stringify(body)});
-    if (!put.ok) return admStatus("couldn't save (error "+put.status+"). try copy changes instead.");
+    const r = await fetch("/api/save", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(OV)});
+    const j = await r.json().catch(() => ({}));
+    if (r.status===401) { state.admin=false; render(); openLogin("your login expired. log in again, then save."); return; }
+    if (!r.ok) return admStatus((j.error || "couldn't save") + " use copy changes as a backup.");
     dirty = 0; admStatus("saved. live for everyone in about a minute.");
-  } catch(_) { admStatus("couldn't reach github. try copy changes instead."); }
+  } catch(_) { admStatus("couldn't reach the server. use copy changes as a backup."); }
 }
+/* Admin login: the password is checked on the server (Vercel), never in this page. */
+function enterAdmin(){ state.admin=true; try{localStorage.setItem("favs_admin_on","1")}catch(_){ } closeLogin(); render(); }
+function closeLogin(){ const el=$("#login"); if(el) el.remove(); }
+async function openLogin(msg){
+  try { const r = await fetch("/api/session", {cache:"no-store"}); if (r.ok && (await r.json()).ok) return enterAdmin(); } catch(_) {}
+  closeLogin();
+  document.body.insertAdjacentHTML("beforeend", `<div id="login"><form id="login-form"><h2>admin</h2><p id="login-msg">${esc(msg || "enter your admin password.")}</p>
+    <input id="login-pw" type="password" autocomplete="current-password" placeholder="password" aria-label="admin password">
+    <span class="lrow"><button type="submit" class="btn primary">log in</button><button type="button" class="btn" id="login-close">cancel</button></span></form></div>`);
+  $("#login-pw").focus();
+}
+document.addEventListener("submit", async e => {
+  if (e.target.id!=="login-form") return; e.preventDefault();
+  const msg=$("#login-msg"), pw=$("#login-pw").value; if(!pw) return;
+  msg.textContent="checking…";
+  try {
+    const r = await fetch("/api/login", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({password:pw})});
+    const j = await r.json().catch(() => ({}));
+    if (r.ok && j.ok) return enterAdmin();
+    msg.textContent = j.error || "couldn't log in."; $("#login-pw").value=""; $("#login-pw").focus();
+  } catch(_) { msg.textContent="couldn't reach the server."; }
+});
 fetch("overrides.json?t="+Date.now()).then(r => r.ok ? r.json() : null).then(j => { if(j && !dirty){ OV.top=j.top||{}; OV.order=j.order||{}; OV.move=j.move||{}; render(); } }).catch(()=>{});
 
 function renderShop(){
@@ -1135,9 +1156,9 @@ function render(){
 $("#chips").addEventListener("click", e => { const b=e.target.closest(".chip"); if(!b) return; state.cat=b.dataset.cat; render(); });
 $("#q").addEventListener("input", e => { state.q=e.target.value.trim().toLowerCase(); render(); });
 document.querySelectorAll(".tab").forEach(t => t.onclick = () => { state.view=t.dataset.view; history.replaceState(null,"",state.view==="shop"?location.pathname:"#"+state.view); render(); });
-try { state.admin = sessionStorage.getItem("favs_admin")==="1"; } catch(_) {}
+try { if (localStorage.getItem("favs_admin_on")==="1") fetch("/api/session",{cache:"no-store"}).then(r => r.json()).then(j => { if(j.ok){ state.admin=true; render(); } }).catch(()=>{}); } catch(_) {}
 const fromHash = () => { let h=location.hash.slice(1);
-  if (h==="admin") { state.admin=true; try{sessionStorage.setItem("favs_admin","1")}catch(_){ } history.replaceState(null,"",location.pathname); h=""; }
+  if (h==="admin") { history.replaceState(null,"",location.pathname); h=""; openLogin(); }
   if (h===GALLERY.slug) state.view="gallery";
   else if (h.startsWith("video-") && VIDEOS.some(v => v.slug===h.slice(6))) { state.view="video"; state.slug=h.slice(6); }
   else state.view = (h==="videos"||h==="outfits"||h==="closet"||h==="kitchen") ? h : "shop"; };
