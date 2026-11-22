@@ -251,6 +251,30 @@ body.admin{padding-bottom:110px}
 #login .lrow{display:flex;gap:8px}
 #login .btn{cursor:pointer;font-family:inherit;flex:1;justify-content:center}
 
+/* activewear video page */
+.actintro{max-width:62ch;font-size:17px}
+.awards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:22px 0 4px}
+.award{text-align:left;display:grid;gap:4px;padding:18px;border-radius:20px;border:1.5px solid var(--pink);background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;text-transform:inherit}
+.award:first-child{background:var(--pink);color:var(--pink-ink)}
+.award .aw{font-family:var(--script);font-size:24px;line-height:1}
+.award .an{font-family:var(--gothic);font-size:clamp(30px,4.6vw,46px);line-height:1}
+.award .av{font-size:14px;opacity:.85}
+.award:not(:first-child) .aw,.award:not(:first-child) .an{color:var(--pink)}
+.acttop .grid{padding-bottom:0;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.acth{margin-top:36px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.acth span,.favs.acttop h3 span{font-family:var(--script);font-size:22px;font-weight:600;color:var(--blush)}
+.jump{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.jump .chip small{color:var(--pink);font-weight:700}
+.brandsec{border-top:1px solid var(--line);padding-block:26px 22px}
+.brandsec header{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px 16px;align-items:start;margin-bottom:16px}
+.bn{width:38px;height:38px;border-radius:50%;background:var(--pink);color:var(--pink-ink);font:800 16px var(--display);display:grid;place-items:center}
+.brandsec h3{font-family:var(--display);font-size:26px;line-height:1.1;margin:0}
+.awtag{font-family:var(--script);font-size:22px;color:var(--pink);margin-left:6px;white-space:nowrap}
+.bv{margin:6px 0 4px;font-size:16px;max-width:62ch}
+.bf{margin:0;color:var(--muted);font-size:13px}
+.brandsec .row .card{flex:0 0 160px}
+.brandsec .row .shop{display:block}
+
 .empty{padding:48px 0 80px;text-align:center;color:var(--muted)}
 .empty b{display:block;font-family:var(--display);font-size:24px;color:var(--ink);margin-bottom:6px}
 footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px}
@@ -293,6 +317,16 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
   .lm .name{font-size:12.5px}
   .tab{font-size:12.5px;padding:10px 1px}
   .vhead{grid-template-columns:1fr;gap:16px}
+  .awards{grid-template-columns:1fr;gap:10px}
+  .brandsec header{grid-template-columns:auto minmax(0,1fr);gap:10px 12px}
+  .brandsec header .btn{grid-column:1/-1;justify-content:center}
+  .bn{width:32px;height:32px;font-size:14px}
+  .brandsec h3{font-size:22px}
+  .brandsec .row .card{flex-basis:132px}
+  .acttop .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .jump{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px}
+  .jump::-webkit-scrollbar{display:none}
+  .jump .chip{flex:0 0 auto}
   .wall{margin-inline:-8px}
   .wall>img{border-radius:14px}
   .pop{width:156px}
@@ -370,6 +404,7 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
   <section id="view-videos" class="rows" hidden></section>
   <section id="view-video" class="page" hidden></section>
   <section id="view-gallery" class="page" hidden></section>
+  <section id="view-activewear" class="page" hidden></section>
   <section id="view-outfits" class="looks" hidden></section>
   <div class="empty" id="empty" hidden><b>Nothing matches that yet</b>Try another word, or clear the search.</div>
 </main>
@@ -657,6 +692,43 @@ const VIDEOS = [
   {col:6327823, slug:"getting-back-on-track", yt:"",            title:"a realistic day of getting back on track"},
   {col:5060256, slug:"week-of-workouts",      yt:"JpNX_ZNqp54", title:"FULL WEEK OF WORKOUTS: all outfits"},
 ];
+/* ===== "activewear at every size" video page: my top picks, then every brand in the order the video mentions it =====
+   match: which of Leah's ShopMy pieces show under that brand (by product name). url: the brand's own site, used for the
+   "shop the brand" button until a ShopMy link exists for it. */
+const ACTIVEWEAR = {
+  slug: "activewear-at-every-size",
+  title: "activewear at every size",
+  intro: "i've lost 140 lbs and worn activewear at every size. these are the brands i talked about, in the order i mentioned them, with the pieces i actually wear.",
+  youtube: "",   // paste the video link here once it is up
+  topPicks: [83146535, 83146529, 99380959, 99380937, 56647565, 54006116, 56647752],
+  brands: [
+    {id:"gymshark",  name:"Gymshark",    url:"https://www.gymshark.com/",       tier:"mid",     size:"XXS–XXL", set:96,
+     verdict:"the gym girl fit. durable and so sculpting, but not what i lounge in. buy it on sale.", match:/featherform|lift seamless|lightweight wide leg/i},
+    {id:"alo",       name:"Alo Yoga",    url:"https://www.aloyoga.com/",        tier:"luxury",  size:"XXS–2XL", set:188,
+     verdict:"not worth the hype. you're paying for the name."},
+    {id:"lululemon", name:"Lululemon",   url:"https://shop.lululemon.com/",     tier:"luxury",  size:"0–20",    set:146,
+     verdict:"the define jacket is cute and the ultra-soft tops are so comfy, but for activewear i'm not shopping here."},
+    {id:"halara",    name:"Halara",      url:"https://thehalara.com/",          tier:"budget",  size:"XS–4X",   set:65, award:"best bang for your buck",
+     verdict:"really slept on. cute, affordable, and so many styles in plus sizes.", note:"i've worked with halara, and i wore them before i ever did."},
+    {id:"fabletics", name:"Fabletics",   url:"https://www.fabletics.com/",      tier:"budget",  size:"XXS–4X",
+     verdict:"what i lived in at the start of my journey. so flattering in a bigger body.", note:"it's a membership, so know that before you sign up. you can skip a month or cancel."},
+    {id:"paragon",   name:"Paragon Fitwear", url:"https://paragonfitwear.com/", tier:"premium", size:"XS–XXL",  set:110,
+     verdict:"so soft, so comfortable. i really liked this set.", note:"gifted."},
+    {id:"aybl",      name:"AYBL",        url:"https://us.aybl.com/",            tier:"mid",     set:94,
+     verdict:"my first set from them, the charge set. giving superhero. a little compression, still comfy."},
+    {id:"oner",      name:"Oner Active", url:"https://us.oneractive.com/",      tier:"premium", size:"XS–XXL",  set:113, award:"my favorite overall",
+     verdict:"the most comfortable activewear i've ever worn. softmotion is a second skin, and they have the perfect pink.", match:/softmotion|cotton vintage lounge/i},
+    {id:"aritzia",   name:"Aritzia",     url:"https://www.aritzia.com/us/en/clothing/activewear", tier:"premium", size:"3XS–2XL", set:113,
+     verdict:"low-key really good. the butter collection is so soft, and you can try it on in person."},
+    {id:"buffbunny", name:"Buffbunny",   url:"https://www.buffbunny.com/",      tier:"premium", size:"XXS–3XL", set:110,
+     verdict:"i was a buffbunny girl my whole journey. the flares have the perfect amount of flare.", match:/flare legging|twist fit|legacy legging/i},
+    {id:"dfyne",     name:"DFYNE",       url:"https://us.dfyne.com/",           tier:"premium", size:"XS–XL",   set:109,
+     verdict:"makes your butt look incredible. the origin flares, with no scrunch, are some of my favorite flares ever.", match:/origin/i},
+    {id:"popflex",   name:"POPFLEX",     url:"https://www.popflexactive.com/",  tier:"premium", size:"XXS–3X",  set:124,
+     verdict:"so underrated. designed with a woman's figure in mind, with a bunch of inseam options.", match:/^$/},
+  ],
+};
+
 /* The gallery wall: one card that opens its own page of prints */
 /* Prints you can see in the gallery wall photo, numbered left to right, top to bottom.
    [product id, point x, point y, number x, number y] as percentages of the photo. */
@@ -811,7 +883,8 @@ const OV = {top:{}, order:{}, move:{}};
 let dirty = 0;
 const catOf = p => (OV.move[p.id]||{}).cat || p.cat;
 function zoneOf(p){ const m=(OV.move[p.id]||{}).zone; if(m) return m==="none"?null:m; const z=ZONES.find(z => z.types.includes(p.type)); return z ? z.id : null; }
-function isTop(p, ctx){ return ctx.startsWith("video:") ? (OV.top[ctx]||[]).includes(p.id) : (OV.top.global ? OV.top.global.includes(p.id) : p.top); }
+function isTop(p, ctx){ if (ctx.startsWith("act:")) return (OV.top.activewear || ACTIVEWEAR.topPicks).includes(p.id);
+  return ctx.startsWith("video:") ? (OV.top[ctx]||[]).includes(p.id) : (OV.top.global ? OV.top.global.includes(p.id) : p.top); }
 function arrange(items, ctx){
   let out = items.filter(p => isTop(p,ctx)).concat(items.filter(p => !isTop(p,ctx)));   // top picks go first
   const ord = OV.order[ctx];
@@ -850,7 +923,8 @@ document.addEventListener("click", e => {
     const b = e.target.closest("button[data-act]"); if(!b) return;
     const id = +ctl.dataset.id, ctx = ctl.dataset.ctx, box = ctl.closest("[data-ctx]:not(.adm)");
     if (b.dataset.act==="star") {
-      const key = ctx.startsWith("video:") ? ctx : "global";
+      const key = ctx.startsWith("video:") ? ctx : ctx.startsWith("act:") ? "activewear" : "global";
+      if (key==="activewear" && !OV.top.activewear) OV.top.activewear = ACTIVEWEAR.topPicks.slice();
       if (key==="global" && !OV.top.global) OV.top.global = PRODUCTS.filter(p => p.top).map(p => p.id);
       const list = OV.top[key] || (OV.top[key]=[]), i = list.indexOf(id);
       if (i>=0) list.splice(i,1); else { list.push(id); if (OV.order[ctx]) OV.order[ctx] = [id].concat(OV.order[ctx].filter(x => x!==id)); }
@@ -943,6 +1017,32 @@ function renderVideoPage(el){
     <div class="grid" data-ctx="video:${v.col}">${(v.extras||[]).includes("gallery-wall") && !state.q ? galleryCard() : ""}${items.map(card).join("")}</div>`;
   $("#empty").hidden = true;
 }
+function renderActivewear(el){
+  const A = ACTIVEWEAR, brandOf = p => (p.brand||"").toLowerCase();
+  const piecesOf = b => b.match ? arrange(PRODUCTS.filter(p => brandOf(p)===b.name.toLowerCase() && b.match.test(p.name) && matches(p, b.name)).sort((x,y) => y.recent-x.recent), "act:"+b.id) : [];
+  const tops = (OV.top.activewear || A.topPicks).map(id => PRODUCTS.find(p => p.id===id)).filter(p => p && matches(p));
+  const awards = A.brands.filter(b => b.award).sort((a,b) => (a.id==="oner"?-1:1)).map(b => `<button type="button" class="award" data-jump="act-${b.id}"><span class="aw">${esc(b.award)}</span><span class="an">${esc(b.name)}</span><span class="av">${esc(b.verdict)}</span></button>`).join("");
+  const secs = A.brands.map((b,i) => {
+    const items = piecesOf(b);
+    if (state.q && !items.length && !norm(b.name+" "+b.verdict).includes(norm(state.q))) return "";
+    const facts = [b.tier, b.size ? "sizes "+b.size : "", b.set ? "about $"+b.set+" for a bra + leggings" : ""].filter(Boolean).join(" · ");
+    return `<section class="brandsec" id="act-${b.id}"><header><span class="bn">${i+1}</span><div><h3>${esc(b.name)}${b.award?` <span class="awtag">${esc(b.award)}</span>`:""}</h3>
+        <p class="bv">${esc(b.verdict)}</p><p class="bf">${esc(facts)}${b.note?` · ${esc(b.note)}`:""}</p></div>
+        <a class="btn" href="${esc(b.url)}" target="_blank" rel="noopener">shop ${esc(b.name)} ↗</a></header>
+      ${items.length ? `<div class="row" data-ctx="act:${b.id}">${items.map(card).join("")}</div>` : ""}</section>`;
+  }).join("");
+  el.innerHTML = `<a class="back" href="#videos">← all videos</a>
+    <div class="closet-head"><p class="kicker">from the video</p><h2>${esc(A.title)}</h2><p class="actintro">${esc(A.intro)}</p>
+      ${A.youtube ? `<div class="socials"><a class="btn primary" href="${esc(A.youtube)}" target="_blank" rel="noopener">watch on youtube ↗</a></div>` : ""}</div>
+    ${state.q ? "" : `<div class="awards">${awards}</div>`}
+    ${tops.length ? `<section class="favs acttop"><h3>my top picks <span>the pieces i reach for most</span></h3><div class="grid" data-ctx="act:top">${tops.map(card).join("")}</div></section>` : ""}
+    <h3 class="more acth">shop by brand <span>in the order i talk about them</span></h3>
+    <div class="jump">${A.brands.map((b,i) => `<button type="button" class="chip" data-jump="act-${b.id}"><small>${i+1}</small> ${esc(b.name)}</button>`).join("")}</div>
+    ${secs}`;
+  $("#empty").hidden = true;
+}
+document.addEventListener("click", e => { const j=e.target.closest("[data-jump]"); if(!j) return; const t=document.getElementById(j.dataset.jump); if(t) window.scrollTo({top: t.getBoundingClientRect().top + scrollY - 130, behavior:"smooth"}); });
+
 function renderGalleryPage(el){
   const all = PRODUCTS.filter(p => p.type==="art print");
   const numOf = id => WALL_SPOTS.findIndex(w => w[0]===id)+1;
@@ -1142,12 +1242,13 @@ document.addEventListener("focusout", e => linkHover(e,false));
 
 function render(){
   for (const v of ["shop","closet","kitchen","videos","outfits"]) { $("#view-"+v).hidden = state.view!==v; $("#tab-"+v).setAttribute("aria-selected", state.view===v || (v==="videos" && state.view==="video")); }
-  $("#view-video").hidden = state.view!=="video"; $("#view-gallery").hidden = state.view!=="gallery";
-  document.body.classList.toggle("subpage", state.view==="video" || state.view==="gallery");
+  $("#view-video").hidden = state.view!=="video"; $("#view-gallery").hidden = state.view!=="gallery"; $("#view-activewear").hidden = state.view!=="activewear";
+  document.body.classList.toggle("subpage", state.view==="video" || state.view==="gallery" || state.view==="activewear");
   if (state.view==="shop") renderShop();
   if (state.view==="videos") renderSets($("#view-videos"), VIDEOS.map(v => ({col:v.col, title:v.title, yt:v.yt, slug:v.slug, extras:v.extras, video:true, url: v.yt ? "https://www.youtube.com/watch?v="+v.yt : CHANNEL})));
   if (state.view==="video") renderVideoPage($("#view-video"));
   if (state.view==="gallery") renderGalleryPage($("#view-gallery"));
+  if (state.view==="activewear") renderActivewear($("#view-activewear"));
   if (state.view==="closet") renderCloset($("#view-closet"));
   if (state.view==="kitchen") renderKitchen($("#view-kitchen"));
   if (state.view==="outfits") renderLooks($("#view-outfits"));
@@ -1160,9 +1261,10 @@ try { if (localStorage.getItem("favs_admin_on")==="1") fetch("/api/session",{cac
 const fromHash = () => { let h=location.hash.slice(1);
   if (h==="admin") { history.replaceState(null,"",location.pathname); h=""; openLogin(); }
   if (h===GALLERY.slug) state.view="gallery";
+  else if (h===ACTIVEWEAR.slug) state.view="activewear";
   else if (h.startsWith("video-") && VIDEOS.some(v => v.slug===h.slice(6))) { state.view="video"; state.slug=h.slice(6); }
   else state.view = (h==="videos"||h==="outfits"||h==="closet"||h==="kitchen") ? h : "shop"; };
-window.addEventListener("hashchange", () => { fromHash(); render(); if (state.view==="video"||state.view==="gallery") window.scrollTo(0,0); });
+window.addEventListener("hashchange", () => { fromHash(); render(); if (state.view==="video"||state.view==="gallery"||state.view==="activewear") window.scrollTo(0,0); });
 fromHash();
 
 (function(){
