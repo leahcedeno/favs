@@ -693,7 +693,8 @@ const VIDEOS = [
   {col:5060256, slug:"week-of-workouts",      yt:"JpNX_ZNqp54", title:"FULL WEEK OF WORKOUTS: all outfits"},
 ];
 /* ===== "activewear at every size" video page: my top picks, then every brand in the order the video mentions it =====
-   match: which of Leah's ShopMy pieces show under that brand (by product name). url: the brand's own site, used for the
+   match: which of Leah's ShopMy pieces show under that brand (by product name). extras: pieces that are not in ShopMy yet
+   (name, photo, store link); swap each url for its ShopMy link once one exists. url: the brand's own site, used for the
    "shop the brand" button until a ShopMy link exists for it. */
 const ACTIVEWEAR = {
   slug: "activewear-at-every-size",
@@ -704,10 +705,13 @@ const ACTIVEWEAR = {
   brands: [
     {id:"gymshark",  name:"Gymshark",    url:"https://www.gymshark.com/",       tier:"mid",     size:"XXS–XXL", set:96,
      verdict:"the gym girl fit. durable and so sculpting, but not what i lounge in. buy it on sale.", match:/featherform|lift seamless|lightweight wide leg/i},
-    {id:"alo",       name:"Alo Yoga",    url:"https://www.aloyoga.com/",        tier:"luxury",  size:"XXS–2XL", set:188,
-     verdict:"not worth the hype. you're paying for the name."},
     {id:"lululemon", name:"Lululemon",   url:"https://shop.lululemon.com/",     tier:"luxury",  size:"0–20",    set:146,
-     verdict:"the define jacket is cute and the ultra-soft tops are so comfy, but for activewear i'm not shopping here."},
+     verdict:"not where i shop for activewear, but their ribbed hold tight tops are so soft and so comfortable.",
+     extras:[
+       {name:"Hold Tight Long-Sleeve Turtleneck", img:"extra/lulu-turtleneck.jpg", url:"https://shop.lululemon.com/p/hold-tight-long-sleeve-turtleneck/mhcdugbftl"},
+       {name:"Hold Tight Straight-Hem Cropped T-Shirt", img:"extra/lulu-crop-tee.jpg", url:"https://shop.lululemon.com/p/hold-tight-straight-hem-cropped-t/oc1udgomw5"},
+       {name:"Hold Tight Straight-Hem Cropped Long-Sleeve Shirt", img:"extra/lulu-crop-ls.jpg", url:"https://shop.lululemon.com/p/hold-tight-straight-hem-cropped-ls-shirt/sn2pm5naxr"},
+     ]},
     {id:"halara",    name:"Halara",      url:"https://thehalara.com/",          tier:"budget",  size:"XS–4X",   set:65, award:"best bang for your buck",
      verdict:"really slept on. cute, affordable, and so many styles in plus sizes.", note:"i've worked with halara, and i wore them before i ever did."},
     {id:"fabletics", name:"Fabletics",   url:"https://www.fabletics.com/",      tier:"budget",  size:"XXS–4X",
@@ -1024,12 +1028,15 @@ function renderActivewear(el){
   const awards = A.brands.filter(b => b.award).sort((a,b) => (a.id==="oner"?-1:1)).map(b => `<button type="button" class="award" data-jump="act-${b.id}"><span class="aw">${esc(b.award)}</span><span class="an">${esc(b.name)}</span><span class="av">${esc(b.verdict)}</span></button>`).join("");
   const secs = A.brands.map((b,i) => {
     const items = piecesOf(b);
-    if (state.q && !items.length && !norm(b.name+" "+b.verdict).includes(norm(state.q))) return "";
+    const extras = (b.extras||[]).filter(x => !state.q || norm(b.name+" "+x.name).split(" ").some(w => norm(state.q).split(" ").every(t => (b.name+" "+x.name).toLowerCase().includes(t))));
+    if (state.q && !items.length && !extras.length && !norm(b.name+" "+b.verdict).includes(norm(state.q))) return "";
     const facts = [b.tier, b.size ? "sizes "+b.size : "", b.set ? "about $"+b.set+" for a bra + leggings" : ""].filter(Boolean).join(" · ");
     return `<section class="brandsec" id="act-${b.id}"><header><span class="bn">${i+1}</span><div><h3>${esc(b.name)}${b.award?` <span class="awtag">${esc(b.award)}</span>`:""}</h3>
         <p class="bv">${esc(b.verdict)}</p><p class="bf">${esc(facts)}${b.note?` · ${esc(b.note)}`:""}</p></div>
         <a class="btn" href="${esc(b.url)}" target="_blank" rel="noopener">shop ${esc(b.name)} ↗</a></header>
-      ${items.length ? `<div class="row" data-ctx="act:${b.id}">${items.map(card).join("")}</div>` : ""}</section>`;
+      ${items.length ? `<div class="row" data-ctx="act:${b.id}">${items.map(card).join("")}</div>` : ""}
+      ${extras.length ? `<div class="row">${extras.map(x => `<a class="card" href="${esc(x.url)}" target="_blank" rel="noopener"><div class="thumb gw"><img src="${esc(x.img)}" alt="" loading="lazy"></div>
+        <div class="meta"><span class="brand">${esc(b.name)}</span><span class="name">${esc(x.name)}</span><span class="shop">Shop it ↗</span></div></a>`).join("")}</div>` : ""}</section>`;
   }).join("");
   el.innerHTML = `<a class="back" href="#videos">← all videos</a>
     <div class="closet-head"><p class="kicker">from the video</p><h2>${esc(A.title)}</h2><p class="actintro">${esc(A.intro)}</p>
