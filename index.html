@@ -273,7 +273,8 @@ body.admin{padding-bottom:110px}
 .bv{margin:6px 0 4px;font-size:16px;max-width:62ch}
 .bf{margin:0;color:var(--muted);font-size:13px}
 .brandsec .row .card{flex:0 0 160px}
-.brandsec .row .shop{display:block}
+.brandsec .row .shop,.brandsec .row .note{display:block}
+.brandsec .row .note{font-size:17px}
 
 .empty{padding:48px 0 80px;text-align:center;color:var(--muted)}
 .empty b{display:block;font-family:var(--display);font-size:24px;color:var(--ink);margin-bottom:6px}
@@ -712,7 +713,15 @@ const ACTIVEWEAR = {
        {name:"Hold Tight Straight-Hem Cropped Long-Sleeve Shirt", img:"extra/lulu-crop-ls.jpg", url:"https://go.shopmy.us/p-109338331"},
      ]},
     {id:"halara",    name:"Halara",      url:"https://go.shopmy.us/p-109338727",          tier:"budget",  size:"XS–4X",   set:65, award:"best bang for your buck",
-     verdict:"really slept on. cute, affordable, and so many styles in plus sizes.", note:"i've worked with halara, and i wore them before i ever did."},
+     verdict:"really slept on. cute, affordable, and so many styles in plus sizes.", note:"i've worked with halara, and i wore them before i ever did.",
+     extras:[
+       {name:"OneForm Seamless Flow Contrast Lace Sports Bra, Black", img:"extra/halara-bra.jpg", url:"https://go.shopmy.us/p-109343684"},
+       {name:"UltraSculpt V-Shaped High Waisted Contrast Lace Flare Leggings, Black", img:"extra/halara-flare.jpg", url:"https://go.shopmy.us/p-109343816"},
+       {name:"Scoop Neck Crisscross Back Yoga Cami Top, Black", img:"extra/halara-cami.jpg", url:"https://go.shopmy.us/p-109343907"},
+       {name:"SoftlyZero Airy Crossover 2-in-1 Tennis Skirt, Nosegay", img:"extra/halara-skirt.jpg", url:"https://go.shopmy.us/p-109344012"},
+       {name:"SoftlyZero Airy U Neck 2-in-1 Active Dress, Fuchsia Fedora", img:"extra/halara-dress.jpg", url:"https://go.shopmy.us/p-109344091"},
+       {name:"PuffFlex 3-in-1 Cropped Puffer Coat + Jacket, Black", img:"extra/halara-jacket.jpg", url:"https://go.shopmy.us/p-109344176", note:"i'm wearing the inside piece by itself!"},
+     ]},
     {id:"fabletics", name:"Fabletics",   url:"https://go.shopmy.us/p-109338848",      tier:"budget",  size:"XXS–4X",
      verdict:"what i lived in at the start of my journey. so flattering in a bigger body.", note:"it's a membership, so know that before you sign up. you can skip a month or cancel."},
     {id:"paragon",   name:"Paragon Fitwear", url:"https://go.shopmy.us/p-109339097", tier:"premium", size:"XS–XXL",  set:110,
@@ -1042,7 +1051,7 @@ function renderActivewear(el){
         <a class="btn" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">shop ${esc(b.name)} ↗</a></header>
       ${items.length ? `<div class="row" data-ctx="act:${b.id}">${items.map(card).join("")}</div>` : ""}
       ${extras.length ? `<div class="row">${extras.map(x => `<a class="card" href="${esc(x.url)}" target="_blank" rel="noopener sponsored"><div class="thumb gw"><img src="${esc(x.img)}" alt="" loading="lazy"></div>
-        <div class="meta"><span class="brand">${esc(b.name)}</span><span class="name">${esc(x.name)}</span><span class="shop">Shop it ↗</span></div></a>`).join("")}</div>` : ""}</section>`;
+        <div class="meta"><span class="brand">${esc(b.name)}</span><span class="name">${esc(x.name)}</span>${x.note?`<span class="note">${esc(x.note)}</span>`:""}<span class="shop">Shop it ↗</span></div></a>`).join("")}</div>` : ""}</section>`;
   }).join("");
   el.innerHTML = `<a class="back" href="#videos">← all videos</a>
     <div class="closet-head"><p class="kicker">from the video</p><h2>${esc(A.title)}</h2><p class="actintro">${esc(A.intro)}</p>
