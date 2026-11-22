@@ -16,7 +16,7 @@
    Deliberately single-theme: black and pink. */
 :root{
   --bg:#0B0A0C; --surface:#151217; --raise:#1E1920; --ink:#F8EEF4; --muted:#A8949F; --line:#2B2329;
-  --pink:#FF4FA3; --pink-ink:#140A10; --blush:#FFC6DE; --paper:#F7EFF3; --paper-ink:#1A1218;
+  --pink:#FF4FA3; --pink-deep:#D4307F; --pink-ink:#140A10; --blush:#FFC6DE; --paper:#F7EFF3; --paper-ink:#1A1218;
   --display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
   --body:"DM Sans","Helvetica Neue",system-ui,sans-serif;
   --script:"Caveat","Bradley Hand",cursive;
@@ -253,9 +253,15 @@ body.admin{padding-bottom:110px}
 
 /* activewear video page */
 .actintro{max-width:62ch;font-size:17px}
+.acthead .closet-head h2{margin-bottom:8px}
+.acthead .socials{margin-top:14px}
+.setnote{margin:0;color:var(--muted);font-size:15px;max-width:60ch}
 .awards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:22px 0 4px}
 .award{text-align:left;display:grid;gap:4px;padding:18px;border-radius:20px;border:1.5px solid var(--pink);background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;text-transform:inherit}
-.award:first-child{background:var(--pink);color:var(--pink-ink)}
+.award:first-child{color:var(--pink-ink);border-color:var(--blush);background:linear-gradient(115deg,var(--pink),var(--blush) 30%,var(--pink) 55%,var(--pink-deep) 80%,var(--pink));background-size:320% 320%;animation:awardglow 7s ease-in-out infinite}
+.award:not(:first-child){background:linear-gradient(115deg,var(--surface) 0 38%,color-mix(in srgb,var(--pink) 26%,var(--surface)) 50%,var(--surface) 62% 100%);background-size:320% 100%;animation:awardsheen 11s linear infinite}
+@keyframes awardglow{0%,100%{background-position:0% 40%}50%{background-position:100% 60%}}
+@keyframes awardsheen{0%{background-position:120% 0}100%{background-position:-20% 0}}
 .award .aw{font-family:var(--script);font-size:24px;line-height:1}
 .award .an{font-family:var(--gothic);font-size:clamp(30px,4.6vw,46px);line-height:1}
 .award .av{font-size:14px;opacity:.85}
@@ -700,7 +706,7 @@ const ACTIVEWEAR = {
   slug: "activewear-at-every-size",
   title: "activewear at every size",
   intro: "i've lost 140 lbs and worn activewear at every size. these are the brands i talked about, in the order i mentioned them, with the pieces i actually wear.",
-  youtube: "",   // paste the video link here once it is up
+  youtube: "https://youtu.be/4LedCgAdQ2k", yt: "4LedCgAdQ2k",
   topPicks: [99380957, 83146536, 99380959, 56647565, 64365697, 54006116],
   brands: [
     {id:"gymshark",  name:"Gymshark",    url:"https://go.shopmy.us/p-109338531",       tier:"mid",     size:"XXS–XXL", set:96,
@@ -1069,8 +1075,9 @@ function renderActivewear(el){
         <div class="meta"><span class="brand">${esc(b.name)}</span><span class="name">${esc(x.name)}</span>${x.note?`<span class="note">${esc(x.note)}</span>`:""}<span class="shop">Shop it ↗</span></div></a>`).join("")}</div>` : ""}</section>`;
   }).join("");
   el.innerHTML = `<a class="back" href="#videos">← all videos</a>
-    <div class="closet-head"><p class="kicker">from the video</p><h2>${esc(A.title)}</h2><p class="actintro">${esc(A.intro)}</p>
-      ${A.youtube ? `<div class="socials"><a class="btn primary" href="${esc(A.youtube)}" target="_blank" rel="noopener">watch on youtube ↗</a></div>` : ""}</div>
+    <div class="vhead acthead">${A.yt ? `<a class="vthumb" href="${esc(A.youtube)}" target="_blank" rel="noopener" aria-label="watch on youtube"><img src="https://i.ytimg.com/vi/${A.yt}/hqdefault.jpg" alt="" onerror="this.remove()"><span class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span></a>` : ""}
+      <div class="closet-head"><p class="kicker">shop everything in this video</p><h2>${esc(A.title)}</h2><p class="actintro">${esc(A.intro)}</p>
+      ${A.youtube ? `<div class="socials"><a class="btn primary" href="${esc(A.youtube)}" target="_blank" rel="noopener">watch on youtube ↗</a>${copyBtn(pageUrl(A.slug),"copy link to this page")}</div>` : ""}</div></div>
     ${state.q ? "" : `<div class="awards">${awards}</div>`}
     ${tops.length ? `<section class="favs acttop"><h3>my top picks <span>the pieces i reach for most</span></h3><div class="grid" data-ctx="act:top">${tops.map(card).join("")}</div></section>` : ""}
     <h3 class="more acth">shop by brand <span>in the order i talk about them</span></h3>
@@ -1283,6 +1290,11 @@ function render(){
   document.body.classList.toggle("subpage", state.view==="video" || state.view==="gallery" || state.view==="activewear");
   if (state.view==="shop") renderShop();
   if (state.view==="videos") renderSets($("#view-videos"), VIDEOS.map(v => ({col:v.col, title:v.title, yt:v.yt, slug:v.slug, extras:v.extras, video:true, url: v.yt ? "https://www.youtube.com/watch?v="+v.yt : CHANNEL})));
+  if (state.view==="videos" && (!state.q || norm(ACTIVEWEAR.title+" gym clothes brands").includes(norm(state.q)))) $("#view-videos").insertAdjacentHTML("afterbegin",
+    `<article class="set"><a class="vthumb" href="#${ACTIVEWEAR.slug}" aria-label="shop ${esc(ACTIVEWEAR.title)}"><img src="https://i.ytimg.com/vi/${ACTIVEWEAR.yt}/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span></a>
+      <div style="min-width:0"><h3><a href="#${ACTIVEWEAR.slug}">${esc(ACTIVEWEAR.title)}</a></h3>
+      <div class="when">${ACTIVEWEAR.brands.length} brands · <a href="#${ACTIVEWEAR.slug}">shop this video →</a> · <a href="${esc(ACTIVEWEAR.youtube)}" target="_blank" rel="noopener">Watch on YouTube ↗</a></div>
+      <p class="setnote">every activewear brand i've worn at every size, with my top picks and what's worth your money.</p></div></article>`);
   if (state.view==="video") renderVideoPage($("#view-video"));
   if (state.view==="gallery") renderGalleryPage($("#view-gallery"));
   if (state.view==="activewear") renderActivewear($("#view-activewear"));
