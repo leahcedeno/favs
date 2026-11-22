@@ -279,6 +279,9 @@ body.admin{padding-bottom:110px}
 .bv{margin:6px 0 4px;font-size:16px;max-width:62ch}
 .bf{margin:0;color:var(--muted);font-size:13px}
 .brandsec .row .card{flex:0 0 160px}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 36px}
+.pair .brandsec header{grid-template-columns:auto minmax(0,1fr)}
+.pair .brandsec header .btn{grid-column:2;justify-self:start}
 .brandsec .row .shop,.brandsec .row .note{display:block}
 .brandsec .row .note{font-size:17px}
 
@@ -325,6 +328,7 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
   .tab{font-size:12.5px;padding:10px 1px}
   .vhead{grid-template-columns:1fr;gap:16px}
   .awards{grid-template-columns:1fr;gap:10px}
+  .pair{grid-template-columns:1fr}
   .brandsec header{grid-template-columns:auto minmax(0,1fr);gap:10px 12px}
   .brandsec header .btn{grid-column:1/-1;justify-content:center}
   .bn{width:32px;height:32px;font-size:14px}
@@ -737,13 +741,13 @@ const ACTIVEWEAR = {
        {name:"Oasis PureLuxe High-Waisted Crossover Flare Pants", img:"extra/fabletics-flare-1.jpg", url:"https://go.shopmy.us/p-109347061"},
        {name:"Oasis PureLuxe High-Waisted Crossover Flare Pants", img:"extra/fabletics-flare-2.jpg", url:"https://go.shopmy.us/p-109346394"},
      ]},
-    {id:"paragon",   name:"Paragon Fitwear", url:"https://go.shopmy.us/p-109339097", tier:"premium", size:"XS–XXL",  set:110,
+    {id:"paragon",   half:true, name:"Paragon Fitwear", url:"https://go.shopmy.us/p-109339097", tier:"premium", size:"XS–XXL",  set:110,
      verdict:"so soft, so comfortable. i really liked this set.", note:"gifted.",
      extras:[
        {name:"Reluna Monochrome Double-Layer Sports Bra, Black", img:"extra/paragon-bra.jpg", url:"https://go.shopmy.us/p-109344051"},
        {name:"Reluna Original Sculptseam Low-Rise Straight Leg Pant, Berry", img:"extra/paragon-pant.jpg", url:"https://go.shopmy.us/p-109343544"},
      ]},
-    {id:"aybl",      name:"AYBL",        url:"https://go.shopmy.us/p-109339174",            tier:"mid",     set:94,
+    {id:"aybl",      half:true, name:"AYBL",        url:"https://go.shopmy.us/p-109339174",            tier:"mid",     set:94,
      verdict:"my first set from them, the charge set. giving superhero. a little compression, still comfy.",
      extras:[
        {name:"Charge Seamless Long Sleeve Crop Top, Pink", img:"extra/aybl-top.jpg", url:"https://go.shopmy.us/p-109339887"},
@@ -752,7 +756,15 @@ const ACTIVEWEAR = {
     {id:"oner",      name:"Oner Active", url:"https://go.shopmy.us/p-109339240",      tier:"premium", size:"XS–XXL",  set:113, award:"my favorite overall",
      verdict:"the most comfortable activewear i've ever worn. softmotion is a second skin, and they have the perfect pink.", match:/softmotion|cotton vintage lounge/i},
     {id:"aritzia",   name:"Aritzia",     url:"https://go.shopmy.us/p-109339415", tier:"premium", size:"3XS–2XL", set:113,
-     verdict:"low-key really good. the butter collection is so soft, and you can try it on in person."},
+     verdict:"low-key really good. the butter collection is so soft, and you can try it on in person.",
+     extras:[
+       {name:"Butter Volley Sports Bra", img:"extra/aritzia-volley-bra.jpg", url:"https://go.shopmy.us/p-109350481"},
+       {name:"Butter Limit Zip Up", img:"extra/aritzia-zip-up.jpg", url:"https://go.shopmy.us/p-109350043"},
+       {name:"Butter Foldover Bootcut 32\" Leggings", img:"extra/aritzia-bootcut.jpg", url:"https://go.shopmy.us/p-109349034"},
+       {name:"Butter Crossover Hi-Rise 26\" Legging", img:"extra/aritzia-crossover-legging.jpg", url:"https://go.shopmy.us/p-109349025"},
+       {name:"Butter Cheeky Hi-Rise 5\" Shorts, Black", img:"extra/aritzia-shorts-black.jpg", url:"https://go.shopmy.us/p-109349282"},
+       {name:"Butter Cheeky Hi-Rise 5\" Shorts", img:"extra/aritzia-shorts.jpg", url:"https://go.shopmy.us/p-109348954"},
+     ]},
     {id:"buffbunny", name:"Buffbunny",   url:"https://go.shopmy.us/p-109339629",      tier:"premium", size:"XXS–3XL", set:110,
      verdict:"i was a buffbunny girl my whole journey. the flares have the perfect amount of flare.", match:/flare legging|twist fit|legacy legging/i},
     {id:"dfyne",     name:"DFYNE",       url:"https://go.shopmy.us/p-109339679",           tier:"premium", size:"XS–XL",   set:109,
@@ -1067,7 +1079,7 @@ function renderActivewear(el){
     const extras = (b.extras||[]).filter(x => !state.q || norm(b.name+" "+x.name).split(" ").some(w => norm(state.q).split(" ").every(t => (b.name+" "+x.name).toLowerCase().includes(t))));
     if (state.q && !items.length && !extras.length && !norm(b.name+" "+b.verdict).includes(norm(state.q))) return "";
     const facts = [b.tier, b.size ? "sizes "+b.size : "", b.set ? "about $"+b.set+" for a bra + leggings" : ""].filter(Boolean).join(" · ");
-    return `<section class="brandsec" id="act-${b.id}"><header><span class="bn">${i+1}</span><div><h3>${esc(b.name)}${b.award?` <span class="awtag">${esc(b.award)}</span>`:""}</h3>
+    return `<section class="brandsec${b.half?" half":""}" id="act-${b.id}"><header><span class="bn">${i+1}</span><div><h3>${esc(b.name)}${b.award?` <span class="awtag">${esc(b.award)}</span>`:""}</h3>
         <p class="bv">${esc(b.verdict)}</p><p class="bf">${esc(facts)}${b.note?` · ${esc(b.note)}`:""}</p></div>
         <a class="btn" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">shop ${esc(b.name)} ↗</a></header>
       ${items.length ? `<div class="row" data-ctx="act:${b.id}">${items.map(card).join("")}</div>` : ""}
@@ -1083,6 +1095,9 @@ function renderActivewear(el){
     <h3 class="more acth">shop by brand <span>in the order i talk about them</span></h3>
     <div class="jump">${A.brands.map((b,i) => `<button type="button" class="chip" data-jump="act-${b.id}"><small>${i+1}</small> ${esc(b.name)}</button>`).join("")}</div>
     ${secs}`;
+  // brands marked half sit two across on wide screens
+  const halves = [...el.querySelectorAll(".brandsec.half")];
+  for (let i=0; i+1<halves.length; i+=2) if (halves[i].nextElementSibling===halves[i+1]) { const w=document.createElement("div"); w.className="pair"; halves[i].before(w); w.append(halves[i], halves[i+1]); }
   $("#empty").hidden = true;
 }
 document.addEventListener("click", e => { const j=e.target.closest("[data-jump]"); if(!j) return; const t=document.getElementById(j.dataset.jump); if(t) window.scrollTo({top: t.getBoundingClientRect().top + scrollY - 130, behavior:"smooth"}); });
