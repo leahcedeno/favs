@@ -1071,6 +1071,19 @@ function renderVideoPage(el){
     <div class="grid" data-ctx="video:${v.col}">${(v.extras||[]).includes("gallery-wall") && !state.q ? galleryCard() : ""}${items.map(card).join("")}</div>`;
   $("#empty").hidden = true;
 }
+const extraCard = (b, x) => `<a class="card" href="${esc(x.url)}" target="_blank" rel="noopener sponsored"><div class="thumb gw"><img src="${esc(x.img)}" alt="" loading="lazy"></div>
+        <div class="meta"><span class="brand">${esc(b.name)}</span><span class="name">${esc(x.name)}</span>${x.note?`<span class="note">${esc(x.note)}</span>`:""}<span class="shop">Shop it ↗</span></div></a>`;
+/* A short preview row for the Videos tab: top picks first, then a couple of pieces from each brand in video order. */
+function activewearPreview(){
+  const A = ACTIVEWEAR, out = [], seen = new Set();
+  (OV.top.activewear || A.topPicks).forEach(id => { const p=PRODUCTS.find(x => x.id===id); if(p){ seen.add(id); out.push(card(p)); } });
+  A.brands.forEach(b => {
+    let n = 0;
+    if (b.match) PRODUCTS.filter(p => (p.brand||"").toLowerCase()===b.name.toLowerCase() && b.match.test(p.name) && !seen.has(p.id)).sort((x,y) => y.recent-x.recent).slice(0,2).forEach(p => { out.push(card(p)); n++; });
+    (b.extras||[]).slice(0, Math.max(0, 2-n)).forEach(x => out.push(extraCard(b, x)));
+  });
+  return out;
+}
 function renderActivewear(el){
   const A = ACTIVEWEAR, brandOf = p => (p.brand||"").toLowerCase();
   const piecesOf = b => b.match ? arrange(PRODUCTS.filter(p => brandOf(p)===b.name.toLowerCase() && b.match.test(p.name) && matches(p, b.name)).sort((x,y) => y.recent-x.recent), "act:"+b.id) : [];
@@ -1085,8 +1098,7 @@ function renderActivewear(el){
         <p class="bv">${esc(b.verdict)}</p><p class="bf">${esc(facts)}${b.note?` · ${esc(b.note)}`:""}</p></div>
         <a class="btn" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">shop ${esc(b.name)} ↗</a></header>
       ${items.length ? `<div class="row" data-ctx="act:${b.id}">${items.map(card).join("")}</div>` : ""}
-      ${extras.length ? `<div class="row">${extras.map(x => `<a class="card" href="${esc(x.url)}" target="_blank" rel="noopener sponsored"><div class="thumb gw"><img src="${esc(x.img)}" alt="" loading="lazy"></div>
-        <div class="meta"><span class="brand">${esc(b.name)}</span><span class="name">${esc(x.name)}</span>${x.note?`<span class="note">${esc(x.note)}</span>`:""}<span class="shop">Shop it ↗</span></div></a>`).join("")}</div>` : ""}</section>`;
+      ${extras.length ? `<div class="row">${extras.map(x => extraCard(b, x)).join("")}</div>` : ""}</section>`;
   }).join("");
   el.innerHTML = `<a class="back" href="#videos">← all videos</a>
     <div class="vhead acthead">${A.yt ? `<a class="vthumb" href="${esc(A.youtube)}" target="_blank" rel="noopener" aria-label="watch on youtube"><img src="https://i.ytimg.com/vi/${A.yt}/hqdefault.jpg" alt="" onerror="this.remove()"><span class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span></a>` : ""}
@@ -1310,8 +1322,8 @@ function render(){
   if (state.view==="videos" && (!state.q || norm(ACTIVEWEAR.title+" gym clothes brands").includes(norm(state.q)))) $("#view-videos").insertAdjacentHTML("afterbegin",
     `<article class="set"><a class="vthumb" href="#${ACTIVEWEAR.slug}" aria-label="shop ${esc(ACTIVEWEAR.title)}"><img src="https://i.ytimg.com/vi/${ACTIVEWEAR.yt}/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></span></a>
       <div style="min-width:0"><h3><a href="#${ACTIVEWEAR.slug}">${esc(ACTIVEWEAR.title)}</a></h3>
-      <div class="when">${ACTIVEWEAR.brands.length} brands · <a href="#${ACTIVEWEAR.slug}">shop this video →</a> · <a href="${esc(ACTIVEWEAR.youtube)}" target="_blank" rel="noopener">Watch on YouTube ↗</a></div>
-      <p class="setnote">every activewear brand i've worn at every size, with my top picks and what's worth your money.</p></div></article>`);
+      <div class="when">my top picks + ${ACTIVEWEAR.brands.length} brands · <a href="#${ACTIVEWEAR.slug}">shop this video →</a> · <a href="${esc(ACTIVEWEAR.youtube)}" target="_blank" rel="noopener">Watch on YouTube ↗</a></div>
+      <div class="row">${activewearPreview().join("")}</div></div></article>`);
   if (state.view==="video") renderVideoPage($("#view-video"));
   if (state.view==="gallery") renderGalleryPage($("#view-gallery"));
   if (state.view==="activewear") renderActivewear($("#view-activewear"));
