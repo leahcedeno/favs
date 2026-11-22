@@ -694,8 +694,7 @@ const VIDEOS = [
 ];
 /* ===== "activewear at every size" video page: my top picks, then every brand in the order the video mentions it =====
    match: which of Leah's ShopMy pieces show under that brand (by product name). extras: pieces that are not in ShopMy yet
-   (name, photo, store link); swap each url for its ShopMy link once one exists. url: the brand's own site, used for the
-   "shop the brand" button until a ShopMy link exists for it. */
+   (name, photo, ShopMy quick link). url: Leah's ShopMy link to the brand's site, used for the "shop the brand" button. */
 const ACTIVEWEAR = {
   slug: "activewear-at-every-size",
   title: "activewear at every size",
@@ -703,33 +702,40 @@ const ACTIVEWEAR = {
   youtube: "",   // paste the video link here once it is up
   topPicks: [83146535, 83146529, 99380959, 56647565, 54006116, 56647752],
   brands: [
-    {id:"gymshark",  name:"Gymshark",    url:"https://www.gymshark.com/",       tier:"mid",     size:"XXS–XXL", set:96,
+    {id:"gymshark",  name:"Gymshark",    url:"https://go.shopmy.us/p-109338531",       tier:"mid",     size:"XXS–XXL", set:96,
      verdict:"the gym girl fit. durable and so sculpting, but not what i lounge in. buy it on sale.", match:/featherform|lift seamless|lightweight wide leg/i},
-    {id:"lululemon", name:"Lululemon",   url:"https://shop.lululemon.com/",     tier:"luxury",  size:"0–20",    set:146,
+    {id:"lululemon", name:"Lululemon",   url:"https://go.shopmy.us/p-109338625",     tier:"luxury",  size:"0–20",    set:146,
      verdict:"not where i shop for activewear, but their ribbed hold tight tops are so soft and so comfortable.",
      extras:[
-       {name:"Hold Tight Long-Sleeve Turtleneck", img:"extra/lulu-turtleneck.jpg", url:"https://shop.lululemon.com/p/hold-tight-long-sleeve-turtleneck/mhcdugbftl"},
-       {name:"Hold Tight Straight-Hem Cropped T-Shirt", img:"extra/lulu-crop-tee.jpg", url:"https://shop.lululemon.com/p/hold-tight-straight-hem-cropped-t/oc1udgomw5"},
-       {name:"Hold Tight Straight-Hem Cropped Long-Sleeve Shirt", img:"extra/lulu-crop-ls.jpg", url:"https://shop.lululemon.com/p/hold-tight-straight-hem-cropped-ls-shirt/sn2pm5naxr"},
+       {name:"Hold Tight Long-Sleeve Turtleneck", img:"extra/lulu-turtleneck.jpg", url:"https://go.shopmy.us/p-109338089"},
+       {name:"Hold Tight Straight-Hem Cropped T-Shirt", img:"extra/lulu-crop-tee.jpg", url:"https://go.shopmy.us/p-109338215"},
+       {name:"Hold Tight Straight-Hem Cropped Long-Sleeve Shirt", img:"extra/lulu-crop-ls.jpg", url:"https://go.shopmy.us/p-109338331"},
      ]},
-    {id:"halara",    name:"Halara",      url:"https://thehalara.com/",          tier:"budget",  size:"XS–4X",   set:65, award:"best bang for your buck",
+    {id:"halara",    name:"Halara",      url:"https://go.shopmy.us/p-109338727",          tier:"budget",  size:"XS–4X",   set:65, award:"best bang for your buck",
      verdict:"really slept on. cute, affordable, and so many styles in plus sizes.", note:"i've worked with halara, and i wore them before i ever did."},
-    {id:"fabletics", name:"Fabletics",   url:"https://www.fabletics.com/",      tier:"budget",  size:"XXS–4X",
+    {id:"fabletics", name:"Fabletics",   url:"https://go.shopmy.us/p-109338848",      tier:"budget",  size:"XXS–4X",
      verdict:"what i lived in at the start of my journey. so flattering in a bigger body.", note:"it's a membership, so know that before you sign up. you can skip a month or cancel."},
-    {id:"paragon",   name:"Paragon Fitwear", url:"https://paragonfitwear.com/", tier:"premium", size:"XS–XXL",  set:110,
+    {id:"paragon",   name:"Paragon Fitwear", url:"https://go.shopmy.us/p-109339097", tier:"premium", size:"XS–XXL",  set:110,
      verdict:"so soft, so comfortable. i really liked this set.", note:"gifted."},
-    {id:"aybl",      name:"AYBL",        url:"https://us.aybl.com/",            tier:"mid",     set:94,
+    {id:"aybl",      name:"AYBL",        url:"https://go.shopmy.us/p-109339174",            tier:"mid",     set:94,
      verdict:"my first set from them, the charge set. giving superhero. a little compression, still comfy."},
-    {id:"oner",      name:"Oner Active", url:"https://us.oneractive.com/",      tier:"premium", size:"XS–XXL",  set:113, award:"my favorite overall",
+    {id:"oner",      name:"Oner Active", url:"https://go.shopmy.us/p-109339240",      tier:"premium", size:"XS–XXL",  set:113, award:"my favorite overall",
      verdict:"the most comfortable activewear i've ever worn. softmotion is a second skin, and they have the perfect pink.", match:/softmotion|cotton vintage lounge/i},
-    {id:"aritzia",   name:"Aritzia",     url:"https://www.aritzia.com/us/en/clothing/activewear", tier:"premium", size:"3XS–2XL", set:113,
+    {id:"aritzia",   name:"Aritzia",     url:"https://go.shopmy.us/p-109339415", tier:"premium", size:"3XS–2XL", set:113,
      verdict:"low-key really good. the butter collection is so soft, and you can try it on in person."},
-    {id:"buffbunny", name:"Buffbunny",   url:"https://www.buffbunny.com/",      tier:"premium", size:"XXS–3XL", set:110,
+    {id:"buffbunny", name:"Buffbunny",   url:"https://go.shopmy.us/p-109339629",      tier:"premium", size:"XXS–3XL", set:110,
      verdict:"i was a buffbunny girl my whole journey. the flares have the perfect amount of flare.", match:/flare legging|twist fit|legacy legging/i},
-    {id:"dfyne",     name:"DFYNE",       url:"https://us.dfyne.com/",           tier:"premium", size:"XS–XL",   set:109,
+    {id:"dfyne",     name:"DFYNE",       url:"https://go.shopmy.us/p-109339679",           tier:"premium", size:"XS–XL",   set:109,
      verdict:"makes your butt look incredible. the origin flares, with no scrunch, are some of my favorite flares ever.", match:/origin/i},
-    {id:"popflex",   name:"POPFLEX",     url:"https://www.popflexactive.com/",  tier:"premium", size:"XXS–3X",  set:124,
-     verdict:"so underrated. designed with a woman's figure in mind, with a bunch of inseam options.", match:/^$/},
+    {id:"popflex",   name:"POPFLEX",     url:"https://go.shopmy.us/p-109339758",  tier:"premium", size:"XXS–3X",  set:124,
+     verdict:"so underrated. designed with a woman's figure in mind, with a bunch of inseam options.",
+     extras:[
+       {name:"Daphne Corset Crop Top, Bubblegum", img:"extra/popflex-daphne.jpg", url:"https://go.shopmy.us/p-109337279"},
+       {name:"Renaissance Corset Sweatshirt, Black", img:"extra/popflex-renaissance.jpg", url:"https://go.shopmy.us/p-109337482"},
+       {name:"Crisscross Hourglass Flared Legging with Pockets, Black", img:"extra/popflex-crisscross.jpg", url:"https://go.shopmy.us/p-109337595"},
+       {name:"Supersculpt Flared Legging with Pockets, Black", img:"extra/popflex-supersculpt-flare.jpg", url:"https://go.shopmy.us/p-109337758"},
+       {name:"Pirouette Skort, Bubblegum", img:"extra/popflex-pirouette.jpg", url:"https://go.shopmy.us/p-109337878"},
+     ]},
   ],
 };
 
@@ -1033,9 +1039,9 @@ function renderActivewear(el){
     const facts = [b.tier, b.size ? "sizes "+b.size : "", b.set ? "about $"+b.set+" for a bra + leggings" : ""].filter(Boolean).join(" · ");
     return `<section class="brandsec" id="act-${b.id}"><header><span class="bn">${i+1}</span><div><h3>${esc(b.name)}${b.award?` <span class="awtag">${esc(b.award)}</span>`:""}</h3>
         <p class="bv">${esc(b.verdict)}</p><p class="bf">${esc(facts)}${b.note?` · ${esc(b.note)}`:""}</p></div>
-        <a class="btn" href="${esc(b.url)}" target="_blank" rel="noopener">shop ${esc(b.name)} ↗</a></header>
+        <a class="btn" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">shop ${esc(b.name)} ↗</a></header>
       ${items.length ? `<div class="row" data-ctx="act:${b.id}">${items.map(card).join("")}</div>` : ""}
-      ${extras.length ? `<div class="row">${extras.map(x => `<a class="card" href="${esc(x.url)}" target="_blank" rel="noopener"><div class="thumb gw"><img src="${esc(x.img)}" alt="" loading="lazy"></div>
+      ${extras.length ? `<div class="row">${extras.map(x => `<a class="card" href="${esc(x.url)}" target="_blank" rel="noopener sponsored"><div class="thumb gw"><img src="${esc(x.img)}" alt="" loading="lazy"></div>
         <div class="meta"><span class="brand">${esc(b.name)}</span><span class="name">${esc(x.name)}</span><span class="shop">Shop it ↗</span></div></a>`).join("")}</div>` : ""}</section>`;
   }).join("");
   el.innerHTML = `<a class="back" href="#videos">← all videos</a>
