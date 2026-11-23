@@ -287,6 +287,21 @@ body.admin{padding-bottom:110px}
 .brandsec .row .shop,.brandsec .row .note{display:block}
 .brandsec .row .note{font-size:17px}
 
+/* supplements page */
+.supcall{display:grid;grid-template-columns:minmax(0,230px) minmax(0,1fr);gap:28px;align-items:center;text-decoration:none;color:var(--pink-ink);margin:22px 0 8px;padding:22px;border-radius:24px;border:1.5px solid var(--blush);background:linear-gradient(115deg,var(--pink),var(--blush) 30%,var(--pink) 55%,var(--pink-deep) 80%,var(--pink));background-size:320% 320%;animation:awardglow 9s ease-in-out infinite}
+.scimg{aspect-ratio:1;border-radius:18px;background:var(--paper);overflow:hidden;display:block}
+.scimg img{width:100%;height:100%;object-fit:contain;padding:10px;display:block}
+.sctext{display:grid;gap:6px;justify-items:start}
+.sck{font-family:var(--script);font-size:clamp(24px,3vw,32px);line-height:1.05}
+.scl{font-family:var(--gothic);font-size:clamp(44px,7vw,84px);line-height:.95}
+.scn{font-weight:600;font-size:17px;margin-top:4px}
+.supcall .btn.primary{background:var(--pink-ink);border-color:var(--pink-ink);color:var(--ink);margin-top:8px}
+.supgroup{margin-top:34px}
+.supgroup h3{font-family:var(--display);font-size:26px;line-height:1.1;margin:0 0 14px;display:flex;align-items:baseline;gap:10px}
+.supgroup h3 .n{color:var(--muted);font:500 14px var(--body)}
+.supgroup .grid{padding-bottom:0}
+.seeall{font-size:13px;font-weight:600;color:var(--pink);text-decoration:none;margin-left:8px;white-space:nowrap}
+
 .empty{padding:48px 0 80px;text-align:center;color:var(--muted)}
 .empty b{display:block;font-family:var(--display);font-size:24px;color:var(--ink);margin-bottom:6px}
 footer{border-top:1px solid var(--line);color:var(--muted);font-size:13px}
@@ -330,6 +345,9 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
   .tab{font-size:12.5px;padding:10px 1px}
   .vhead{grid-template-columns:1fr;gap:16px}
   .awards{grid-template-columns:1fr;gap:10px}
+  .supcall{grid-template-columns:minmax(0,110px) minmax(0,1fr);gap:16px;padding:16px;border-radius:20px}
+  .supgroup{margin-top:26px}.supgroup h3{font-size:22px}
+  .seeall{flex-basis:100%;margin-left:0}
   .pair{grid-template-columns:1fr}
   .brandsec header{grid-template-columns:auto minmax(0,1fr);gap:10px 12px}
   .brandsec header .btn{grid-column:1/-1;justify-content:center}
@@ -418,6 +436,7 @@ footer .sig{font-family:var(--gothic);color:var(--pink);font-size:22px}
   <section id="view-video" class="page" hidden></section>
   <section id="view-gallery" class="page" hidden></section>
   <section id="view-activewear" class="page" hidden></section>
+  <section id="view-supplements" class="page" hidden></section>
   <section id="view-outfits" class="looks" hidden></section>
   <div class="empty" id="empty" hidden><b>Nothing matches that yet</b>Try another word, or clear the search.</div>
 </main>
@@ -786,6 +805,20 @@ const ACTIVEWEAR = {
   ],
 };
 
+/* ===== supplements page: a creatine callout, then every supplement grouped by what it's for (protein first) ===== */
+const SUPPLEMENTS = {
+  slug: "supplements",
+  callout: {id:54649344, kicker:"if i can convince you to take one supplement,", line:"take this one."},
+  groups: [
+    {id:"protein",   label:"protein",          types:["protein powder"]},
+    {id:"preworkout",label:"pre-workout",      types:["pre-workout"]},
+    {id:"hydration", label:"hydration",        types:["electrolytes"]},
+    {id:"sleep",     label:"sleep + recovery", types:["magnesium","sleep gummies"]},
+    {id:"gut",       label:"gut health",       types:["fiber"]},
+    {id:"immunity",  label:"immunity",         types:["immunity"]},
+  ],
+};
+
 /* The gallery wall: one card that opens its own page of prints */
 /* Prints you can see in the gallery wall photo, numbered left to right, top to bottom.
    [product id, point x, point y, number x, number y] as percentages of the photo. */
@@ -1074,6 +1107,24 @@ function renderVideoPage(el){
     <div class="grid" data-ctx="video:${v.col}">${(v.extras||[]).includes("gallery-wall") && !state.q ? galleryCard() : ""}${items.map(card).join("")}</div>`;
   $("#empty").hidden = true;
 }
+function renderSupplements(el){
+  const S = SUPPLEMENTS, c = PRODUCTS.find(p => p.id===S.callout.id);
+  const callout = (c && !state.q) ? `<a class="supcall" href="${esc(c.link)}" target="_blank" rel="noopener sponsored">
+      <span class="scimg"><img src="${esc(c.img)}" alt="" onerror="this.remove()"></span>
+      <span class="sctext"><span class="sck">${esc(S.callout.kicker)}</span><span class="scl">${esc(S.callout.line)}</span>
+        <span class="scn">${esc(c.name)}</span><span class="btn primary">shop ${esc(c.name)} ↗</span></span></a>` : "";
+  let total = 0;
+  const groups = S.groups.map(g => {
+    const items = arrange(PRODUCTS.filter(p => g.types.includes(p.type) && matches(p, g.label)).sort((a,b) => b.recent-a.recent), "supp:"+g.id);
+    if(!items.length) return "";
+    total += items.length;
+    return `<section class="supgroup"><h3>${esc(g.label)} <span class="n">${items.length}</span></h3><div class="grid" data-ctx="supp:${g.id}">${items.map(card).join("")}</div></section>`;
+  }).join("");
+  el.innerHTML = `<a class="back" href="#kitchen">← my kitchen</a>
+    <div class="closet-head"><h2>my supplements</h2><p>what i take and why, sorted by what it's for. ${total + (callout?1:0)} in all.</p></div>
+    ${callout}${groups}`;
+  $("#empty").hidden = !!(callout || groups);
+}
 const extraCard = (b, x) => `<a class="card" href="${esc(x.url)}" target="_blank" rel="noopener sponsored"><div class="thumb gw"><img src="${esc(x.img)}" alt="" loading="lazy"></div>
         <div class="meta"><span class="brand">${esc(b.name)}</span><span class="name">${esc(x.name)}</span>${x.note?`<span class="note">${esc(x.note)}</span>`:""}<span class="shop">Shop it ↗</span></div></a>`;
 /* A short preview row for the Videos tab: top picks first, then a couple of pieces from each brand in video order. */
@@ -1254,7 +1305,7 @@ function renderKitchen(el){
     const items = arrange(PRODUCTS.filter(p => zoneOf(p)===z.id && matches(p, z.label)).sort((a,b) => b.recent-a.recent), "zone:"+z.id);
     if(!items.length) return "";
     total += items.length;
-    return `<section class="rack is-shelf zone zone-${z.id}"><header><h3>${esc(z.label)}</h3><span class="n">${items.length}</span>${z.sub?`<span class="sub">${esc(z.sub)}</span>`:""}
+    return `<section class="rack is-shelf zone zone-${z.id}"><header><h3>${esc(z.label)}</h3><span class="n">${items.length}</span>${z.sub?`<span class="sub">${esc(z.sub)}</span>`:""}${z.id==="supps"?`<a class="seeall" href="#${SUPPLEMENTS.slug}">see them by category →</a>`:""}
       <span class="nav"><button type="button" data-dir="-1" aria-label="scroll ${esc(z.label)} back">←</button><button type="button" data-dir="1" aria-label="scroll ${esc(z.label)} forward">→</button></span></header>
       <div class="railwrap"><div class="rail" data-ctx="zone:${z.id}">${items.map(p => closetItem(p, "shelf")).join("")}</div></div></section>`;
   }).join("");
@@ -1318,8 +1369,8 @@ document.addEventListener("focusout", e => linkHover(e,false));
 
 function render(){
   for (const v of ["shop","closet","kitchen","videos","outfits"]) { $("#view-"+v).hidden = state.view!==v; $("#tab-"+v).setAttribute("aria-selected", state.view===v || (v==="videos" && state.view==="video")); }
-  $("#view-video").hidden = state.view!=="video"; $("#view-gallery").hidden = state.view!=="gallery"; $("#view-activewear").hidden = state.view!=="activewear";
-  document.body.classList.toggle("subpage", state.view==="video" || state.view==="gallery" || state.view==="activewear");
+  $("#view-video").hidden = state.view!=="video"; $("#view-gallery").hidden = state.view!=="gallery"; $("#view-activewear").hidden = state.view!=="activewear"; $("#view-supplements").hidden = state.view!=="supplements";
+  document.body.classList.toggle("subpage", state.view==="video" || state.view==="gallery" || state.view==="activewear" || state.view==="supplements");
   if (state.view==="shop") renderShop();
   if (state.view==="videos") renderSets($("#view-videos"), VIDEOS.map(v => ({col:v.col, title:v.title, yt:v.yt, slug:v.slug, extras:v.extras, video:true, url: v.yt ? "https://www.youtube.com/watch?v="+v.yt : CHANNEL})));
   if (state.view==="videos" && (!state.q || norm(ACTIVEWEAR.title+" gym clothes brands").includes(norm(state.q)))) $("#view-videos").insertAdjacentHTML("afterbegin",
@@ -1330,6 +1381,7 @@ function render(){
   if (state.view==="video") renderVideoPage($("#view-video"));
   if (state.view==="gallery") renderGalleryPage($("#view-gallery"));
   if (state.view==="activewear") renderActivewear($("#view-activewear"));
+  if (state.view==="supplements") renderSupplements($("#view-supplements"));
   if (state.view==="closet") renderCloset($("#view-closet"));
   if (state.view==="kitchen") renderKitchen($("#view-kitchen"));
   if (state.view==="outfits") renderLooks($("#view-outfits"));
@@ -1343,9 +1395,10 @@ const fromHash = () => { let h=location.hash.slice(1);
   if (h==="admin") { history.replaceState(null,"",location.pathname); h=""; openLogin(); }
   if (h===GALLERY.slug) state.view="gallery";
   else if (h===ACTIVEWEAR.slug) state.view="activewear";
+  else if (h===SUPPLEMENTS.slug) state.view="supplements";
   else if (h.startsWith("video-") && VIDEOS.some(v => v.slug===h.slice(6))) { state.view="video"; state.slug=h.slice(6); }
   else state.view = (h==="videos"||h==="outfits"||h==="closet"||h==="kitchen") ? h : "shop"; };
-window.addEventListener("hashchange", () => { fromHash(); render(); if (state.view==="video"||state.view==="gallery"||state.view==="activewear") window.scrollTo(0,0); });
+window.addEventListener("hashchange", () => { fromHash(); render(); if (["video","gallery","activewear","supplements"].includes(state.view)) window.scrollTo(0,0); });
 fromHash();
 
 (function(){
