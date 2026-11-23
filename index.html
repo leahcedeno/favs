@@ -812,6 +812,7 @@ const SUPPLEMENTS = {
   callout: {id:54649344, kicker:"if i can convince you to take one supplement,", line:"take this one."},
   groups: [
     {id:"protein",   label:"protein",          types:["protein powder"]},
+    {id:"stack",     label:"my daily stack",   ids:[54649344, 81446318, 59058198, 54649445]},   // creatine, lemme fiber, lemme sleep, magnesium
     {id:"preworkout",label:"pre-workout",      types:["pre-workout"]},
     {id:"hydration", label:"hydration",        types:["electrolytes"]},
     {id:"sleep",     label:"sleep + recovery", types:["magnesium","sleep gummies"]},
@@ -1116,9 +1117,10 @@ function renderSupplements(el){
         <span class="scn">${esc(c.name)}</span><span class="btn primary">shop ${esc(c.name)} ↗</span></span></a>` : "";
   let total = 0;
   const groups = S.groups.map(g => {
-    const items = arrange(PRODUCTS.filter(p => g.types.includes(p.type) && matches(p, g.label)).sort((a,b) => b.recent-a.recent), "supp:"+g.id);
+    const items = g.ids ? arrange(g.ids.map(id => PRODUCTS.find(p => p.id===id)).filter(p => p && matches(p, g.label)), "supp:"+g.id)
+      : arrange(PRODUCTS.filter(p => g.types.includes(p.type) && matches(p, g.label)).sort((a,b) => b.recent-a.recent), "supp:"+g.id);
     if(!items.length) return "";
-    total += items.length;
+    if (!g.ids) total += items.length;
     return `<section class="supgroup"><h3>${esc(g.label)} <span class="n">${items.length}</span></h3><div class="grid" data-ctx="supp:${g.id}">${items.map(card).join("")}</div></section>`;
   }).join("");
   el.innerHTML = `<a class="back" href="#kitchen">← my kitchen</a>
