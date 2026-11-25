@@ -730,7 +730,8 @@ const CATEGORY_OVERRIDES = {
 };
 
 const VIDEOS = [
-  {col:9481978, slug:"becoming-her",          yt:"XuPLw5_sCwE", title:"a realistic day of becoming her | gym, high-protein meals & self-care"},
+  {col:9481978, slug:"becoming-her",          yt:"XuPLw5_sCwE", title:"a realistic day of becoming her | gym, high-protein meals & self-care",
+   order:[111003474,111001920,61273515,77601407,111001365,111001376,111003161,111000077,111000297,111000407,111001077,111001094,100619843,61273657,63443548,102624605,54603962]},   // same order as the ShopMy collection
   {col:9106698, slug:"how-i-lost-140lbs",     yt:"301b4iJ_T0g", title:"how i lost 140lbs and built muscle", extras:["gallery-wall"]},
   {col:8893759, slug:"meal-prep-my-cravings", yt:"ZiCbZa4KPrc", title:"i tried to meal prep my cravings | testing viral recipes so you don't have to"},
   {col:8679582, slug:"sunday-reset",          yt:"bHH4LI6lF6I", title:"REALISTIC SUNDAY RESET: getting my life together, gym, grocery haul, cleaning"},
@@ -985,14 +986,18 @@ function matches(p, extra=""){
    order: {"<list>":[ids]}                        hand-set order for one list (a category, rack, kitchen zone or video)
    move:  {"<product id>":{cat|rack|zone:"<id>"}}  a product moved to another category / rack / zone */
 const OV = {top:{}, order:{}, move:{}};
+/* A video can carry its ShopMy order; Leah's own admin reordering still wins over it. */
+const DEFAULT_ORDER = Object.fromEntries(VIDEOS.filter(v => v.order).map(v => ["video:"+v.col, v.order]));
+/* Supplements Leah doesn't want on the supplement shelf or the supplements page (they stay everywhere else). */
+const NOT_IN_SUPPS = [102626476];
 let dirty = 0;
 const catOf = p => (OV.move[p.id]||{}).cat || p.cat;
-function zoneOf(p){ const m=(OV.move[p.id]||{}).zone; if(m) return m==="none"?null:m; const z=ZONES.find(z => z.types.includes(p.type)); return z ? z.id : null; }
+function zoneOf(p){ if (NOT_IN_SUPPS.includes(p.id)) return null; const m=(OV.move[p.id]||{}).zone; if(m) return m==="none"?null:m; const z=ZONES.find(z => z.types.includes(p.type)); return z ? z.id : null; }
 function isTop(p, ctx){ if (ctx.startsWith("act:")) return (OV.top.activewear || ACTIVEWEAR.topPicks).includes(p.id);
   return ctx.startsWith("video:") ? (OV.top[ctx]||[]).includes(p.id) : (OV.top.global ? OV.top.global.includes(p.id) : p.top); }
 function arrange(items, ctx){
   let out = items.filter(p => isTop(p,ctx)).concat(items.filter(p => !isTop(p,ctx)));   // top picks go first
-  const ord = OV.order[ctx];
+  const ord = OV.order[ctx] || DEFAULT_ORDER[ctx];
   if (ord) { const pos = id => { const i=ord.indexOf(id); return i<0 ? 1e6 : i; };
     out = out.map((p,i) => [p,i]).sort((a,b) => (pos(a[0].id)-pos(b[0].id)) || (a[1]-b[1])).map(x => x[0]); }
   return out;
@@ -1131,7 +1136,7 @@ function renderSupplements(el){
   let total = 0;
   const groups = S.groups.map(g => {
     const items = g.ids ? arrange(g.ids.map(id => PRODUCTS.find(p => p.id===id)).filter(p => p && matches(p, g.label)), "supp:"+g.id)
-      : arrange(PRODUCTS.filter(p => g.types.includes(p.type) && matches(p, g.label)).sort((a,b) => b.recent-a.recent), "supp:"+g.id);
+      : arrange(PRODUCTS.filter(p => g.types.includes(p.type) && !NOT_IN_SUPPS.includes(p.id) && matches(p, g.label)).sort((a,b) => b.recent-a.recent), "supp:"+g.id);
     if(!items.length) return "";
     if (!g.ids) total += items.length;
     return `<section class="supgroup"><h3>${esc(g.label)} <span class="n">${items.length}</span></h3><div class="grid" data-ctx="supp:${g.id}">${items.map(card).join("")}</div></section>`;
